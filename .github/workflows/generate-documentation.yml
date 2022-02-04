@@ -8,9 +8,9 @@ jobs:
     name: Generate documentation for release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Generate documentation and upload
-        uses: docker://ponylang/library-documentation-action:0.1.6
+        uses: ponylang/library-documentation-action@0.3.0
         with:
           site_url: "https://ponylang.github.io/github_rest_api/"
           library_name: "github_rest_api"
