@@ -1,0 +1,1860 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="https://ponylang.github.io/github_rest_api/github_rest_api-CreateLabel/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
+    
+    
+      
+        <title>primitive CreateLabel - github_rest_api</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.b80b25f7.css">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.0b5df86e.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#createlabel" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+          <a href="https://ponylang.github.io/github_rest_api/" title="github_rest_api" class="md-header-nav__button md-logo">
+          
+            <img src="../assets/images/logo.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                github_rest_api
+              </span>
+              <span class="md-header-nav__topic">
+                primitive CreateLabel
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../assets/images/logo.png" width="48" height="48">
+      
+    </span>
+    github_rest_api
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="github_rest_api" class="md-nav__link">
+      github_rest_api
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      package github_rest_api
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        package github_rest_api
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-User/" title="class User" class="md-nav__link">
+      class User
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-UserJsonConverter/" title="primitive UserJsonConverter" class="md-nav__link">
+      primitive UserJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueSearchResultsOrError/" title="type IssueSearchResultsOrError" class="md-nav__link">
+      type IssueSearchResultsOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-SearchIssues/" title="primitive SearchIssues" class="md-nav__link">
+      primitive SearchIssues
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-SearchResults/" title="class SearchResults" class="md-nav__link">
+      class SearchResults
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueSearchResultsJsonConverter/" title="primitive IssueSearchResultsJsonConverter" class="md-nav__link">
+      primitive IssueSearchResultsJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Repository/" title="class Repository" class="md-nav__link">
+      class Repository
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetRepository/" title="primitive GetRepository" class="md-nav__link">
+      primitive GetRepository
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetRepositoryLabels/" title="primitive GetRepositoryLabels" class="md-nav__link">
+      primitive GetRepositoryLabels
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-RepositoryJsonConverter/" title="primitive RepositoryJsonConverter" class="md-nav__link">
+      primitive RepositoryJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-ReleaseOrError/" title="type ReleaseOrError" class="md-nav__link">
+      type ReleaseOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Release/" title="class Release" class="md-nav__link">
+      class Release
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CreateRelease/" title="primitive CreateRelease" class="md-nav__link">
+      primitive CreateRelease
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-ReleaseJsonConverter/" title="primitive ReleaseJsonConverter" class="md-nav__link">
+      primitive ReleaseJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFiles/" title="type PullRequestFiles" class="md-nav__link">
+      type PullRequestFiles
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFilesOrError/" title="type PullRequestFilesOrError" class="md-nav__link">
+      type PullRequestFilesOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFile/" title="class PullRequestFile" class="md-nav__link">
+      class PullRequestFile
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetPullRequestFiles/" title="primitive GetPullRequestFiles" class="md-nav__link">
+      primitive GetPullRequestFiles
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFilesJsonConverter/" title="primitive PullRequestFilesJsonConverter" class="md-nav__link">
+      primitive PullRequestFilesJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestBase/" title="class PullRequestBase" class="md-nav__link">
+      class PullRequestBase
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestBaseJsonConverter/" title="primitive PullRequestBaseJsonConverter" class="md-nav__link">
+      primitive PullRequestBaseJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestOrError/" title="type PullRequestOrError" class="md-nav__link">
+      type PullRequestOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequest/" title="class PullRequest" class="md-nav__link">
+      class PullRequest
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetPullRequest/" title="primitive GetPullRequest" class="md-nav__link">
+      primitive GetPullRequest
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestJsonConverter/" title="primitive PullRequestJsonConverter" class="md-nav__link">
+      primitive PullRequestJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedList/" title="class PaginatedList" class="md-nav__link">
+      class PaginatedList
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedListJsonConverter/" title="class PaginatedListJsonConverter" class="md-nav__link">
+      class PaginatedListJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedResultReceiver/" title="actor PaginatedResultReceiver" class="md-nav__link">
+      actor PaginatedResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedJsonRequester/" title="class PaginatedJsonRequester" class="md-nav__link">
+      class PaginatedJsonRequester
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedJsonRequesterHandlerFactory/" title="class PaginatedJsonRequesterHandlerFactory" class="md-nav__link">
+      class PaginatedJsonRequesterHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedJsonRequesterHandler/" title="class PaginatedJsonRequesterHandler" class="md-nav__link">
+      class PaginatedJsonRequesterHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-License/" title="class License" class="md-nav__link">
+      class License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-LicenseJsonConverter/" title="primitive LicenseJsonConverter" class="md-nav__link">
+      primitive LicenseJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-LabelOrError/" title="type LabelOrError" class="md-nav__link">
+      type LabelOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Label/" title="class Label" class="md-nav__link">
+      class Label
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        primitive CreateLabel
+      </label>
+    
+    <a href="./" title="primitive CreateLabel" class="md-nav__link md-nav__link--active">
+      primitive CreateLabel
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        
+          <li class="md-nav__item">
+    <a href="#constructors" title="Constructors" class="md-nav__link">
+    Constructors
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#create" title="create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#public-functions" title="Public Functions" class="md-nav__link">
+    Public Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#apply" title="apply" class="md-nav__link">
+    apply
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#by_url" title="by_url" class="md-nav__link">
+    by_url
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#eq" title="eq" class="md-nav__link">
+    eq
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#ne" title="ne" class="md-nav__link">
+    ne
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-DeleteLabel/" title="primitive DeleteLabel" class="md-nav__link">
+      primitive DeleteLabel
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-LabelJsonConverter/" title="primitive LabelJsonConverter" class="md-nav__link">
+      primitive LabelJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentOrError/" title="type IssueCommentOrError" class="md-nav__link">
+      type IssueCommentOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueComments/" title="type IssueComments" class="md-nav__link">
+      type IssueComments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentsOrError/" title="type IssueCommentsOrError" class="md-nav__link">
+      type IssueCommentsOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueComment/" title="class IssueComment" class="md-nav__link">
+      class IssueComment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CreateIssueComment/" title="primitive CreateIssueComment" class="md-nav__link">
+      primitive CreateIssueComment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetIssueComments/" title="primitive GetIssueComments" class="md-nav__link">
+      primitive GetIssueComments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentsURL/" title="primitive IssueCommentsURL" class="md-nav__link">
+      primitive IssueCommentsURL
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentJsonConverter/" title="primitive IssueCommentJsonConverter" class="md-nav__link">
+      primitive IssueCommentJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentsJsonConverter/" title="primitive IssueCommentsJsonConverter" class="md-nav__link">
+      primitive IssueCommentsJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueOrError/" title="type IssueOrError" class="md-nav__link">
+      type IssueOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Issue/" title="class Issue" class="md-nav__link">
+      class Issue
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetIssue/" title="primitive GetIssue" class="md-nav__link">
+      primitive GetIssue
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueJsonConverter/" title="primitive IssueJsonConverter" class="md-nav__link">
+      primitive IssueJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-RepositoryOrError/" title="type RepositoryOrError" class="md-nav__link">
+      type RepositoryOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitHub/" title="class GitHub" class="md-nav__link">
+      class GitHub
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitPerson/" title="class GitPerson" class="md-nav__link">
+      class GitPerson
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitPersonJsonConverter/" title="primitive GitPersonJsonConverter" class="md-nav__link">
+      primitive GitPersonJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitCommit/" title="class GitCommit" class="md-nav__link">
+      class GitCommit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitCommitJsonConverter/" title="primitive GitCommitJsonConverter" class="md-nav__link">
+      primitive GitCommitJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitFile/" title="class CommitFile" class="md-nav__link">
+      class CommitFile
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitFileJsonConverter/" title="primitive CommitFileJsonConverter" class="md-nav__link">
+      primitive CommitFileJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitOrError/" title="type CommitOrError" class="md-nav__link">
+      type CommitOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Commit/" title="class Commit" class="md-nav__link">
+      class Commit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetCommit/" title="primitive GetCommit" class="md-nav__link">
+      primitive GetCommit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitJsonConverter/" title="primitive CommitJsonConverter" class="md-nav__link">
+      primitive CommitJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Asset/" title="class Asset" class="md-nav__link">
+      class Asset
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-AssetJsonConverter/" title="primitive AssetJsonConverter" class="md-nav__link">
+      primitive AssetJsonConverter
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      package github_rest_api/pagination_link_parser
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        package github_rest_api/pagination_link_parser
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-Unreachable/" title="primitive Unreachable" class="md-nav__link">
+      primitive Unreachable
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-ExtractPaginationLinks/" title="primitive ExtractPaginationLinks" class="md-nav__link">
+      primitive ExtractPaginationLinks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-PaginationLinks/" title="class PaginationLinks" class="md-nav__link">
+      class PaginationLinks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-ParseError/" title="class ParseError" class="md-nav__link">
+      class ParseError
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      package github_rest_api/request
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        package github_rest_api/request
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-RequestError/" title="class RequestError" class="md-nav__link">
+      class RequestError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonConverter/" title="interface JsonConverter" class="md-nav__link">
+      interface JsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonExtractor/" title="class JsonExtractor" class="md-nav__link">
+      class JsonExtractor
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-PostResultReceiver/" title="interface PostResultReceiver" class="md-nav__link">
+      interface PostResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPPost/" title="class HTTPPost" class="md-nav__link">
+      class HTTPPost
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPPostHandlerFactory/" title="class HTTPPostHandlerFactory" class="md-nav__link">
+      class HTTPPostHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPPostHandler/" title="class HTTPPostHandler" class="md-nav__link">
+      class HTTPPostHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequester/" title="class JsonRequester" class="md-nav__link">
+      class JsonRequester
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequesterResultReceiver/" title="interface JsonRequesterResultReceiver" class="md-nav__link">
+      interface JsonRequesterResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequesterHandlerFactory/" title="class JsonRequesterHandlerFactory" class="md-nav__link">
+      class JsonRequesterHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequesterHandler/" title="class JsonRequesterHandler" class="md-nav__link">
+      class JsonRequesterHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-DeleteResultReceiver/" title="interface DeleteResultReceiver" class="md-nav__link">
+      interface DeleteResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPDelete/" title="class HTTPDelete" class="md-nav__link">
+      class HTTPDelete
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPDeleteHandlerFactory/" title="class HTTPDeleteHandlerFactory" class="md-nav__link">
+      class HTTPDeleteHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPDeleteHandler/" title="class HTTPDeleteHandler" class="md-nav__link">
+      class HTTPDeleteHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-DeletedOrError/" title="type DeletedOrError" class="md-nav__link">
+      type DeletedOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-DeletedResultReceiver/" title="actor DeletedResultReceiver" class="md-nav__link">
+      actor DeletedResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-Deleted/" title="primitive Deleted" class="md-nav__link">
+      primitive Deleted
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-Credentials/" title="class Credentials" class="md-nav__link">
+      class Credentials
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-ResultReceiver/" title="actor ResultReceiver" class="md-nav__link">
+      actor ResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-RequestFactory/" title="primitive RequestFactory" class="md-nav__link">
+      primitive RequestFactory
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      package github_rest_api/simple_uri_template
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        package github_rest_api/simple_uri_template
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-Unreachable/" title="primitive Unreachable" class="md-nav__link">
+      primitive Unreachable
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-URITemplateValue/" title="type URITemplateValue" class="md-nav__link">
+      type URITemplateValue
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-URITemplateValues/" title="type URITemplateValues" class="md-nav__link">
+      type URITemplateValues
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-SimpleURITemplate/" title="primitive SimpleURITemplate" class="md-nav__link">
+      primitive SimpleURITemplate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-ParseError/" title="class ParseError" class="md-nav__link">
+      class ParseError
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        
+          <li class="md-nav__item">
+    <a href="#constructors" title="Constructors" class="md-nav__link">
+    Constructors
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#create" title="create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#public-functions" title="Public Functions" class="md-nav__link">
+    Public Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#apply" title="apply" class="md-nav__link">
+    apply
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#by_url" title="by_url" class="md-nav__link">
+    by_url
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#eq" title="eq" class="md-nav__link">
+    eq
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#ne" title="ne" class="md-nav__link">
+    ne
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="createlabel">CreateLabel<a class="headerlink" href="#createlabel" title="Permanent link">&para;</a></h1>
+<p><span class="source-link"><a href="../src/github_rest_api/label/#L37">[Source]</a></span></p>
+<pre><code class="language-pony">primitive val CreateLabel
+</code></pre>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
+<h3 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/label/#L37">[Source]</a></span></p>
+<pre><code class="language-pony">new val create()
+: CreateLabel val^
+</code></pre>
+<h4 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="./">CreateLabel</a> val^</li>
+</ul>
+<hr />
+<h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
+<h3 id="apply">apply<a class="headerlink" href="#apply" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/label/#L38">[Source]</a></span></p>
+<pre><code class="language-pony">fun box apply(
+  owner: String val,
+  repo: String val,
+  name: String val,
+  creds: Credentials val,
+  color: (String val | None val) = reference,
+  description: (String val | None val) = reference)
+: Promise[(Label val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<ul>
+<li>owner: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>repo: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>creds: <a href="../github_rest_api-request-Credentials/">Credentials</a> val</li>
+<li>color: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val) = reference</li>
+<li>description: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val) = reference</li>
+</ul>
+<h4 id="returns_1">Returns<a class="headerlink" href="#returns_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-Label/">Label</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+<h3 id="by_url">by_url<a class="headerlink" href="#by_url" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/label/#L61">[Source]</a></span></p>
+<pre><code class="language-pony">fun box by_url(
+  url: String val,
+  name: String val,
+  creds: Credentials val,
+  color: (String val | None val) = reference,
+  description: (String val | None val) = reference)
+: Promise[(Label val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>creds: <a href="../github_rest_api-request-Credentials/">Credentials</a> val</li>
+<li>color: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val) = reference</li>
+<li>description: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val) = reference</li>
+</ul>
+<h4 id="returns_2">Returns<a class="headerlink" href="#returns_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-Label/">Label</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+<h3 id="eq">eq<a class="headerlink" href="#eq" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/label/#L38">[Source]</a></span></p>
+<pre><code class="language-pony">fun box eq(
+  that: CreateLabel val)
+: Bool val
+</code></pre>
+<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li>that: <a href="./">CreateLabel</a> val</li>
+</ul>
+<h4 id="returns_3">Returns<a class="headerlink" href="#returns_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+</ul>
+<hr />
+<h3 id="ne">ne<a class="headerlink" href="#ne" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/label/#L38">[Source]</a></span></p>
+<pre><code class="language-pony">fun box ne(
+  that: CreateLabel val)
+: Bool val
+</code></pre>
+<h4 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li>that: <a href="./">CreateLabel</a> val</li>
+</ul>
+<h4 id="returns_4">Returns<a class="headerlink" href="#returns_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+</ul>
+<hr />
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../github_rest_api-Label/" title="class Label" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                class Label
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../github_rest_api-DeleteLabel/" title="primitive DeleteLabel" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                primitive DeleteLabel
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+    <script src="../assets/javascripts/application.cb37bb38.js"></script>
+      
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>

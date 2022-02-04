@@ -1,0 +1,3637 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="https://ponylang.github.io/github_rest_api/github_rest_api-Repository/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
+    
+    
+      
+        <title>class Repository - github_rest_api</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.b80b25f7.css">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.0b5df86e.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#repository" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+          <a href="https://ponylang.github.io/github_rest_api/" title="github_rest_api" class="md-header-nav__button md-logo">
+          
+            <img src="../assets/images/logo.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                github_rest_api
+              </span>
+              <span class="md-header-nav__topic">
+                class Repository
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <span class="md-nav__button md-logo">
+      
+        <img src="../assets/images/logo.png" width="48" height="48">
+      
+    </span>
+    github_rest_api
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="github_rest_api" class="md-nav__link">
+      github_rest_api
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      package github_rest_api
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        package github_rest_api
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-User/" title="class User" class="md-nav__link">
+      class User
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-UserJsonConverter/" title="primitive UserJsonConverter" class="md-nav__link">
+      primitive UserJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueSearchResultsOrError/" title="type IssueSearchResultsOrError" class="md-nav__link">
+      type IssueSearchResultsOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-SearchIssues/" title="primitive SearchIssues" class="md-nav__link">
+      primitive SearchIssues
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-SearchResults/" title="class SearchResults" class="md-nav__link">
+      class SearchResults
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueSearchResultsJsonConverter/" title="primitive IssueSearchResultsJsonConverter" class="md-nav__link">
+      primitive IssueSearchResultsJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        class Repository
+      </label>
+    
+    <a href="./" title="class Repository" class="md-nav__link md-nav__link--active">
+      class Repository
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        
+          <li class="md-nav__item">
+    <a href="#constructors" title="Constructors" class="md-nav__link">
+    Constructors
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#create" title="create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#public-fields" title="Public fields" class="md-nav__link">
+    Public fields
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-id-i64-val" title="let id: I64 val" class="md-nav__link">
+    let id: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-node_id-string-val" title="let node_id: String val" class="md-nav__link">
+    let node_id: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-name-string-val" title="let name: String val" class="md-nav__link">
+    let name: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-full_name-string-val" title="let full_name: String val" class="md-nav__link">
+    let full_name: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-description-string-val" title="let description: String val" class="md-nav__link">
+    let description: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-owner-user-val" title="let owner: User val" class="md-nav__link">
+    let owner: User val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-private-bool-val" title="let private: Bool val" class="md-nav__link">
+    let private: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-fork-bool-val" title="let fork: Bool val" class="md-nav__link">
+    let fork: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-created_at-string-val" title="let created_at: String val" class="md-nav__link">
+    let created_at: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-pushed_at-string-val" title="let pushed_at: String val" class="md-nav__link">
+    let pushed_at: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-updated_at-string-val" title="let updated_at: String val" class="md-nav__link">
+    let updated_at: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-homepage-string-val" title="let homepage: String val" class="md-nav__link">
+    let homepage: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-default_branch-string-val" title="let default_branch: String val" class="md-nav__link">
+    let default_branch: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-organization-user-val-none-val" title="let organization: (User val | None val)" class="md-nav__link">
+    let organization: (User val | None val)
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-size-i64-val" title="let size: I64 val" class="md-nav__link">
+    let size: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-forks-i64-val" title="let forks: I64 val" class="md-nav__link">
+    let forks: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-forks_count-i64-val" title="let forks_count: I64 val" class="md-nav__link">
+    let forks_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-network_count-i64-val" title="let network_count: I64 val" class="md-nav__link">
+    let network_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-open_issues-i64-val" title="let open_issues: I64 val" class="md-nav__link">
+    let open_issues: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-open_issues_count-i64-val" title="let open_issues_count: I64 val" class="md-nav__link">
+    let open_issues_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-stargazers_count-i64-val" title="let stargazers_count: I64 val" class="md-nav__link">
+    let stargazers_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-subscribers_count-i64-val" title="let subscribers_count: I64 val" class="md-nav__link">
+    let subscribers_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-watchers-i64-val" title="let watchers: I64 val" class="md-nav__link">
+    let watchers: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-watchers_count-i64-val" title="let watchers_count: I64 val" class="md-nav__link">
+    let watchers_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-language-string-val" title="let language: String val" class="md-nav__link">
+    let language: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-license-license-val-none-val" title="let license: (License val | None val)" class="md-nav__link">
+    let license: (License val | None val)
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-archived-bool-val" title="let archived: Bool val" class="md-nav__link">
+    let archived: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-disabled-bool-val" title="let disabled: Bool val" class="md-nav__link">
+    let disabled: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_downloads-bool-val" title="let has_downloads: Bool val" class="md-nav__link">
+    let has_downloads: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_issues-bool-val" title="let has_issues: Bool val" class="md-nav__link">
+    let has_issues: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_pages-bool-val" title="let has_pages: Bool val" class="md-nav__link">
+    let has_pages: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_projects-bool-val" title="let has_projects: Bool val" class="md-nav__link">
+    let has_projects: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_wiki-bool-val" title="let has_wiki: Bool val" class="md-nav__link">
+    let has_wiki: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-url-string-val" title="let url: String val" class="md-nav__link">
+    let url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-html_url-string-val" title="let html_url: String val" class="md-nav__link">
+    let html_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-archive_url-string-val" title="let archive_url: String val" class="md-nav__link">
+    let archive_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-assignees_url-string-val" title="let assignees_url: String val" class="md-nav__link">
+    let assignees_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-blobs_url-string-val" title="let blobs_url: String val" class="md-nav__link">
+    let blobs_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-branches_url-string-val" title="let branches_url: String val" class="md-nav__link">
+    let branches_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-comments_url-string-val" title="let comments_url: String val" class="md-nav__link">
+    let comments_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-commits_url-string-val" title="let commits_url: String val" class="md-nav__link">
+    let commits_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-compare_url-string-val" title="let compare_url: String val" class="md-nav__link">
+    let compare_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-contents_url-string-val" title="let contents_url: String val" class="md-nav__link">
+    let contents_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-contributors_url-string-val" title="let contributors_url: String val" class="md-nav__link">
+    let contributors_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-deployments_url-string-val" title="let deployments_url: String val" class="md-nav__link">
+    let deployments_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-downloads_url-string-val" title="let downloads_url: String val" class="md-nav__link">
+    let downloads_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-events_url-string-val" title="let events_url: String val" class="md-nav__link">
+    let events_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-forks_url-string-val" title="let forks_url: String val" class="md-nav__link">
+    let forks_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_commits_url-string-val" title="let git_commits_url: String val" class="md-nav__link">
+    let git_commits_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_refs_url-string-val" title="let git_refs_url: String val" class="md-nav__link">
+    let git_refs_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_tags_url-string-val" title="let git_tags_url: String val" class="md-nav__link">
+    let git_tags_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-issue_comment_url-string-val" title="let issue_comment_url: String val" class="md-nav__link">
+    let issue_comment_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-issue_events_url-string-val" title="let issue_events_url: String val" class="md-nav__link">
+    let issue_events_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-issues_url-string-val" title="let issues_url: String val" class="md-nav__link">
+    let issues_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-keys_url-string-val" title="let keys_url: String val" class="md-nav__link">
+    let keys_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-labels_url-string-val" title="let labels_url: String val" class="md-nav__link">
+    let labels_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-languages_url-string-val" title="let languages_url: String val" class="md-nav__link">
+    let languages_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-merges_url-string-val" title="let merges_url: String val" class="md-nav__link">
+    let merges_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-milestones_url-string-val" title="let milestones_url: String val" class="md-nav__link">
+    let milestones_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-notifications_url-string-val" title="let notifications_url: String val" class="md-nav__link">
+    let notifications_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-pulls_url-string-val" title="let pulls_url: String val" class="md-nav__link">
+    let pulls_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-releases_url-string-val" title="let releases_url: String val" class="md-nav__link">
+    let releases_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-stargazers_url-string-val" title="let stargazers_url: String val" class="md-nav__link">
+    let stargazers_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-statuses_url-string-val" title="let statuses_url: String val" class="md-nav__link">
+    let statuses_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-subscribers_url-string-val" title="let subscribers_url: String val" class="md-nav__link">
+    let subscribers_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-subscription_url-string-val" title="let subscription_url: String val" class="md-nav__link">
+    let subscription_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-tags_url-string-val" title="let tags_url: String val" class="md-nav__link">
+    let tags_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-trees_url-string-val" title="let trees_url: String val" class="md-nav__link">
+    let trees_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-clone_url-string-val" title="let clone_url: String val" class="md-nav__link">
+    let clone_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_url-string-val" title="let git_url: String val" class="md-nav__link">
+    let git_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-mirror_url-string-val-none-val" title="let mirror_url: (String val | None val)" class="md-nav__link">
+    let mirror_url: (String val | None val)
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-ssh_url-string-val" title="let ssh_url: String val" class="md-nav__link">
+    let ssh_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-svn_url-string-val" title="let svn_url: String val" class="md-nav__link">
+    let svn_url: String val
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#public-functions" title="Public Functions" class="md-nav__link">
+    Public Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#create_label" title="create_label" class="md-nav__link">
+    create_label
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#create_release" title="create_release" class="md-nav__link">
+    create_release
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#delete_label" title="delete_label" class="md-nav__link">
+    delete_label
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#get_commit" title="get_commit" class="md-nav__link">
+    get_commit
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#get_issue" title="get_issue" class="md-nav__link">
+    get_issue
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#get_pull_request" title="get_pull_request" class="md-nav__link">
+    get_pull_request
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetRepository/" title="primitive GetRepository" class="md-nav__link">
+      primitive GetRepository
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetRepositoryLabels/" title="primitive GetRepositoryLabels" class="md-nav__link">
+      primitive GetRepositoryLabels
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-RepositoryJsonConverter/" title="primitive RepositoryJsonConverter" class="md-nav__link">
+      primitive RepositoryJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-ReleaseOrError/" title="type ReleaseOrError" class="md-nav__link">
+      type ReleaseOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Release/" title="class Release" class="md-nav__link">
+      class Release
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CreateRelease/" title="primitive CreateRelease" class="md-nav__link">
+      primitive CreateRelease
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-ReleaseJsonConverter/" title="primitive ReleaseJsonConverter" class="md-nav__link">
+      primitive ReleaseJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFiles/" title="type PullRequestFiles" class="md-nav__link">
+      type PullRequestFiles
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFilesOrError/" title="type PullRequestFilesOrError" class="md-nav__link">
+      type PullRequestFilesOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFile/" title="class PullRequestFile" class="md-nav__link">
+      class PullRequestFile
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetPullRequestFiles/" title="primitive GetPullRequestFiles" class="md-nav__link">
+      primitive GetPullRequestFiles
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestFilesJsonConverter/" title="primitive PullRequestFilesJsonConverter" class="md-nav__link">
+      primitive PullRequestFilesJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestBase/" title="class PullRequestBase" class="md-nav__link">
+      class PullRequestBase
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestBaseJsonConverter/" title="primitive PullRequestBaseJsonConverter" class="md-nav__link">
+      primitive PullRequestBaseJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestOrError/" title="type PullRequestOrError" class="md-nav__link">
+      type PullRequestOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequest/" title="class PullRequest" class="md-nav__link">
+      class PullRequest
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetPullRequest/" title="primitive GetPullRequest" class="md-nav__link">
+      primitive GetPullRequest
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PullRequestJsonConverter/" title="primitive PullRequestJsonConverter" class="md-nav__link">
+      primitive PullRequestJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedList/" title="class PaginatedList" class="md-nav__link">
+      class PaginatedList
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedListJsonConverter/" title="class PaginatedListJsonConverter" class="md-nav__link">
+      class PaginatedListJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedResultReceiver/" title="actor PaginatedResultReceiver" class="md-nav__link">
+      actor PaginatedResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedJsonRequester/" title="class PaginatedJsonRequester" class="md-nav__link">
+      class PaginatedJsonRequester
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedJsonRequesterHandlerFactory/" title="class PaginatedJsonRequesterHandlerFactory" class="md-nav__link">
+      class PaginatedJsonRequesterHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-PaginatedJsonRequesterHandler/" title="class PaginatedJsonRequesterHandler" class="md-nav__link">
+      class PaginatedJsonRequesterHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-License/" title="class License" class="md-nav__link">
+      class License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-LicenseJsonConverter/" title="primitive LicenseJsonConverter" class="md-nav__link">
+      primitive LicenseJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-LabelOrError/" title="type LabelOrError" class="md-nav__link">
+      type LabelOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Label/" title="class Label" class="md-nav__link">
+      class Label
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CreateLabel/" title="primitive CreateLabel" class="md-nav__link">
+      primitive CreateLabel
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-DeleteLabel/" title="primitive DeleteLabel" class="md-nav__link">
+      primitive DeleteLabel
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-LabelJsonConverter/" title="primitive LabelJsonConverter" class="md-nav__link">
+      primitive LabelJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentOrError/" title="type IssueCommentOrError" class="md-nav__link">
+      type IssueCommentOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueComments/" title="type IssueComments" class="md-nav__link">
+      type IssueComments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentsOrError/" title="type IssueCommentsOrError" class="md-nav__link">
+      type IssueCommentsOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueComment/" title="class IssueComment" class="md-nav__link">
+      class IssueComment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CreateIssueComment/" title="primitive CreateIssueComment" class="md-nav__link">
+      primitive CreateIssueComment
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetIssueComments/" title="primitive GetIssueComments" class="md-nav__link">
+      primitive GetIssueComments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentsURL/" title="primitive IssueCommentsURL" class="md-nav__link">
+      primitive IssueCommentsURL
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentJsonConverter/" title="primitive IssueCommentJsonConverter" class="md-nav__link">
+      primitive IssueCommentJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueCommentsJsonConverter/" title="primitive IssueCommentsJsonConverter" class="md-nav__link">
+      primitive IssueCommentsJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueOrError/" title="type IssueOrError" class="md-nav__link">
+      type IssueOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Issue/" title="class Issue" class="md-nav__link">
+      class Issue
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetIssue/" title="primitive GetIssue" class="md-nav__link">
+      primitive GetIssue
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-IssueJsonConverter/" title="primitive IssueJsonConverter" class="md-nav__link">
+      primitive IssueJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-RepositoryOrError/" title="type RepositoryOrError" class="md-nav__link">
+      type RepositoryOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitHub/" title="class GitHub" class="md-nav__link">
+      class GitHub
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitPerson/" title="class GitPerson" class="md-nav__link">
+      class GitPerson
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitPersonJsonConverter/" title="primitive GitPersonJsonConverter" class="md-nav__link">
+      primitive GitPersonJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitCommit/" title="class GitCommit" class="md-nav__link">
+      class GitCommit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GitCommitJsonConverter/" title="primitive GitCommitJsonConverter" class="md-nav__link">
+      primitive GitCommitJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitFile/" title="class CommitFile" class="md-nav__link">
+      class CommitFile
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitFileJsonConverter/" title="primitive CommitFileJsonConverter" class="md-nav__link">
+      primitive CommitFileJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitOrError/" title="type CommitOrError" class="md-nav__link">
+      type CommitOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Commit/" title="class Commit" class="md-nav__link">
+      class Commit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-GetCommit/" title="primitive GetCommit" class="md-nav__link">
+      primitive GetCommit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-CommitJsonConverter/" title="primitive CommitJsonConverter" class="md-nav__link">
+      primitive CommitJsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-Asset/" title="class Asset" class="md-nav__link">
+      class Asset
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-AssetJsonConverter/" title="primitive AssetJsonConverter" class="md-nav__link">
+      primitive AssetJsonConverter
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      package github_rest_api/pagination_link_parser
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        package github_rest_api/pagination_link_parser
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-Unreachable/" title="primitive Unreachable" class="md-nav__link">
+      primitive Unreachable
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-ExtractPaginationLinks/" title="primitive ExtractPaginationLinks" class="md-nav__link">
+      primitive ExtractPaginationLinks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-PaginationLinks/" title="class PaginationLinks" class="md-nav__link">
+      class PaginationLinks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-pagination_link_parser-ParseError/" title="class ParseError" class="md-nav__link">
+      class ParseError
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      package github_rest_api/request
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        package github_rest_api/request
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-RequestError/" title="class RequestError" class="md-nav__link">
+      class RequestError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonConverter/" title="interface JsonConverter" class="md-nav__link">
+      interface JsonConverter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonExtractor/" title="class JsonExtractor" class="md-nav__link">
+      class JsonExtractor
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-PostResultReceiver/" title="interface PostResultReceiver" class="md-nav__link">
+      interface PostResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPPost/" title="class HTTPPost" class="md-nav__link">
+      class HTTPPost
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPPostHandlerFactory/" title="class HTTPPostHandlerFactory" class="md-nav__link">
+      class HTTPPostHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPPostHandler/" title="class HTTPPostHandler" class="md-nav__link">
+      class HTTPPostHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequester/" title="class JsonRequester" class="md-nav__link">
+      class JsonRequester
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequesterResultReceiver/" title="interface JsonRequesterResultReceiver" class="md-nav__link">
+      interface JsonRequesterResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequesterHandlerFactory/" title="class JsonRequesterHandlerFactory" class="md-nav__link">
+      class JsonRequesterHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-JsonRequesterHandler/" title="class JsonRequesterHandler" class="md-nav__link">
+      class JsonRequesterHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-DeleteResultReceiver/" title="interface DeleteResultReceiver" class="md-nav__link">
+      interface DeleteResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPDelete/" title="class HTTPDelete" class="md-nav__link">
+      class HTTPDelete
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPDeleteHandlerFactory/" title="class HTTPDeleteHandlerFactory" class="md-nav__link">
+      class HTTPDeleteHandlerFactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-HTTPDeleteHandler/" title="class HTTPDeleteHandler" class="md-nav__link">
+      class HTTPDeleteHandler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-DeletedOrError/" title="type DeletedOrError" class="md-nav__link">
+      type DeletedOrError
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-DeletedResultReceiver/" title="actor DeletedResultReceiver" class="md-nav__link">
+      actor DeletedResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-Deleted/" title="primitive Deleted" class="md-nav__link">
+      primitive Deleted
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-Credentials/" title="class Credentials" class="md-nav__link">
+      class Credentials
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-ResultReceiver/" title="actor ResultReceiver" class="md-nav__link">
+      actor ResultReceiver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-request-RequestFactory/" title="primitive RequestFactory" class="md-nav__link">
+      primitive RequestFactory
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      package github_rest_api/simple_uri_template
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        package github_rest_api/simple_uri_template
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template--index/" title="Package" class="md-nav__link">
+      Package
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-Unreachable/" title="primitive Unreachable" class="md-nav__link">
+      primitive Unreachable
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-URITemplateValue/" title="type URITemplateValue" class="md-nav__link">
+      type URITemplateValue
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-URITemplateValues/" title="type URITemplateValues" class="md-nav__link">
+      type URITemplateValues
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-SimpleURITemplate/" title="primitive SimpleURITemplate" class="md-nav__link">
+      primitive SimpleURITemplate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../github_rest_api-simple_uri_template-ParseError/" title="class ParseError" class="md-nav__link">
+      class ParseError
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        
+          <li class="md-nav__item">
+    <a href="#constructors" title="Constructors" class="md-nav__link">
+    Constructors
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#create" title="create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#public-fields" title="Public fields" class="md-nav__link">
+    Public fields
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-id-i64-val" title="let id: I64 val" class="md-nav__link">
+    let id: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-node_id-string-val" title="let node_id: String val" class="md-nav__link">
+    let node_id: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-name-string-val" title="let name: String val" class="md-nav__link">
+    let name: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-full_name-string-val" title="let full_name: String val" class="md-nav__link">
+    let full_name: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-description-string-val" title="let description: String val" class="md-nav__link">
+    let description: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-owner-user-val" title="let owner: User val" class="md-nav__link">
+    let owner: User val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-private-bool-val" title="let private: Bool val" class="md-nav__link">
+    let private: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-fork-bool-val" title="let fork: Bool val" class="md-nav__link">
+    let fork: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-created_at-string-val" title="let created_at: String val" class="md-nav__link">
+    let created_at: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-pushed_at-string-val" title="let pushed_at: String val" class="md-nav__link">
+    let pushed_at: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-updated_at-string-val" title="let updated_at: String val" class="md-nav__link">
+    let updated_at: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-homepage-string-val" title="let homepage: String val" class="md-nav__link">
+    let homepage: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-default_branch-string-val" title="let default_branch: String val" class="md-nav__link">
+    let default_branch: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-organization-user-val-none-val" title="let organization: (User val | None val)" class="md-nav__link">
+    let organization: (User val | None val)
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-size-i64-val" title="let size: I64 val" class="md-nav__link">
+    let size: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-forks-i64-val" title="let forks: I64 val" class="md-nav__link">
+    let forks: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-forks_count-i64-val" title="let forks_count: I64 val" class="md-nav__link">
+    let forks_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-network_count-i64-val" title="let network_count: I64 val" class="md-nav__link">
+    let network_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-open_issues-i64-val" title="let open_issues: I64 val" class="md-nav__link">
+    let open_issues: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-open_issues_count-i64-val" title="let open_issues_count: I64 val" class="md-nav__link">
+    let open_issues_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-stargazers_count-i64-val" title="let stargazers_count: I64 val" class="md-nav__link">
+    let stargazers_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-subscribers_count-i64-val" title="let subscribers_count: I64 val" class="md-nav__link">
+    let subscribers_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-watchers-i64-val" title="let watchers: I64 val" class="md-nav__link">
+    let watchers: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-watchers_count-i64-val" title="let watchers_count: I64 val" class="md-nav__link">
+    let watchers_count: I64 val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-language-string-val" title="let language: String val" class="md-nav__link">
+    let language: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-license-license-val-none-val" title="let license: (License val | None val)" class="md-nav__link">
+    let license: (License val | None val)
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-archived-bool-val" title="let archived: Bool val" class="md-nav__link">
+    let archived: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-disabled-bool-val" title="let disabled: Bool val" class="md-nav__link">
+    let disabled: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_downloads-bool-val" title="let has_downloads: Bool val" class="md-nav__link">
+    let has_downloads: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_issues-bool-val" title="let has_issues: Bool val" class="md-nav__link">
+    let has_issues: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_pages-bool-val" title="let has_pages: Bool val" class="md-nav__link">
+    let has_pages: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_projects-bool-val" title="let has_projects: Bool val" class="md-nav__link">
+    let has_projects: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-has_wiki-bool-val" title="let has_wiki: Bool val" class="md-nav__link">
+    let has_wiki: Bool val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-url-string-val" title="let url: String val" class="md-nav__link">
+    let url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-html_url-string-val" title="let html_url: String val" class="md-nav__link">
+    let html_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-archive_url-string-val" title="let archive_url: String val" class="md-nav__link">
+    let archive_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-assignees_url-string-val" title="let assignees_url: String val" class="md-nav__link">
+    let assignees_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-blobs_url-string-val" title="let blobs_url: String val" class="md-nav__link">
+    let blobs_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-branches_url-string-val" title="let branches_url: String val" class="md-nav__link">
+    let branches_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-comments_url-string-val" title="let comments_url: String val" class="md-nav__link">
+    let comments_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-commits_url-string-val" title="let commits_url: String val" class="md-nav__link">
+    let commits_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-compare_url-string-val" title="let compare_url: String val" class="md-nav__link">
+    let compare_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-contents_url-string-val" title="let contents_url: String val" class="md-nav__link">
+    let contents_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-contributors_url-string-val" title="let contributors_url: String val" class="md-nav__link">
+    let contributors_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-deployments_url-string-val" title="let deployments_url: String val" class="md-nav__link">
+    let deployments_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-downloads_url-string-val" title="let downloads_url: String val" class="md-nav__link">
+    let downloads_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-events_url-string-val" title="let events_url: String val" class="md-nav__link">
+    let events_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-forks_url-string-val" title="let forks_url: String val" class="md-nav__link">
+    let forks_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_commits_url-string-val" title="let git_commits_url: String val" class="md-nav__link">
+    let git_commits_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_refs_url-string-val" title="let git_refs_url: String val" class="md-nav__link">
+    let git_refs_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_tags_url-string-val" title="let git_tags_url: String val" class="md-nav__link">
+    let git_tags_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-issue_comment_url-string-val" title="let issue_comment_url: String val" class="md-nav__link">
+    let issue_comment_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-issue_events_url-string-val" title="let issue_events_url: String val" class="md-nav__link">
+    let issue_events_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-issues_url-string-val" title="let issues_url: String val" class="md-nav__link">
+    let issues_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-keys_url-string-val" title="let keys_url: String val" class="md-nav__link">
+    let keys_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-labels_url-string-val" title="let labels_url: String val" class="md-nav__link">
+    let labels_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-languages_url-string-val" title="let languages_url: String val" class="md-nav__link">
+    let languages_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-merges_url-string-val" title="let merges_url: String val" class="md-nav__link">
+    let merges_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-milestones_url-string-val" title="let milestones_url: String val" class="md-nav__link">
+    let milestones_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-notifications_url-string-val" title="let notifications_url: String val" class="md-nav__link">
+    let notifications_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-pulls_url-string-val" title="let pulls_url: String val" class="md-nav__link">
+    let pulls_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-releases_url-string-val" title="let releases_url: String val" class="md-nav__link">
+    let releases_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-stargazers_url-string-val" title="let stargazers_url: String val" class="md-nav__link">
+    let stargazers_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-statuses_url-string-val" title="let statuses_url: String val" class="md-nav__link">
+    let statuses_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-subscribers_url-string-val" title="let subscribers_url: String val" class="md-nav__link">
+    let subscribers_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-subscription_url-string-val" title="let subscription_url: String val" class="md-nav__link">
+    let subscription_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-tags_url-string-val" title="let tags_url: String val" class="md-nav__link">
+    let tags_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-trees_url-string-val" title="let trees_url: String val" class="md-nav__link">
+    let trees_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-clone_url-string-val" title="let clone_url: String val" class="md-nav__link">
+    let clone_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-git_url-string-val" title="let git_url: String val" class="md-nav__link">
+    let git_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-mirror_url-string-val-none-val" title="let mirror_url: (String val | None val)" class="md-nav__link">
+    let mirror_url: (String val | None val)
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-ssh_url-string-val" title="let ssh_url: String val" class="md-nav__link">
+    let ssh_url: String val
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#let-svn_url-string-val" title="let svn_url: String val" class="md-nav__link">
+    let svn_url: String val
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#public-functions" title="Public Functions" class="md-nav__link">
+    Public Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#create_label" title="create_label" class="md-nav__link">
+    create_label
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#create_release" title="create_release" class="md-nav__link">
+    create_release
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#delete_label" title="delete_label" class="md-nav__link">
+    delete_label
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#get_commit" title="get_commit" class="md-nav__link">
+    get_commit
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#get_issue" title="get_issue" class="md-nav__link">
+    get_issue
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#get_pull_request" title="get_pull_request" class="md-nav__link">
+    get_pull_request
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="repository">Repository<a class="headerlink" href="#repository" title="Permanent link">&para;</a></h1>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L7">[Source]</a></span></p>
+<pre><code class="language-pony">class val Repository
+</code></pre>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
+<h3 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L92">[Source]</a></span></p>
+<pre><code class="language-pony">new val create(
+  creds: Credentials val,
+  id': I64 val,
+  node_id': String val,
+  name': String val,
+  full_name': String val,
+  description': String val,
+  owner': User val,
+  private': Bool val,
+  fork': Bool val,
+  created_at': String val,
+  pushed_at': String val,
+  updated_at': String val,
+  homepage': String val,
+  default_branch': String val,
+  organization': (User val | None val),
+  size': I64 val,
+  forks': I64 val,
+  forks_count': I64 val,
+  network_count': I64 val,
+  open_issues': I64 val,
+  open_issues_count': I64 val,
+  stargazers_count': I64 val,
+  subscribers_count': I64 val,
+  watchers': I64 val,
+  watchers_count': I64 val,
+  language': String val,
+  license': (License val | None val),
+  archived': Bool val,
+  disabled': Bool val,
+  has_downloads': Bool val,
+  has_issues': Bool val,
+  has_pages': Bool val,
+  has_projects': Bool val,
+  has_wiki': Bool val,
+  url': String val,
+  html_url': String val,
+  archive_url': String val,
+  assignees_url': String val,
+  blobs_url': String val,
+  branches_url': String val,
+  comments_url': String val,
+  commits_url': String val,
+  compare_url': String val,
+  contents_url': String val,
+  contributors_url': String val,
+  deployments_url': String val,
+  downloads_url': String val,
+  events_url': String val,
+  forks_url': String val,
+  git_commits_url': String val,
+  git_refs_url': String val,
+  git_tags_url': String val,
+  issue_comment_url': String val,
+  issue_events_url': String val,
+  issues_url': String val,
+  keys_url': String val,
+  labels_url': String val,
+  languages_url': String val,
+  merges_url': String val,
+  milestones_url': String val,
+  notifications_url': String val,
+  pulls_url': String val,
+  releases_url': String val,
+  stargazers_url': String val,
+  statuses_url': String val,
+  subscribers_url': String val,
+  subscription_url': String val,
+  tags_url': String val,
+  trees_url': String val,
+  clone_url': String val,
+  git_url': String val,
+  mirror_url': (String val | None val),
+  ssh_url': String val,
+  svn_url': String val)
+: Repository val^
+</code></pre>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<ul>
+<li>creds: <a href="../github_rest_api-request-Credentials/">Credentials</a> val</li>
+<li>id': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>node_id': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>name': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>full_name': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>description': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>owner': <a href="../github_rest_api-User/">User</a> val</li>
+<li>private': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>fork': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>created_at': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>pushed_at': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>updated_at': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>homepage': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>default_branch': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>organization': (<a href="../github_rest_api-User/">User</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val)</li>
+<li>size': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>forks': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>forks_count': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>network_count': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>open_issues': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>open_issues_count': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>stargazers_count': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>subscribers_count': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>watchers': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>watchers_count': <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+<li>language': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>license': (<a href="../github_rest_api-License/">License</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val)</li>
+<li>archived': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>disabled': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>has_downloads': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>has_issues': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>has_pages': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>has_projects': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>has_wiki': <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val</li>
+<li>url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>html_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>archive_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>assignees_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>blobs_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>branches_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>comments_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>commits_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>compare_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>contents_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>contributors_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>deployments_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>downloads_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>events_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>forks_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>git_commits_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>git_refs_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>git_tags_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>issue_comment_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>issue_events_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>issues_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>keys_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>labels_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>languages_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>merges_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>milestones_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>notifications_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>pulls_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>releases_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>stargazers_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>statuses_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>subscribers_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>subscription_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>tags_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>trees_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>clone_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>git_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>mirror_url': (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val)</li>
+<li>ssh_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>svn_url': <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+</ul>
+<h4 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="./">Repository</a> val^</li>
+</ul>
+<hr />
+<h2 id="public-fields">Public fields<a class="headerlink" href="#public-fields" title="Permanent link">&para;</a></h2>
+<h3 id="let-id-i64-val">let id: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-id-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L9">[Source]</a></span></p>
+<hr />
+<h3 id="let-node_id-string-val">let node_id: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-node_id-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L10">[Source]</a></span></p>
+<hr />
+<h3 id="let-name-string-val">let name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-name-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L11">[Source]</a></span></p>
+<hr />
+<h3 id="let-full_name-string-val">let full_name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-full_name-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L12">[Source]</a></span></p>
+<hr />
+<h3 id="let-description-string-val">let description: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-description-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L13">[Source]</a></span></p>
+<hr />
+<h3 id="let-owner-user-val">let owner: <a href="../github_rest_api-User/">User</a> val<a class="headerlink" href="#let-owner-user-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L14">[Source]</a></span></p>
+<hr />
+<h3 id="let-private-bool-val">let private: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-private-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L15">[Source]</a></span></p>
+<hr />
+<h3 id="let-fork-bool-val">let fork: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-fork-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L16">[Source]</a></span></p>
+<hr />
+<h3 id="let-created_at-string-val">let created_at: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-created_at-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L18">[Source]</a></span></p>
+<hr />
+<h3 id="let-pushed_at-string-val">let pushed_at: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-pushed_at-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L19">[Source]</a></span></p>
+<hr />
+<h3 id="let-updated_at-string-val">let updated_at: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-updated_at-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L20">[Source]</a></span></p>
+<hr />
+<h3 id="let-homepage-string-val">let homepage: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-homepage-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L22">[Source]</a></span></p>
+<hr />
+<h3 id="let-default_branch-string-val">let default_branch: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-default_branch-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L23">[Source]</a></span></p>
+<hr />
+<h3 id="let-organization-user-val-none-val">let organization: (<a href="../github_rest_api-User/">User</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val)<a class="headerlink" href="#let-organization-user-val-none-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L24">[Source]</a></span></p>
+<hr />
+<h3 id="let-size-i64-val">let size: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-size-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L26">[Source]</a></span></p>
+<hr />
+<h3 id="let-forks-i64-val">let forks: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-forks-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L27">[Source]</a></span></p>
+<hr />
+<h3 id="let-forks_count-i64-val">let forks_count: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-forks_count-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L28">[Source]</a></span></p>
+<hr />
+<h3 id="let-network_count-i64-val">let network_count: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-network_count-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L29">[Source]</a></span></p>
+<hr />
+<h3 id="let-open_issues-i64-val">let open_issues: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-open_issues-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L30">[Source]</a></span></p>
+<hr />
+<h3 id="let-open_issues_count-i64-val">let open_issues_count: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-open_issues_count-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L31">[Source]</a></span></p>
+<hr />
+<h3 id="let-stargazers_count-i64-val">let stargazers_count: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-stargazers_count-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L32">[Source]</a></span></p>
+<hr />
+<h3 id="let-subscribers_count-i64-val">let subscribers_count: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-subscribers_count-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L33">[Source]</a></span></p>
+<hr />
+<h3 id="let-watchers-i64-val">let watchers: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-watchers-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L34">[Source]</a></span></p>
+<hr />
+<h3 id="let-watchers_count-i64-val">let watchers_count: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val<a class="headerlink" href="#let-watchers_count-i64-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L35">[Source]</a></span></p>
+<hr />
+<h3 id="let-language-string-val">let language: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-language-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L37">[Source]</a></span></p>
+<hr />
+<h3 id="let-license-license-val-none-val">let license: (<a href="../github_rest_api-License/">License</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val)<a class="headerlink" href="#let-license-license-val-none-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L38">[Source]</a></span></p>
+<hr />
+<h3 id="let-archived-bool-val">let archived: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-archived-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L40">[Source]</a></span></p>
+<hr />
+<h3 id="let-disabled-bool-val">let disabled: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-disabled-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L41">[Source]</a></span></p>
+<hr />
+<h3 id="let-has_downloads-bool-val">let has_downloads: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-has_downloads-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L43">[Source]</a></span></p>
+<hr />
+<h3 id="let-has_issues-bool-val">let has_issues: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-has_issues-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L44">[Source]</a></span></p>
+<hr />
+<h3 id="let-has_pages-bool-val">let has_pages: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-has_pages-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L45">[Source]</a></span></p>
+<hr />
+<h3 id="let-has_projects-bool-val">let has_projects: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-has_projects-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L46">[Source]</a></span></p>
+<hr />
+<h3 id="let-has_wiki-bool-val">let has_wiki: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val<a class="headerlink" href="#let-has_wiki-bool-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L47">[Source]</a></span></p>
+<hr />
+<h3 id="let-url-string-val">let url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L49">[Source]</a></span></p>
+<hr />
+<h3 id="let-html_url-string-val">let html_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-html_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L50">[Source]</a></span></p>
+<hr />
+<h3 id="let-archive_url-string-val">let archive_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-archive_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L51">[Source]</a></span></p>
+<hr />
+<h3 id="let-assignees_url-string-val">let assignees_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-assignees_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L52">[Source]</a></span></p>
+<hr />
+<h3 id="let-blobs_url-string-val">let blobs_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-blobs_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L53">[Source]</a></span></p>
+<hr />
+<h3 id="let-branches_url-string-val">let branches_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-branches_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L54">[Source]</a></span></p>
+<hr />
+<h3 id="let-comments_url-string-val">let comments_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-comments_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L55">[Source]</a></span></p>
+<hr />
+<h3 id="let-commits_url-string-val">let commits_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-commits_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L56">[Source]</a></span></p>
+<hr />
+<h3 id="let-compare_url-string-val">let compare_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-compare_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L57">[Source]</a></span></p>
+<hr />
+<h3 id="let-contents_url-string-val">let contents_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-contents_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L58">[Source]</a></span></p>
+<hr />
+<h3 id="let-contributors_url-string-val">let contributors_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-contributors_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L59">[Source]</a></span></p>
+<hr />
+<h3 id="let-deployments_url-string-val">let deployments_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-deployments_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L60">[Source]</a></span></p>
+<hr />
+<h3 id="let-downloads_url-string-val">let downloads_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-downloads_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L61">[Source]</a></span></p>
+<hr />
+<h3 id="let-events_url-string-val">let events_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-events_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L62">[Source]</a></span></p>
+<hr />
+<h3 id="let-forks_url-string-val">let forks_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-forks_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L63">[Source]</a></span></p>
+<hr />
+<h3 id="let-git_commits_url-string-val">let git_commits_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-git_commits_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L64">[Source]</a></span></p>
+<hr />
+<h3 id="let-git_refs_url-string-val">let git_refs_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-git_refs_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L65">[Source]</a></span></p>
+<hr />
+<h3 id="let-git_tags_url-string-val">let git_tags_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-git_tags_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L66">[Source]</a></span></p>
+<hr />
+<h3 id="let-issue_comment_url-string-val">let issue_comment_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-issue_comment_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L67">[Source]</a></span></p>
+<hr />
+<h3 id="let-issue_events_url-string-val">let issue_events_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-issue_events_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L68">[Source]</a></span></p>
+<hr />
+<h3 id="let-issues_url-string-val">let issues_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-issues_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L69">[Source]</a></span></p>
+<hr />
+<h3 id="let-keys_url-string-val">let keys_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-keys_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L70">[Source]</a></span></p>
+<hr />
+<h3 id="let-labels_url-string-val">let labels_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-labels_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L71">[Source]</a></span></p>
+<hr />
+<h3 id="let-languages_url-string-val">let languages_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-languages_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L72">[Source]</a></span></p>
+<hr />
+<h3 id="let-merges_url-string-val">let merges_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-merges_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L73">[Source]</a></span></p>
+<hr />
+<h3 id="let-milestones_url-string-val">let milestones_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-milestones_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L74">[Source]</a></span></p>
+<hr />
+<h3 id="let-notifications_url-string-val">let notifications_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-notifications_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L75">[Source]</a></span></p>
+<hr />
+<h3 id="let-pulls_url-string-val">let pulls_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-pulls_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L76">[Source]</a></span></p>
+<hr />
+<h3 id="let-releases_url-string-val">let releases_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-releases_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L77">[Source]</a></span></p>
+<hr />
+<h3 id="let-stargazers_url-string-val">let stargazers_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-stargazers_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L78">[Source]</a></span></p>
+<hr />
+<h3 id="let-statuses_url-string-val">let statuses_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-statuses_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L79">[Source]</a></span></p>
+<hr />
+<h3 id="let-subscribers_url-string-val">let subscribers_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-subscribers_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L80">[Source]</a></span></p>
+<hr />
+<h3 id="let-subscription_url-string-val">let subscription_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-subscription_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L81">[Source]</a></span></p>
+<hr />
+<h3 id="let-tags_url-string-val">let tags_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-tags_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L82">[Source]</a></span></p>
+<hr />
+<h3 id="let-trees_url-string-val">let trees_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-trees_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L83">[Source]</a></span></p>
+<hr />
+<h3 id="let-clone_url-string-val">let clone_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-clone_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L85">[Source]</a></span></p>
+<hr />
+<h3 id="let-git_url-string-val">let git_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-git_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L86">[Source]</a></span></p>
+<hr />
+<h3 id="let-mirror_url-string-val-none-val">let mirror_url: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val)<a class="headerlink" href="#let-mirror_url-string-val-none-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L87">[Source]</a></span></p>
+<hr />
+<h3 id="let-ssh_url-string-val">let ssh_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-ssh_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L88">[Source]</a></span></p>
+<hr />
+<h3 id="let-svn_url-string-val">let svn_url: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val<a class="headerlink" href="#let-svn_url-string-val" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L89">[Source]</a></span></p>
+<hr />
+<h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
+<h3 id="create_label">create_label<a class="headerlink" href="#create_label" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L242">[Source]</a></span></p>
+<pre><code class="language-pony">fun box create_label(
+  label_name: String val,
+  color: (String val | None val) = reference,
+  label_description: (String val | None val) = reference)
+: Promise[(Label val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>label_name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>color: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val) = reference</li>
+<li>label_description: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val) = reference</li>
+</ul>
+<h4 id="returns_1">Returns<a class="headerlink" href="#returns_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-Label/">Label</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+<h3 id="create_release">create_release<a class="headerlink" href="#create_release" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L260">[Source]</a></span></p>
+<pre><code class="language-pony">fun box create_release(
+  tag_name: String val,
+  release_name: String val,
+  body: String val,
+  target_commitish: (String val | None val) = reference,
+  draft: Bool val = false,
+  prerelease: Bool val = false)
+: Promise[(Release val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li>tag_name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>release_name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>body: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+<li>target_commitish: (<a href="https://stdlib.ponylang.io/builtin-String/">String</a> val | <a href="https://stdlib.ponylang.io/builtin-None/">None</a> val) = reference</li>
+<li>draft: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val = false</li>
+<li>prerelease: <a href="https://stdlib.ponylang.io/builtin-Bool/">Bool</a> val = false</li>
+</ul>
+<h4 id="returns_2">Returns<a class="headerlink" href="#returns_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-Release/">Release</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+<h3 id="delete_label">delete_label<a class="headerlink" href="#delete_label" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L284">[Source]</a></span></p>
+<pre><code class="language-pony">fun box delete_label(
+  label_name: String val)
+: Promise[(Deleted val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li>label_name: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+</ul>
+<h4 id="returns_3">Returns<a class="headerlink" href="#returns_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-request-Deleted/">Deleted</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+<h3 id="get_commit">get_commit<a class="headerlink" href="#get_commit" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L295">[Source]</a></span></p>
+<pre><code class="language-pony">fun box get_commit(
+  sha: String val)
+: Promise[(Commit val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li>sha: <a href="https://stdlib.ponylang.io/builtin-String/">String</a> val</li>
+</ul>
+<h4 id="returns_4">Returns<a class="headerlink" href="#returns_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-Commit/">Commit</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+<h3 id="get_issue">get_issue<a class="headerlink" href="#get_issue" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L307">[Source]</a></span></p>
+<pre><code class="language-pony">fun box get_issue(
+  number: I64 val)
+: Promise[(Issue val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters_5">Parameters<a class="headerlink" href="#parameters_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li>number: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+</ul>
+<h4 id="returns_5">Returns<a class="headerlink" href="#returns_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-Issue/">Issue</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+<h3 id="get_pull_request">get_pull_request<a class="headerlink" href="#get_pull_request" title="Permanent link">&para;</a></h3>
+<p><span class="source-link"><a href="../src/github_rest_api/repository/#L319">[Source]</a></span></p>
+<pre><code class="language-pony">fun box get_pull_request(
+  number: I64 val)
+: Promise[(PullRequest val | RequestError val)] tag
+</code></pre>
+<h4 id="parameters_6">Parameters<a class="headerlink" href="#parameters_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li>number: <a href="https://stdlib.ponylang.io/builtin-I64/">I64</a> val</li>
+</ul>
+<h4 id="returns_6">Returns<a class="headerlink" href="#returns_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li><a href="https://stdlib.ponylang.io/promises-Promise/">Promise</a>[(<a href="../github_rest_api-PullRequest/">PullRequest</a> val | <a href="../github_rest_api-request-RequestError/">RequestError</a> val)] tag</li>
+</ul>
+<hr />
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../github_rest_api-IssueSearchResultsJsonConverter/" title="primitive IssueSearchResultsJsonConverter" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                primitive IssueSearchResultsJsonConverter
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../github_rest_api-GetRepository/" title="primitive GetRepository" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                primitive GetRepository
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+    <script src="../assets/javascripts/application.cb37bb38.js"></script>
+      
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>
