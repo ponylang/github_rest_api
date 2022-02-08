@@ -13,8 +13,8 @@ class val Issue
   let title: String
   let user: User
   let labels: Array[Label] val
-  let state: String
-  let body: String
+  let state: (String | None)
+  let body: (String | None)
 
   let url: String
   let respository_url: String
@@ -35,7 +35,7 @@ class val Issue
     user': User,
     labels': Array[Label] val,
     state': String,
-    body': String)
+    body': (String | None))
   =>
     _creds = creds
     url = url'
@@ -108,7 +108,7 @@ primitive IssueJsonConverter is JsonConverter[Issue]
     let title = JsonExtractor(obj("title")?).as_string()?
     let user = UserJsonConverter(obj("user")?, creds)?
     let state = JsonExtractor(obj("state")?).as_string()?
-    let body = JsonExtractor(obj("body")?).as_string()?
+    let body = JsonExtractor(obj("body")?).as_string_or_none()?
 
     let labels = recover trn Array[Label] end
     for i in JsonExtractor(obj("labels")?).as_array()?.values() do

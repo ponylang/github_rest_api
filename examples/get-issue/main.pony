@@ -53,7 +53,9 @@ primitive PrintIssue
     | let issue: Issue =>
       out.print(issue.number.string())
       out.print(issue.title)
-      out.print(issue.body)
+      try
+        out.print(issue.body as String)
+      end
       out.print("Labels ==>")
       for l in issue.labels.values() do
         out.print(l.name)
