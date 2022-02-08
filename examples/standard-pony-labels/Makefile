@@ -1,5 +1,5 @@
 GET_DEPENDENCIES_WITH := corral fetch
-COMPILE_WITH := corral run -- ponyc
+COMPILE_WITH ?= corral run -- ponyc
 
 BUILD_DIR ?= build
 SRC_DIR := .

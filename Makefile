@@ -3,7 +3,7 @@ config ?= release
 PACKAGE := github_rest_api
 GET_DEPENDENCIES_WITH := corral fetch
 CLEAN_DEPENDENCIES_WITH := corral clean
-COMPILE_WITH := corral run -- ponyc
+COMPILE_WITH ?= corral run -- ponyc
 
 BUILD_DIR ?= build/$(config)
 SRC_DIR := $(PACKAGE)
