@@ -1,4 +1,4 @@
-use "ponytest"
+use "pony_test"
 use peg = "peg"
 
 actor \nodoc\ Tests is TestList

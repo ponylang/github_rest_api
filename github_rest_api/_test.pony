@@ -1,4 +1,4 @@
-use "ponytest"
+use "pony_test"
 use plp = "pagination_link_parser"
 use sut = "simple_uri_template"
 
