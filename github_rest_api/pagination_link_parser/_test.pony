@@ -1,4 +1,4 @@
-use "ponytest"
+use "pony_test"
 
 actor \nodoc\ Tests is TestList
   new create(env: Env) =>
