@@ -107,7 +107,7 @@ primitive IssueJsonConverter is JsonConverter[Issue]
     let number = JsonExtractor(obj("number")?).as_i64()?
     let title = JsonExtractor(obj("title")?).as_string()?
     let user = UserJsonConverter(obj("user")?, creds)?
-    let state = JsonExtractor(obj("state")?).as_string()?
+    let state = JsonExtractor(obj("state")?).as_string_or_none()?
     let body = JsonExtractor(obj("body")?).as_string_or_none()?
 
     let labels = recover trn Array[Label] end
