@@ -11,7 +11,7 @@ class val PullRequest
 
   let number: I64
   let title: String
-  let body: String
+  let body: (String | None)
   let state: String
   let labels: Array[Label] val
   let base: PullRequestBase
@@ -23,7 +23,7 @@ class val PullRequest
   new val create(creds: Credentials,
     number': I64,
     title': String,
-    body': String,
+    body': (String | None),
     state': String,
     labels': Array[Label] val,
     base': PullRequestBase,
@@ -91,7 +91,7 @@ primitive PullRequestJsonConverter is JsonConverter[PullRequest]
 
     let number = JsonExtractor(obj("number")?).as_i64()?
     let title = JsonExtractor(obj("title")?).as_string()?
-    let body = JsonExtractor(obj("body")?).as_string()?
+    let body = JsonExtractor(obj("body")?).as_string_or_none()?
     let state = JsonExtractor(obj("state")?).as_string()?
 
     let labels = recover trn Array[Label] end
