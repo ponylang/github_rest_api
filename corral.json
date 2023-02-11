@@ -1,5 +1,10 @@
 {
-  "packages": [],
+  "packages": [
+    "github_rest_api",
+    "github_rest_api/pagination_link_parser",
+    "github_rest_api/request",
+    "github_rest_api/simple_uri_template"
+  ],
   "deps": [
     {
       "locator": "github.com/ponylang/peg.git",
@@ -11,11 +16,11 @@
     }
   ],
   "info": {
-    "description": "",
-    "homepage": "",
-    "license": "",
-    "documentation_url": "",
-    "version": "",
-    "name": ""
+    "description": "Pony library for working with GitHub's REST API",
+    "homepage": "https://github.com/ponylang/github_rest_api",
+    "license": "BSD-2-Clause",
+    "documentation_url": "https://ponylang.github.io/github_rest_api",
+    "version": "0.0.0",
+    "name": "github_rest_api"
   }
 }
