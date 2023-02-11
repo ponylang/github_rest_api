@@ -67,7 +67,7 @@ primitive PrintPullRequest
     | let pr: PullRequest =>
       out.print(pr.number.string())
       out.print(pr.title)
-      out.print(pr.body)
+      try out.print(pr.body as String) end
       out.print("Labels ==>")
       for l in pr.labels.values() do
         out.print(l.name)
