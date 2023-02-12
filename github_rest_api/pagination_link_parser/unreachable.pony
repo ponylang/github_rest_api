@@ -12,7 +12,7 @@ primitive Unreachable
     @fprintf(
       @pony_os_stderr(),
       ("The unreachable was reached in %s at line %s\n" +
-       "Please open an issue at XYZ")
+       "Please open an issue at https://github.com/ponylang/github_rest_api/issues")
        .cstring(),
       loc.file().cstring(),
       loc.line().string().cstring())
