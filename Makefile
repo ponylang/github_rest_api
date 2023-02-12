@@ -23,14 +23,16 @@ else
 	PONYC = $(COMPILE_WITH) --debug
 endif
 
-ifeq ($(ssl), 3.0.x)
-	SSL = -Dopenssl_3.0.x
-else ifeq ($(ssl), 1.1.x)
-	SSL = -Dopenssl_1.1.x
-else ifeq ($(ssl), 0.9.0)
-	SSL = -Dopenssl_0.9.0
-else
-	$(error Unknown SSL version "$(ssl)". Must set using 'ssl=FOO')
+ifeq (,$(filter $(MAKECMDGOALS),clean docs realclean TAGS))
+	ifeq ($(ssl), 3.0.x)
+		SSL = -Dopenssl_3.0.x
+	else ifeq ($(ssl), 1.1.x)
+		SSL = -Dopenssl_1.1.x
+	else ifeq ($(ssl), 0.9.0)
+		SSL = -Dopenssl_0.9.0
+	else
+		$(error Unknown SSL version "$(ssl)". Must set using 'ssl=FOO')
+	endif
 endif
 
 PONYC := $(PONYC) $(SSL)
