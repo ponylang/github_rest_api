@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
+- Add OpenSSL 3 support ([PR #14](https://github.com/ponylang/github_rest_api/pull/14))
 
 ### Changed
 
