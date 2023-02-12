@@ -36,4 +36,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Test
-        run: make test config=debug
+        run: make test config=debug ssl=1.1.x

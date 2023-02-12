@@ -8,14 +8,17 @@ LIB_SRC := ../../github_rest_api/
 
 PONYC = $(COMPILE_WITH)
 
-ssl=1.1.x
-ifeq ($(ssl), 1.1.x)
-	PONYC += -Dopenssl_1.1.x
+ifeq ($(ssl), 3.0.x)
+	SSL = -Dopenssl_3.0.x
+else ifeq ($(ssl), 1.1.x)
+	SSL = -Dopenssl_1.1.x
 else ifeq ($(ssl), 0.9.0)
-	PONYC += -Dopenssl_0.9.0
+	SSL = -Dopenssl_0.9.0
 else
 	$(error Unknown SSL version "$(ssl)". Must set using 'ssl=FOO')
 endif
+
+PONYC := $(PONYC) $(SSL)
 
 SOURCE_FILES := $(shell find $(SRC_DIR) -name *.pony)
 
