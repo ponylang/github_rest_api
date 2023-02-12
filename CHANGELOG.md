@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- Update for json package removal from standard library ([PR #10](https://github.com/ponylang/github_rest_api/pull/10))
 
 ## [0.1.0] - 2023-02-11
 
