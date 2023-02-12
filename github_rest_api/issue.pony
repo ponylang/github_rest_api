@@ -34,7 +34,7 @@ class val Issue
     title': String,
     user': User,
     labels': Array[Label] val,
-    state': String,
+    state': (String | None),
     body': (String | None))
   =>
     _creds = creds
