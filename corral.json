@@ -24,7 +24,7 @@
     "homepage": "https://github.com/ponylang/github_rest_api",
     "license": "BSD-2-Clause",
     "documentation_url": "https://ponylang.github.io/github_rest_api",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "name": "github_rest_api"
   }
 }
