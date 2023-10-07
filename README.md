@@ -14,7 +14,7 @@ Additional API surface and functionality will be added as needed. If you need fu
 ## Installation
 
 * Install [corral](https://github.com/ponylang/corral)
-* `corral add github.com/ponylang/github_rest_api.git --version 0.1.2`
+* `corral add github.com/ponylang/github_rest_api.git --version 0.1.3`
 * `corral fetch` to fetch your dependencies
 * `use "github_rest_api"` to include this package
 * `corral run -- ponyc` to compile your application
