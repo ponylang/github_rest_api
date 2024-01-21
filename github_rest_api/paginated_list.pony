@@ -132,20 +132,18 @@ actor PaginatedResultReceiver[A: Any val]
 // TODO: Could this be more generic?
 class PaginatedJsonRequester
   let _auth: TCPConnectAuth
-  let _client: HTTPClient
+  let _sslctx: (SSLContext | None)
 
   new create(auth: TCPConnectAuth) =>
     _auth = auth
 
-    let sslctx = try
+    _sslctx = try
       recover val
         SSLContext.>set_client_verify(true).>set_authority(None)?
       end
     else
       None
     end
-
-    _client = HTTPClient(_auth, sslctx)
 
   fun ref apply[A: Any val](url: String,
     receiver: PaginatedResultReceiver[A]) ?
@@ -155,7 +153,8 @@ class PaginatedJsonRequester
 
     let handler_factory =
       PaginatedJsonRequesterHandlerFactory[A](_auth, receiver)
-    _client(consume r, handler_factory)?
+    let client = HTTPClient(_auth, handler_factory, _sslctx)
+    client(consume r)?
 
 class PaginatedJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
   let _auth: TCPConnectAuth

@@ -8,18 +8,19 @@ interface tag DeleteResultReceiver
   be failure(status: U16, response_body: String, message: String)
 
 class HTTPDelete
-  let _client: HTTPClient
+  let _auth: TCPConnectAuth
+  let _sslctx: (SSLContext | None)
 
   new create(auth: TCPConnectAuth) =>
-    let sslctx = try
+    _auth = auth
+
+    _sslctx = try
       recover val
         SSLContext.>set_client_verify(true).>set_authority(None)?
       end
     else
       None
     end
-
-    _client = HTTPClient(auth, sslctx)
 
   fun ref apply(url: String,
     receiver: DeleteResultReceiver,
@@ -29,7 +30,8 @@ class HTTPDelete
     let r = RequestFactory("DELETE", valid_url, auth_token)
 
     let handler_factory = HTTPDeleteHandlerFactory(receiver)
-    _client(consume r, handler_factory)?
+    let client = HTTPClient(_auth, handler_factory, _sslctx)
+    client(consume r)?
 
 class HTTPDeleteHandlerFactory is HandlerFactory
   let _receiver: DeleteResultReceiver
