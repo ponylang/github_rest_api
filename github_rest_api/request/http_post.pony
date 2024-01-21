@@ -8,18 +8,19 @@ interface tag PostResultReceiver
   be failure(status: U16, response_body: String, message: String)
 
 class HTTPPost
-  let _client: HTTPClient
+  let _auth: TCPConnectAuth
+  let _sslctx: (SSLContext | None)
 
   new create(auth: TCPConnectAuth) =>
-    let sslctx = try
+    _auth = auth
+
+    _sslctx = try
       recover val
         SSLContext.>set_client_verify(true).>set_authority(None)?
       end
     else
       None
     end
-
-    _client = HTTPClient(auth, sslctx)
 
   fun ref apply(url: String,
     body: String,
@@ -31,7 +32,8 @@ class HTTPPost
     r.add_chunk(body)
 
     let handler_factory = HTTPPostHandlerFactory(receiver)
-    _client(consume r, handler_factory)?
+    let client = HTTPClient(_auth, handler_factory, _sslctx)
+    client(consume r)?
 
 class HTTPPostHandlerFactory is HandlerFactory
   let _receiver: PostResultReceiver
