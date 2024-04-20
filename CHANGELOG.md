@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- Update ponylang/http dependency ([PR #36](https://github.com/ponylang/github_rest_api/pull/36))
 
 ## [0.1.4] - 2024-01-21
 
