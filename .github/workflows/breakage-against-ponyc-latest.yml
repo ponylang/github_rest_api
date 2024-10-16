@@ -9,11 +9,11 @@ jobs:
     name: Verify main against the latest ponyc
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ponylang/shared-docker-ci-x86-64-unknown-linux-builder-with-openssl_1.1.1w:latest
+      image: ghcr.io/ponylang/shared-docker-ci-x86-64-unknown-linux-builder-with-openssl_3.3.2:latest
     steps:
       - uses: actions/checkout@v4.1.1
       - name: Test
-        run: make test config=debug ssl=1.1.x
+        run: make test config=debug ssl=3.0.x
       - name: Send alert on failure
         if: ${{ failure() }}
         uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5
