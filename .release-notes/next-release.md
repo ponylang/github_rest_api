@@ -4,3 +4,7 @@ Previously, the `request` package included a `JsonExtractor` class that was used
 
 `JsonExtractor` is available in all versions of `ponylang/json` starting with 0.2.0.
 
+## Update HTTP dependency
+
+We've updated our HTTP dependency. At least 0.6.2 is required to work with all Pony compiler built from source after January 25, 2025.
+
