@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Changed
 
 - Remove JsonExtractor from the requests package ([PR #38](https://github.com/ponylang/github_rest_api/pull/38))
+- Update HTTP dependency ([PR #39](https://github.com/ponylang/github_rest_api/pull/39))
 
 ## [0.1.5] - 2024-04-20
 
