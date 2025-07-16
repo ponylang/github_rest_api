@@ -1,6 +1,6 @@
 use "http"
 use "net"
-use "net_ssl"
+use "ssl/net"
 use "promises"
 
 interface tag DeleteResultReceiver

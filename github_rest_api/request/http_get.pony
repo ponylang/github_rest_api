@@ -1,7 +1,7 @@
 use "http"
 use "json"
 use "net"
-use "net_ssl"
+use "ssl/net"
 use "promises"
 
 class JsonRequester
