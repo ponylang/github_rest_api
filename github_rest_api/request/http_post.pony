@@ -1,7 +1,7 @@
 use "http"
 use "json"
 use "net"
-use "net_ssl"
+use "ssl/net"
 
 interface tag PostResultReceiver
   be success(json: JsonDoc val)
