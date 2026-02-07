@@ -80,7 +80,7 @@ Models have methods that chain to further API calls:
 
 ### Pagination
 
-`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the PEG-based `ExtractPaginationLinks` parser. Currently used by `GetRepositoryLabels` and `GetIssueComments`.
+`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the PEG-based `ExtractPaginationLinks` parser. Currently used by `GetRepositoryLabels`.
 
 ### Auth
 
@@ -141,7 +141,7 @@ commonly-used categories that a GitHub API library would typically need.
 
 | Endpoint | Method | Library |
 |----------|--------|---------|
-| `/repos/{owner}/{repo}/issues/{number}/comments` | GET | GetIssueComments (paginated) |
+| `/repos/{owner}/{repo}/issues/{number}/comments` | GET | GetIssueComments |
 | `/repos/{owner}/{repo}/issues/{number}/comments` | POST | CreateIssueComment |
 | `/repos/{owner}/{repo}/issues/comments` | GET (list all) | **missing** |
 | `/repos/{owner}/{repo}/issues/comments/{id}` | GET | **missing** |
