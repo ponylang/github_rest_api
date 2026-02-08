@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
+- Add pagination support to search results ([PR #50](https://github.com/ponylang/github_rest_api/pull/50))
 
 ### Changed
 
