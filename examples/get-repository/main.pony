@@ -52,7 +52,9 @@ primitive PrintRepository
       out.print("Repository")
       out.print(repo.name)
       out.print(repo.full_name)
-      out.print(repo.description)
+      match repo.description
+      | let d: String => out.print(d)
+      end
       out.print(repo.html_url)
     | let e: RequestError =>
       out.print("Unable to retrieve repository")

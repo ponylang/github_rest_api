@@ -10,7 +10,7 @@ class val Repository
   let node_id: String
   let name: String
   let full_name: String
-  let description: String
+  let description: (String | None)
   let owner: User
   let private: Bool
   let fork: Bool
@@ -19,22 +19,22 @@ class val Repository
   let pushed_at: String
   let updated_at: String
 
-  let homepage: String
+  let homepage: (String | None)
   let default_branch: String
   let organization: (User | None)
 
   let size: I64
   let forks: I64
   let forks_count: I64
-  let network_count: I64
+  let network_count: (I64 | None)
   let open_issues: I64
   let open_issues_count: I64
   let stargazers_count: I64
-  let subscribers_count: I64
+  let subscribers_count: (I64 | None)
   let watchers: I64
   let watchers_count: I64
 
-  let language: String
+  let language: (String | None)
   let license: (License | None)
 
   let archived: Bool
@@ -94,27 +94,27 @@ class val Repository
     node_id': String,
     name': String,
     full_name': String,
-    description': String,
+    description': (String | None),
     owner': User,
     private': Bool,
     fork': Bool,
     created_at': String,
     pushed_at': String,
     updated_at': String,
-    homepage': String,
+    homepage': (String | None),
     default_branch': String,
     organization': (User | None),
     size': I64,
     forks': I64,
     forks_count': I64,
-    network_count': I64,
+    network_count': (I64 | None),
     open_issues': I64,
     open_issues_count': I64,
     stargazers_count': I64,
-    subscribers_count': I64,
+    subscribers_count': (I64 | None),
     watchers': I64,
     watchers_count': I64,
-    language': String,
+    language': (String | None),
     license': (License | None),
     archived': Bool,
     disabled': Bool,
@@ -403,6 +403,43 @@ primitive GetRepositoryLabels
 
     p
 
+primitive GetOrganizationRepositories
+  fun apply(org: String,
+    creds: Credentials): Promise[(PaginatedList[Repository] | RequestError)]
+  =>
+    let u = SimpleURITemplate(
+      recover val
+        "https://api.github.com/orgs{/org}/repos"
+      end,
+      recover val
+        [("org", org)]
+      end)
+
+    match u
+    | let u': String =>
+      by_url(u', creds)
+    | let e: ParseError =>
+      Promise[(PaginatedList[Repository] | RequestError)].>apply(
+        RequestError(where message' = e.message))
+    end
+
+  fun by_url(url: String,
+    creds: Credentials): Promise[(PaginatedList[Repository] | RequestError)]
+  =>
+    let rc = RepositoryJsonConverter
+    let plc = PaginatedListJsonConverter[Repository](creds, rc)
+    let p = Promise[(PaginatedList[Repository] | RequestError)]
+    let r = PaginatedResultReceiver[Repository](creds, p, plc)
+
+    try
+      PaginatedJsonRequester(creds.auth).apply[Repository](url, r)?
+    else
+      let m = "Unable to initiate get_org_repos request to " + url
+      p(RequestError(where message' = consume m))
+    end
+
+    p
+
 primitive RepositoryJsonConverter is JsonConverter[Repository]
   fun apply(json: JsonType val,
     creds: Credentials): Repository ?
@@ -412,14 +449,14 @@ primitive RepositoryJsonConverter is JsonConverter[Repository]
     let node_id = JsonExtractor(obj("node_id")?).as_string()?
     let name = JsonExtractor(obj("name")?).as_string()?
     let full_name = JsonExtractor(obj("full_name")?).as_string()?
-    let description = JsonExtractor(obj("description")?).as_string()?
+    let description = JsonExtractor(obj("description")?).as_string_or_none()?
     let owner = UserJsonConverter(obj("owner")?, creds)?
     let private = JsonExtractor(obj("private")?).as_bool()?
     let fork = JsonExtractor(obj("fork")?).as_bool()?
     let created_at = JsonExtractor(obj("created_at")?).as_string()?
     let pushed_at = JsonExtractor(obj("pushed_at")?).as_string()?
     let updated_at = JsonExtractor(obj("updated_at")?).as_string()?
-    let homepage = JsonExtractor(obj("homepage")?).as_string()?
+    let homepage = JsonExtractor(obj("homepage")?).as_string_or_none()?
     let default_branch = JsonExtractor(obj("default_branch")?).as_string()?
     let organization = try
       UserJsonConverter(obj("organization")?, creds)?
@@ -430,14 +467,16 @@ primitive RepositoryJsonConverter is JsonConverter[Repository]
     let size = JsonExtractor(obj("size")?).as_i64()?
     let forks = JsonExtractor(obj("forks")?).as_i64()?
     let forks_count = JsonExtractor(obj("forks_count")?).as_i64()?
-    let network_count = JsonExtractor(obj("network_count")?).as_i64()?
+    let network_count =
+      try JsonExtractor(obj("network_count")?).as_i64()? else None end
     let open_issues = JsonExtractor(obj("open_issues")?).as_i64()?
     let open_issues_count = JsonExtractor(obj("open_issues_count")?).as_i64()?
     let stargazers_count = JsonExtractor(obj("stargazers_count")?).as_i64()?
-    let subscribers_count = JsonExtractor(obj("subscribers_count")?).as_i64()?
+    let subscribers_count =
+      try JsonExtractor(obj("subscribers_count")?).as_i64()? else None end
     let watchers = JsonExtractor(obj("watchers")?).as_i64()?
     let watchers_count = JsonExtractor(obj("watchers_count")?).as_i64()?
-    let language = JsonExtractor(obj("language")?).as_string()?
+    let language = JsonExtractor(obj("language")?).as_string_or_none()?
     let license = try
       LicenseJsonConverter(obj("license")?, creds)?
     else
