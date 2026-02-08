@@ -95,6 +95,7 @@ Models have methods that chain to further API calls:
 - Type aliases for result unions: `RepositoryOrError`, `IssueOrError`, etc.
 - `\nodoc\` annotation on test classes
 - Tests only cover infrastructure (URI template + Link header parsing), not API operations
+- Keep CLAUDE.md in sync when adding or changing features — update the source layout, OO convenience API, pagination section, and coverage table as part of the PR that introduces the change
 
 ## Known TODOs in Code
 
