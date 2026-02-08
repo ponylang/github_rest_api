@@ -2,6 +2,7 @@ use "../../github_rest_api"
 use "../../github_rest_api/request"
 use "cli"
 use "net"
+use "promises"
 
 actor Main
   new create(env: Env) =>
@@ -33,7 +34,7 @@ actor Main
       let query = cmd.option("query").string()
       let token = cmd.option("token").string()
 
-      // ----- Get repository
+      // ----- Search issues
       let auth = TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
@@ -50,6 +51,12 @@ primitive PrintResults
       out.print("Total results: " + results.total_count.string())
       for i in results.items.values() do
         out.print(i.title + " #" + i.number.string() + " " + i.html_url)
+      end
+      match results.next_page()
+      | let promise: Promise[IssueSearchResultsOrError] =>
+        promise.next[None](PrintResults~apply(out))
+      else
+        out.print("------- No more results")
       end
     | let e: RequestError =>
       out.print("Unable to execute search")
