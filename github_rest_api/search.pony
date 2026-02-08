@@ -1,6 +1,5 @@
 use "http"
 use "json"
-use "net"
 use "ssl/net"
 use plp = "pagination_link_parser"
 use "promises"
@@ -22,7 +21,7 @@ primitive SearchIssues
         "https://api.github.com/search/issues?q=" + eq
       end
 
-      SearchJsonRequester(creds.auth).apply[Issue](url, r)?
+      SearchJsonRequester(creds).apply[Issue](url, r)?
     else
       let m = "Unable to initiate issue search request for '" + query + "'"
       p(req.RequestError(where message' = consume m))
@@ -79,7 +78,7 @@ class val SearchResults[A: Any val]
     let r = SearchResultReceiver[A](_creds, p, _converter)
 
     try
-      SearchJsonRequester(_creds.auth).apply[A](link, r)?
+      SearchJsonRequester(_creds).apply[A](link, r)?
     else
       let m = "Unable to get " + link
       p(req.RequestError(where message' = consume m))
@@ -151,11 +150,11 @@ actor SearchResultReceiver[A: Any val]
     _p(req.RequestError(status, response_body, message))
 
 class SearchJsonRequester
-  let _auth: TCPConnectAuth
+  let _creds: req.Credentials
   let _sslctx: (SSLContext | None)
 
-  new create(auth: TCPConnectAuth) =>
-    _auth = auth
+  new create(creds: req.Credentials) =>
+    _creds = creds
 
     _sslctx = try
       recover val
@@ -169,25 +168,25 @@ class SearchJsonRequester
     receiver: SearchResultReceiver[A]) ?
   =>
     let valid_url = URL.valid(url)?
-    let r = req.RequestFactory("GET", valid_url)
+    let r = req.RequestFactory("GET", valid_url, _creds.token)
 
     let handler_factory =
-      SearchJsonRequesterHandlerFactory[A](_auth, receiver)
-    let client = HTTPClient(_auth, handler_factory, _sslctx)
+      SearchJsonRequesterHandlerFactory[A](_creds, receiver)
+    let client = HTTPClient(_creds.auth, handler_factory, _sslctx)
     client(consume r)?
 
 class SearchJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
-  let _auth: TCPConnectAuth
+  let _creds: req.Credentials
   let _receiver: SearchResultReceiver[A]
 
-  new val create(auth: TCPConnectAuth,
+  new val create(creds: req.Credentials,
     receiver: SearchResultReceiver[A])
   =>
-    _auth = auth
+    _creds = creds
     _receiver = receiver
 
   fun apply(session: HTTPSession tag): HTTPHandler ref^ =>
-    let requester = SearchJsonRequester(_auth)
+    let requester = SearchJsonRequester(_creds)
     SearchJsonRequesterHandler[A](requester, _receiver)
 
 class SearchJsonRequesterHandler[A: Any val] is HTTPHandler

@@ -1,15 +1,14 @@
 use "http"
 use "json"
-use "net"
 use "ssl/net"
 use "promises"
 
 class JsonRequester
-  let _auth: TCPConnectAuth
+  let _creds: Credentials
   let _sslctx: (SSLContext | None)
 
-  new create(auth: TCPConnectAuth) =>
-    _auth = auth
+  new create(creds: Credentials) =>
+    _creds = creds
 
     _sslctx = try
       recover val
@@ -23,10 +22,10 @@ class JsonRequester
     receiver: JsonRequesterResultReceiver) ?
   =>
     let valid_url = URL.valid(url)?
-    let r = RequestFactory("GET", valid_url)
+    let r = RequestFactory("GET", valid_url, _creds.token)
 
-    let handler_factory = JsonRequesterHandlerFactory(_auth, receiver)
-    let client = HTTPClient(_auth, handler_factory, _sslctx)
+    let handler_factory = JsonRequesterHandlerFactory(_creds, receiver)
+    let client = HTTPClient(_creds.auth, handler_factory, _sslctx)
     client(consume r)?
 
 interface tag JsonRequesterResultReceiver
@@ -34,17 +33,17 @@ interface tag JsonRequesterResultReceiver
   be failure(status: U16, response_body: String, message: String)
 
 class JsonRequesterHandlerFactory is HandlerFactory
-  let _auth: TCPConnectAuth
+  let _creds: Credentials
   let _receiver: JsonRequesterResultReceiver
 
-  new val create(auth: TCPConnectAuth,
+  new val create(creds: Credentials,
     receiver: JsonRequesterResultReceiver)
   =>
-    _auth = auth
+    _creds = creds
     _receiver = receiver
 
   fun apply(session: HTTPSession tag): HTTPHandler ref^ =>
-    let requester = JsonRequester(_auth)
+    let requester = JsonRequester(_creds)
     JsonRequesterHandler(requester, _receiver)
 
 class JsonRequesterHandler is HTTPHandler

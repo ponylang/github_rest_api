@@ -75,7 +75,7 @@ primitive GetPullRequest
       PullRequestJsonConverter)
 
     try
-      req.JsonRequester(creds.auth)(url, r)?
+      req.JsonRequester(creds)(url, r)?
     else
       let m = recover val
         "Unable to initiate get_pull_request request to" + url

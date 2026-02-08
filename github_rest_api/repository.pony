@@ -379,7 +379,7 @@ primitive GetRepository
       RepositoryJsonConverter)
 
     try
-      req.JsonRequester(creds.auth)(url, r)?
+      req.JsonRequester(creds)(url, r)?
     else
       let m = "Unable to initiate get_repo request to " + url
       p(req.RequestError(where message' = consume m))
@@ -417,7 +417,7 @@ primitive GetRepositoryLabels
     let r = PaginatedResultReceiver[Label](creds, p, plc)
 
     try
-      PaginatedJsonRequester(creds.auth).apply[Label](url, r)?
+      PaginatedJsonRequester(creds).apply[Label](url, r)?
     else
       let m = "Unable to initiate get_repo request to " + url
       p(req.RequestError(where message' = consume m))
@@ -454,7 +454,7 @@ primitive GetOrganizationRepositories
     let r = PaginatedResultReceiver[Repository](creds, p, plc)
 
     try
-      PaginatedJsonRequester(creds.auth).apply[Repository](url, r)?
+      PaginatedJsonRequester(creds).apply[Repository](url, r)?
     else
       let m = "Unable to initiate get_org_repos request to " + url
       p(req.RequestError(where message' = consume m))

@@ -93,7 +93,7 @@ primitive GetIssueComments
       IssueCommentsJsonConverter)
 
     try
-      req.JsonRequester(creds.auth)(url, r)?
+      req.JsonRequester(creds)(url, r)?
     else
       let m = recover val
         "Unable to initiate get_comments request to" + url

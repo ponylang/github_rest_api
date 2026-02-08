@@ -1,6 +1,5 @@
 use "http"
 use "json"
-use "net"
 use "ssl/net"
 use plp = "pagination_link_parser"
 use "promises"
@@ -60,7 +59,7 @@ class val PaginatedList[A: Any val]
     let r = PaginatedResultReceiver[A](_creds, p, _converter)
 
     try
-      PaginatedJsonRequester(_creds.auth).apply[A](link, r)?
+      PaginatedJsonRequester(_creds).apply[A](link, r)?
     else
       let m = "Unable to get " + link
       p(req.RequestError(where message' = consume m))
@@ -131,11 +130,11 @@ actor PaginatedResultReceiver[A: Any val]
 
 // TODO: Could this be more generic?
 class PaginatedJsonRequester
-  let _auth: TCPConnectAuth
+  let _creds: req.Credentials
   let _sslctx: (SSLContext | None)
 
-  new create(auth: TCPConnectAuth) =>
-    _auth = auth
+  new create(creds: req.Credentials) =>
+    _creds = creds
 
     _sslctx = try
       recover val
@@ -149,25 +148,25 @@ class PaginatedJsonRequester
     receiver: PaginatedResultReceiver[A]) ?
   =>
     let valid_url = URL.valid(url)?
-    let r = req.RequestFactory("GET", valid_url)
+    let r = req.RequestFactory("GET", valid_url, _creds.token)
 
     let handler_factory =
-      PaginatedJsonRequesterHandlerFactory[A](_auth, receiver)
-    let client = HTTPClient(_auth, handler_factory, _sslctx)
+      PaginatedJsonRequesterHandlerFactory[A](_creds, receiver)
+    let client = HTTPClient(_creds.auth, handler_factory, _sslctx)
     client(consume r)?
 
 class PaginatedJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
-  let _auth: TCPConnectAuth
+  let _creds: req.Credentials
   let _receiver: PaginatedResultReceiver[A]
 
-  new val create(auth: TCPConnectAuth,
+  new val create(creds: req.Credentials,
     receiver: PaginatedResultReceiver[A])
   =>
-    _auth = auth
+    _creds = creds
     _receiver = receiver
 
   fun apply(session: HTTPSession tag): HTTPHandler ref^ =>
-    let requester = PaginatedJsonRequester(_auth)
+    let requester = PaginatedJsonRequester(_creds)
     PaginatedJsonRequesterHandler[A](requester, _receiver)
 
 class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler

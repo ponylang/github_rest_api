@@ -56,7 +56,7 @@ primitive GetCommit
     let receiver = req.ResultReceiver[Commit](creds, p, CommitJsonConverter)
 
     try
-      req.JsonRequester(creds.auth)(url, receiver)?
+      req.JsonRequester(creds)(url, receiver)?
     else
       let m = recover val
         "Unable to initiate get commit request to" + url
