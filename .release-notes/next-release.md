@@ -74,8 +74,8 @@ github.get_repo("ponylang", "ponyc").next[None]({
           match r
           | let issues: PaginatedList[Issue] =>
             for issue in issues.results.values() do
-              if not issue.is_pull_request then
-                env.out.print(issue.title)
+              match issue.pull_request
+              | None => env.out.print(issue.title)
               end
             end
           end
@@ -84,7 +84,7 @@ github.get_repo("ponylang", "ponyc").next[None]({
 })
 ```
 
-The `is_pull_request` field on `Issue` indicates whether an issue is actually a pull request, since the GitHub issues API returns both.
+The `pull_request` field on `Issue` is an `IssuePullRequest` when the issue is actually a pull request (since the GitHub issues API returns both), or `None` for true issues.
 
 ## Add QueryParams for building URL query strings
 
@@ -101,3 +101,35 @@ let query = QueryParams(params)
 ## Fix missing URL encoding of query parameter values
 
 Query parameter values passed to `GetRepositoryIssues` and `Repository.get_issues()` are now properly percent-encoded. Previously, values containing special characters (spaces, `&`, `=`, etc.) would produce malformed URLs.
+
+## Add IssuePullRequest model
+
+When listing issues via the GitHub REST API, pull requests are included in the results with a `pull_request` sub-object containing PR-specific URLs and merge status. The new `IssuePullRequest` class captures this data: `url`, `html_url`, `diff_url`, `patch_url`, and `merged_at`.
+
+```pony
+match issue.pull_request
+| let pr: IssuePullRequest =>
+  env.out.print("PR diff: " + pr.diff_url)
+  match pr.merged_at
+  | let t: String => env.out.print("Merged at: " + t)
+  end
+end
+```
+
+## Replace is_pull_request with pull_request on Issue
+
+The `is_pull_request: Bool` field on `Issue` has been replaced with `pull_request: (IssuePullRequest | None)`. This provides both the ability to distinguish PRs from true issues and access to PR-specific metadata, rather than just a boolean flag.
+
+Before:
+```pony
+if not issue.is_pull_request then
+  env.out.print(issue.title)
+end
+```
+
+After:
+```pony
+match issue.pull_request
+| None => env.out.print(issue.title)
+end
+```

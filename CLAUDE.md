@@ -30,6 +30,7 @@ github_rest_api/
   github.pony              -- GitHub class (entry point, has get_repo and get_org_repos)
   repository.pony          -- Repository model + GetRepository, GetRepositoryLabels
   issue.pony               -- Issue model + GetIssue, GetRepositoryIssues
+  issue_pull_request.pony  -- IssuePullRequest model (PR metadata on issues)
   pull_request.pony        -- PullRequest model + GetPullRequest
   pull_request_base.pony   -- PullRequestBase model (head/base refs)
   pull_request_file.pony   -- PullRequestFile model + GetPullRequestFiles
