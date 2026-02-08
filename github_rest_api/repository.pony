@@ -316,6 +316,21 @@ class val Repository
       Promise[IssueOrError].>apply(RequestError(where message' = e.message))
     end
 
+  fun get_issues(labels: String = "", state: String = "open")
+    : Promise[(PaginatedList[Issue] | RequestError)]
+  =>
+    let u = SimpleURITemplate(issues_url,
+      recover val Array[(String, String)] end)
+
+    match u
+    | let u': String =>
+      let issues_url' = GetRepositoryIssues._build_url(u', labels, state)
+      GetRepositoryIssues.by_url(issues_url', _creds)
+    | let e: ParseError =>
+      Promise[(PaginatedList[Issue] | RequestError)].>apply(
+        RequestError(where message' = e.message))
+    end
+
   fun get_pull_request(number: I64): Promise[PullRequestOrError] =>
       let u = SimpleURITemplate(
       pulls_url,
