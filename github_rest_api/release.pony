@@ -1,13 +1,13 @@
 use "collections"
 use "json"
 use "promises"
-use "request"
-use "simple_uri_template"
+use req = "request"
+use sut = "simple_uri_template"
 
-type ReleaseOrError is (Release | RequestError)
+type ReleaseOrError is (Release | req.RequestError)
 
 class val Release
-  let _creds: Credentials
+  let _creds: req.Credentials
 
   let id: I64
   let node_id: String
@@ -30,7 +30,7 @@ class val Release
   let tarball_url: String
   let zipball_url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     id': I64,
     node_id': String,
     author': User,
@@ -76,12 +76,12 @@ primitive CreateRelease
     tag_name: String,
     name: String,
     body: String,
-    creds: Credentials,
+    creds: req.Credentials,
     target_commitish: (String | None) = None,
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/releases"
       end,
@@ -99,21 +99,21 @@ primitive CreateRelease
         target_commitish,
         draft,
         prerelease)
-    | let e: ParseError =>
-      Promise[ReleaseOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[ReleaseOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     tag_name: String,
     name: String,
     body: String,
-    creds: Credentials,
+    creds: req.Credentials,
     target_commitish: (String | None) = None,
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
     let p = Promise[ReleaseOrError]
-    let r = ResultReceiver[Release](creds,
+    let r = req.ResultReceiver[Release](creds,
       p,
       ReleaseJsonConverter)
 
@@ -130,19 +130,19 @@ primitive CreateRelease
     let json = JsonObject.from_map(m).string()
 
     try
-      HTTPPost(creds.auth)(url,
+      req.HTTPPost(creds.auth)(url,
         json,
         r,
         creds.token)?
     else
-      p(RequestError(
+      p(req.RequestError(
         where message' = "Unable to create release at " + url))
     end
 
     p
 
-primitive ReleaseJsonConverter is JsonConverter[Release]
-  fun apply(json: JsonType val, creds: Credentials): Release ? =>
+primitive ReleaseJsonConverter is req.JsonConverter[Release]
+  fun apply(json: JsonType val, creds: req.Credentials): Release ? =>
     let obj = JsonExtractor(json).as_object()?
     let id = JsonExtractor(obj("id")?).as_i64()?
     let node_id = JsonExtractor(obj("node_id")?).as_string()?

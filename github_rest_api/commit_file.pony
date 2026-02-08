@@ -1,14 +1,14 @@
 use "json"
 use "promises"
-use "request"
+use req = "request"
 
 class val CommitFile
-  let _creds: Credentials
+  let _creds: req.Credentials
   let sha: String
   let status: String
   let filename: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     sha': String,
     status': String,
     filename': String)
@@ -18,9 +18,9 @@ class val CommitFile
     status = status'
     filename = filename'
 
-primitive CommitFileJsonConverter is JsonConverter[CommitFile]
+primitive CommitFileJsonConverter is req.JsonConverter[CommitFile]
   fun apply(json: JsonType val,
-    creds: Credentials): CommitFile ?
+    creds: req.Credentials): CommitFile ?
   =>
     let obj = JsonExtractor(json).as_object()?
     let sha = JsonExtractor(obj("sha")?).as_string()?

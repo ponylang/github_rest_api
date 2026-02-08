@@ -4,13 +4,13 @@ use "net"
 use "ssl/net"
 use plp = "pagination_link_parser"
 use "promises"
-use "request"
+use req = "request"
 
-type IssueSearchResultsOrError is (SearchResults[Issue] | RequestError)
+type IssueSearchResultsOrError is (SearchResults[Issue] | req.RequestError)
 
 primitive SearchIssues
   fun apply(query: String,
-    creds: Credentials): Promise[IssueSearchResultsOrError]
+    creds: req.Credentials): Promise[IssueSearchResultsOrError]
   =>
     let p = Promise[IssueSearchResultsOrError]
     let sc = PaginatedSearchJsonConverter[Issue](creds, IssueJsonConverter)
@@ -25,13 +25,13 @@ primitive SearchIssues
       SearchJsonRequester(creds.auth).apply[Issue](url, r)?
     else
       let m = "Unable to initiate issue search request for '" + query + "'"
-      p(RequestError(where message' = consume m))
+      p(req.RequestError(where message' = consume m))
     end
 
     p
 
 class val SearchResults[A: Any val]
-  let _creds: Credentials
+  let _creds: req.Credentials
   let _converter: PaginatedSearchJsonConverter[A]
   let _prev_link: (String | None)
   let _next_link: (String | None)
@@ -40,8 +40,8 @@ class val SearchResults[A: Any val]
   let incomplete_results: Bool
   let items: Array[A] val
 
-  new val _create(creds: Credentials,
-    converter: JsonConverter[A],
+  new val _create(creds: req.Credentials,
+    converter: req.JsonConverter[A],
     total_count': I64,
     incomplete_results': Bool,
     items': Array[A] val,
@@ -56,7 +56,7 @@ class val SearchResults[A: Any val]
     _prev_link = prev_link
     _next_link = next_link
 
-  fun prev_page(): (Promise[(SearchResults[A] | RequestError)] | None) =>
+  fun prev_page(): (Promise[(SearchResults[A] | req.RequestError)] | None) =>
     match _prev_link
     | let prev: String =>
       _retrieve_link(prev)
@@ -64,7 +64,7 @@ class val SearchResults[A: Any val]
       None
     end
 
-  fun next_page(): (Promise[(SearchResults[A] | RequestError)] | None) =>
+  fun next_page(): (Promise[(SearchResults[A] | req.RequestError)] | None) =>
     match _next_link
     | let next: String =>
       _retrieve_link(next)
@@ -73,30 +73,30 @@ class val SearchResults[A: Any val]
     end
 
   fun _retrieve_link(link: String):
-    Promise[(SearchResults[A] | RequestError)]
+    Promise[(SearchResults[A] | req.RequestError)]
   =>
-    let p = Promise[(SearchResults[A] | RequestError)]
+    let p = Promise[(SearchResults[A] | req.RequestError)]
     let r = SearchResultReceiver[A](_creds, p, _converter)
 
     try
       SearchJsonRequester(_creds.auth).apply[A](link, r)?
     else
       let m = "Unable to get " + link
-      p(RequestError(where message' = consume m))
+      p(req.RequestError(where message' = consume m))
     end
     p
 
 class val PaginatedSearchJsonConverter[A: Any val]
-  let _creds: Credentials
-  let _converter: JsonConverter[A]
+  let _creds: req.Credentials
+  let _converter: req.JsonConverter[A]
 
-  new val create(creds: Credentials, converter: JsonConverter[A]) =>
+  new val create(creds: req.Credentials, converter: req.JsonConverter[A]) =>
     _creds = creds
     _converter = converter
 
   fun apply(json: JsonType val,
     link_header: String,
-    creds: Credentials): SearchResults[A] ?
+    creds: req.Credentials): SearchResults[A] ?
   =>
     let obj = JsonExtractor(json).as_object()?
     let total_count = JsonExtractor(obj("total_count")?).as_i64()?
@@ -124,12 +124,12 @@ class val PaginatedSearchJsonConverter[A: Any val]
       next)
 
 actor SearchResultReceiver[A: Any val]
-  let _creds: Credentials
-  let _p: Promise[(SearchResults[A] | RequestError)]
+  let _creds: req.Credentials
+  let _p: Promise[(SearchResults[A] | req.RequestError)]
   let _converter: PaginatedSearchJsonConverter[A]
 
-  new create(creds: Credentials,
-    p: Promise[(SearchResults[A] | RequestError)],
+  new create(creds: req.Credentials,
+    p: Promise[(SearchResults[A] | req.RequestError)],
     c: PaginatedSearchJsonConverter[A])
   =>
     _creds = creds
@@ -144,11 +144,11 @@ actor SearchResultReceiver[A: Any val]
         "Unable to convert json for " + json.string()
       end
 
-      _p(RequestError(where message' = m))
+      _p(req.RequestError(where message' = m))
     end
 
   be failure(status: U16, response_body: String, message: String) =>
-    _p(RequestError(status, response_body, message))
+    _p(req.RequestError(status, response_body, message))
 
 class SearchJsonRequester
   let _auth: TCPConnectAuth
@@ -169,7 +169,7 @@ class SearchJsonRequester
     receiver: SearchResultReceiver[A]) ?
   =>
     let valid_url = URL.valid(url)?
-    let r = RequestFactory("GET", valid_url)
+    let r = req.RequestFactory("GET", valid_url)
 
     let handler_factory =
       SearchJsonRequesterHandlerFactory[A](_auth, receiver)

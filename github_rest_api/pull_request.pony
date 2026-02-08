@@ -1,13 +1,13 @@
 use "json"
 use "net"
 use "promises"
-use "request"
-use "simple_uri_template"
+use req = "request"
+use sut = "simple_uri_template"
 
-type PullRequestOrError is (PullRequest | RequestError)
+type PullRequestOrError is (PullRequest | req.RequestError)
 
 class val PullRequest
-  let _creds: Credentials
+  let _creds: req.Credentials
 
   let number: I64
   let title: String
@@ -20,7 +20,7 @@ class val PullRequest
   let files_url: String
   let comments_url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     number': I64,
     title': String,
     body': (String | None),
@@ -50,9 +50,9 @@ primitive GetPullRequest
   fun apply(owner: String,
     repo: String,
     number: I64,
-    creds: Credentials): Promise[PullRequestOrError]
+    creds: req.Credentials): Promise[PullRequestOrError]
   =>
-      let u = SimpleURITemplate(
+      let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/pulls{/number}"
       end,
@@ -63,30 +63,30 @@ primitive GetPullRequest
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: ParseError =>
+    | let e: sut.ParseError =>
       Promise[PullRequestOrError].>apply(
-        RequestError(where message' = e.message))
+        req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: Credentials): Promise[PullRequestOrError] =>
+  fun by_url(url: String, creds: req.Credentials): Promise[PullRequestOrError] =>
     let p = Promise[PullRequestOrError]
-    let r = ResultReceiver[PullRequest](creds,
+    let r = req.ResultReceiver[PullRequest](creds,
       p,
       PullRequestJsonConverter)
 
     try
-      JsonRequester(creds.auth)(url, r)?
+      req.JsonRequester(creds.auth)(url, r)?
     else
       let m = recover val
         "Unable to initiate get_pull_request request to" + url
       end
-      p(RequestError(where message' = m))
+      p(req.RequestError(where message' = m))
     end
 
     p
 
-primitive PullRequestJsonConverter is JsonConverter[PullRequest]
-  fun apply(json: JsonType val, creds: Credentials): PullRequest ? =>
+primitive PullRequestJsonConverter is req.JsonConverter[PullRequest]
+  fun apply(json: JsonType val, creds: req.Credentials): PullRequest ? =>
     let obj = JsonExtractor(json).as_object()?
 
     let number = JsonExtractor(obj("number")?).as_i64()?

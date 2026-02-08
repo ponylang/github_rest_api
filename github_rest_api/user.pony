@@ -1,8 +1,8 @@
 use "json"
-use "request"
+use req = "request"
 
 class val User
-  let _creds: Credentials
+  let _creds: req.Credentials
   let login: String
   let id: I64
   let node_id: String
@@ -22,7 +22,7 @@ class val User
   let user_type: String
   let site_admin: Bool
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     login': String,
     id': I64,
     node_id': String,
@@ -62,8 +62,8 @@ class val User
     user_type = user_type'
     site_admin = site_admin'
 
-primitive UserJsonConverter is JsonConverter[User]
-  fun apply(json: JsonType val, creds: Credentials): User ? =>
+primitive UserJsonConverter is req.JsonConverter[User]
+  fun apply(json: JsonType val, creds: req.Credentials): User ? =>
     let obj = JsonExtractor(json).as_object()?
     let login = JsonExtractor(obj("login")?).as_string()?
     let id = JsonExtractor(obj("id")?).as_i64()?

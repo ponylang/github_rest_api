@@ -1,8 +1,8 @@
 use "json"
-use "request"
+use req = "request"
 
 class val Asset
-  let _creds: Credentials
+  let _creds: req.Credentials
 
   let id: I64
   let node_id: String
@@ -19,7 +19,7 @@ class val Asset
   let url: String
   let browser_download_url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     id': I64,
     node_id': String,
     name': String,
@@ -49,8 +49,8 @@ class val Asset
     url = url'
     browser_download_url = browser_download_url'
 
-primitive AssetJsonConverter is JsonConverter[Asset]
-  fun apply(json: JsonType val, creds: Credentials): Asset ? =>
+primitive AssetJsonConverter is req.JsonConverter[Asset]
+  fun apply(json: JsonType val, creds: req.Credentials): Asset ? =>
     let obj = JsonExtractor(json).as_object()?
     let id = JsonExtractor(obj("id")?).as_i64()?
     let node_id = JsonExtractor(obj("node_id")?).as_string()?

@@ -4,7 +4,7 @@ use "net"
 use "ssl/net"
 use plp = "pagination_link_parser"
 use "promises"
-use "request"
+use req = "request"
 
 // TODO: There's potentially a ton of duplication with HTTP get here
 // it exists so I don't have to warp the JsonConverter API
@@ -16,7 +16,7 @@ use "request"
 // so there's JsonConverter and PaginatingJsonConverter
 // and a type alias that is (JsonConverter | PagingatingJsonConverter)
 class val PaginatedList[A: Any val]
-  let _creds: Credentials
+  let _creds: req.Credentials
   let _converter: PaginatedListJsonConverter[A]
   // only for search. not present otherwise
   //let _total_results: USize
@@ -25,8 +25,8 @@ class val PaginatedList[A: Any val]
 
   let results: Array[A] val
 
-  new val _from_array(creds: Credentials,
-    converter: JsonConverter[A],
+  new val _from_array(creds: req.Credentials,
+    converter: req.JsonConverter[A],
     results': Array[A] val,
     prev_link: (String | None) = None,
     next_link: (String | None) = None)
@@ -37,7 +37,7 @@ class val PaginatedList[A: Any val]
     _prev_link = prev_link
     _next_link = next_link
 
-  fun prev_page(): (Promise[(PaginatedList[A] | RequestError)] | None) =>
+  fun prev_page(): (Promise[(PaginatedList[A] | req.RequestError)] | None) =>
     match _prev_link
     | let prev: String =>
       _retrieve_link(prev)
@@ -45,7 +45,7 @@ class val PaginatedList[A: Any val]
       None
     end
 
-  fun next_page(): (Promise[(PaginatedList[A] | RequestError)] | None) =>
+  fun next_page(): (Promise[(PaginatedList[A] | req.RequestError)] | None) =>
     match _next_link
     | let next: String =>
       _retrieve_link(next)
@@ -54,30 +54,30 @@ class val PaginatedList[A: Any val]
     end
 
   fun _retrieve_link(link: String):
-    Promise[(PaginatedList[A] | RequestError)]
+    Promise[(PaginatedList[A] | req.RequestError)]
   =>
-    let  p = Promise[(PaginatedList[A] | RequestError)]
+    let  p = Promise[(PaginatedList[A] | req.RequestError)]
     let r = PaginatedResultReceiver[A](_creds, p, _converter)
 
     try
       PaginatedJsonRequester(_creds.auth).apply[A](link, r)?
     else
       let m = "Unable to get " + link
-      p(RequestError(where message' = consume m))
+      p(req.RequestError(where message' = consume m))
     end
     p
 
 class val PaginatedListJsonConverter[A: Any val]
-  let _creds: Credentials
-  let _converter: JsonConverter[A]
+  let _creds: req.Credentials
+  let _converter: req.JsonConverter[A]
 
-  new val create(creds: Credentials, converter: JsonConverter[A]) =>
+  new val create(creds: req.Credentials, converter: req.JsonConverter[A]) =>
     _creds = creds
     _converter = converter
 
   fun apply(json: JsonType val,
     link_header: String,
-    creds: Credentials): PaginatedList[A] ?
+    creds: req.Credentials): PaginatedList[A] ?
   =>
     let entries = recover trn Array[A] end
 
@@ -103,12 +103,12 @@ class val PaginatedListJsonConverter[A: Any val]
       next)
 
 actor PaginatedResultReceiver[A: Any val]
-  let _creds: Credentials
-  let _p: Promise[(PaginatedList[A] | RequestError)]
+  let _creds: req.Credentials
+  let _p: Promise[(PaginatedList[A] | req.RequestError)]
   let _converter: PaginatedListJsonConverter[A]
 
-  new create(creds: Credentials,
-    p: Promise[(PaginatedList[A] | RequestError)],
+  new create(creds: req.Credentials,
+    p: Promise[(PaginatedList[A] | req.RequestError)],
     c: PaginatedListJsonConverter[A])
   =>
     _creds = creds
@@ -123,11 +123,11 @@ actor PaginatedResultReceiver[A: Any val]
         "Unable to convert json for " + json.string()
       end
 
-      _p(RequestError(where message' = m))
+      _p(req.RequestError(where message' = m))
     end
 
   be failure(status: U16, response_body: String, message: String) =>
-    _p(RequestError(status, response_body, message))
+    _p(req.RequestError(status, response_body, message))
 
 // TODO: Could this be more generic?
 class PaginatedJsonRequester
@@ -149,7 +149,7 @@ class PaginatedJsonRequester
     receiver: PaginatedResultReceiver[A]) ?
   =>
     let valid_url = URL.valid(url)?
-    let r = RequestFactory("GET", valid_url)
+    let r = req.RequestFactory("GET", valid_url)
 
     let handler_factory =
       PaginatedJsonRequesterHandlerFactory[A](_auth, receiver)

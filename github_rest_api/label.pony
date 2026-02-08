@@ -1,13 +1,13 @@
 use "collections"
 use "json"
 use "promises"
-use "request"
-use "simple_uri_template"
+use req = "request"
+use sut = "simple_uri_template"
 
-type LabelOrError is (Label | RequestError)
+type LabelOrError is (Label | req.RequestError)
 
 class val Label
-  let _creds: Credentials
+  let _creds: req.Credentials
   let id: I64
   let node_id: String
   let url: String
@@ -16,7 +16,7 @@ class val Label
   let default: Bool
   let description: (String | None)
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     id': I64,
     node_id': String,
     url': String,
@@ -38,11 +38,11 @@ primitive CreateLabel
   fun apply(owner: String,
     repo: String,
     name: String,
-    creds: Credentials,
+    creds: req.Credentials,
     color: (String | None) = None,
     description: (String | None) = None): Promise[LabelOrError]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/labels"
       end,
@@ -53,19 +53,19 @@ primitive CreateLabel
     match u
     | let u': String =>
       by_url(u', name, creds, color, description)
-    | let e: ParseError =>
+    | let e: sut.ParseError =>
       Promise[LabelOrError].>apply(
-        RequestError(where message' = e.message))
+        req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     name: String,
-    creds: Credentials,
+    creds: req.Credentials,
     color: (String | None) = None,
     description: (String | None) = None): Promise[LabelOrError]
   =>
     let p = Promise[LabelOrError]
-    let r = ResultReceiver[Label](creds,
+    let r = req.ResultReceiver[Label](creds,
       p,
       LabelJsonConverter)
 
@@ -80,12 +80,12 @@ primitive CreateLabel
     let json = JsonObject.from_map(m).string()
 
     try
-      HTTPPost(creds.auth)(url,
+      req.HTTPPost(creds.auth)(url,
         json,
         r,
         creds.token)?
     else
-      p(RequestError(
+      p(req.RequestError(
         where message' = "Unable to create label on " + url))
     end
 
@@ -95,9 +95,9 @@ primitive DeleteLabel
   fun apply(owner: String,
     repo: String,
     name: String,
-    creds: Credentials): Promise[DeletedOrError]
+    creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/labels{/name}"
       end,
@@ -108,32 +108,32 @@ primitive DeleteLabel
     match u
     | let u': String =>
       by_url(u', name, creds)
-    | let e: ParseError =>
-      Promise[DeletedOrError].>apply(
-        RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[req.DeletedOrError].>apply(
+        req.RequestError(where message' = e.message))
     end
 
 
   fun by_url(url: String,
     name: String,
-    creds: Credentials): Promise[DeletedOrError]
+    creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    let p = Promise[DeletedOrError]
-    let r = DeletedResultReceiver(p)
+    let p = Promise[req.DeletedOrError]
+    let r = req.DeletedResultReceiver(p)
 
     try
-      HTTPDelete(creds.auth)(url,
+      req.HTTPDelete(creds.auth)(url,
         r,
         creds.token)?
     else
-      p(RequestError(
+      p(req.RequestError(
         where message' = "Unable to delete label on " + url))
     end
 
     p
 
-primitive LabelJsonConverter is JsonConverter[Label]
-  fun apply(json: JsonType val, creds: Credentials): Label ? =>
+primitive LabelJsonConverter is req.JsonConverter[Label]
+  fun apply(json: JsonType val, creds: req.Credentials): Label ? =>
     let obj = JsonExtractor(json).as_object()?
     let id = JsonExtractor(obj("id")?).as_i64()?
     let node_id = JsonExtractor(obj("node_id")?).as_string()?

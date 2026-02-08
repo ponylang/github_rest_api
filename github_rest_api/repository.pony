@@ -1,11 +1,11 @@
 use "json"
 use "net"
 use "promises"
-use "request"
-use "simple_uri_template"
+use req = "request"
+use sut = "simple_uri_template"
 
 class val Repository
-  let _creds: Credentials
+  let _creds: req.Credentials
   let id: I64
   let node_id: String
   let name: String
@@ -89,7 +89,7 @@ class val Repository
   let svn_url: String
   // TODO temp_clone_token: ? | None
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     id': I64,
     node_id': String,
     name': String,
@@ -243,7 +243,7 @@ class val Repository
     color: (String | None) = None,
     label_description: (String | None) = None): Promise[LabelOrError]
   =>
-    let u = SimpleURITemplate(labels_url,
+    let u = sut.SimpleURITemplate(labels_url,
       recover val Array[(String, String)] end)
 
     match u
@@ -253,8 +253,8 @@ class val Repository
         _creds,
         color,
         label_description)
-    | let e: ParseError =>
-      Promise[LabelOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[LabelOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun create_release(tag_name: String,
@@ -264,7 +264,7 @@ class val Repository
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
-    let u = SimpleURITemplate(releases_url,
+    let u = sut.SimpleURITemplate(releases_url,
       recover val Array[(String, String)] end)
 
     match u
@@ -277,49 +277,49 @@ class val Repository
         target_commitish,
         draft,
         prerelease)
-    | let e: ParseError =>
-      Promise[ReleaseOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[ReleaseOrError].>apply(req.RequestError(where message' = e.message))
     end
 
-  fun delete_label(label_name: String): Promise[DeletedOrError] =>
-    let u = SimpleURITemplate(labels_url,
+  fun delete_label(label_name: String): Promise[req.DeletedOrError] =>
+    let u = sut.SimpleURITemplate(labels_url,
       recover val [ ("name", label_name) ] end)
 
     match u
     | let u': String =>
       DeleteLabel.by_url(u', label_name, _creds)
-    | let e: ParseError =>
-      Promise[DeletedOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[req.DeletedOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun get_commit(sha: String): Promise[CommitOrError] =>
-     let u = SimpleURITemplate(
+     let u = sut.SimpleURITemplate(
       commits_url,
       recover val [("sha", sha)] end)
 
     match u
     | let u': String =>
       GetCommit.by_url(u', _creds)
-    | let e: ParseError =>
-      Promise[CommitOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[CommitOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun get_issue(number: I64): Promise[IssueOrError] =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       issues_url,
       recover val [("number", number.string())] end)
 
     match u
     | let u': String =>
       GetIssue.by_url(u', _creds)
-    | let e: ParseError =>
-      Promise[IssueOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[IssueOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun get_issues(labels: String = "", state: String = "open")
-    : Promise[(PaginatedList[Issue] | RequestError)]
+    : Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
-    let u = SimpleURITemplate(issues_url,
+    let u = sut.SimpleURITemplate(issues_url,
       recover val Array[(String, String)] end)
 
     match u
@@ -332,31 +332,31 @@ class val Repository
         end
         p
       end
-      GetRepositoryIssues.by_url(u' + QueryParams(params), _creds)
-    | let e: ParseError =>
-      Promise[(PaginatedList[Issue] | RequestError)].>apply(
-        RequestError(where message' = e.message))
+      GetRepositoryIssues.by_url(u' + req.QueryParams(params), _creds)
+    | let e: sut.ParseError =>
+      Promise[(PaginatedList[Issue] | req.RequestError)].>apply(
+        req.RequestError(where message' = e.message))
     end
 
   fun get_pull_request(number: I64): Promise[PullRequestOrError] =>
-      let u = SimpleURITemplate(
+      let u = sut.SimpleURITemplate(
       pulls_url,
       recover val [("number", number.string())] end)
 
     match u
     | let u': String =>
       GetPullRequest.by_url(u', _creds)
-    | let e: ParseError =>
+    | let e: sut.ParseError =>
       Promise[PullRequestOrError].>apply(
-        RequestError(where message' = e.message))
+        req.RequestError(where message' = e.message))
     end
 
 primitive GetRepository
   fun apply(owner: String,
     repo: String,
-    creds: Credentials): Promise[RepositoryOrError]
+    creds: req.Credentials): Promise[RepositoryOrError]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}"
       end,
@@ -367,22 +367,22 @@ primitive GetRepository
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: ParseError =>
+    | let e: sut.ParseError =>
       Promise[RepositoryOrError].>apply(
-        RequestError(where message' = e.message))
+        req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: Credentials): Promise[RepositoryOrError] =>
+  fun by_url(url: String, creds: req.Credentials): Promise[RepositoryOrError] =>
     let p = Promise[RepositoryOrError]
-    let r = ResultReceiver[Repository](creds,
+    let r = req.ResultReceiver[Repository](creds,
       p,
       RepositoryJsonConverter)
 
     try
-      JsonRequester(creds.auth)(url, r)?
+      req.JsonRequester(creds.auth)(url, r)?
     else
       let m = "Unable to initiate get_repo request to " + url
-      p(RequestError(where message' = consume m))
+      p(req.RequestError(where message' = consume m))
     end
 
     p
@@ -390,9 +390,9 @@ primitive GetRepository
 primitive GetRepositoryLabels
   fun apply(owner: String,
     repo: String,
-    creds: Credentials): Promise[(PaginatedList[Label] | RequestError)]
+    creds: req.Credentials): Promise[(PaginatedList[Label] | req.RequestError)]
   =>
-     let u = SimpleURITemplate(
+     let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/labels"
       end,
@@ -403,33 +403,33 @@ primitive GetRepositoryLabels
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: ParseError =>
-      Promise[(PaginatedList[Label] | RequestError)].>apply(
-        RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[(PaginatedList[Label] | req.RequestError)].>apply(
+        req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
-    creds: Credentials): Promise[(PaginatedList[Label] | RequestError)]
+    creds: req.Credentials): Promise[(PaginatedList[Label] | req.RequestError)]
   =>
     let lc = LabelJsonConverter
     let plc = PaginatedListJsonConverter[Label](creds, lc)
-    let p = Promise[(PaginatedList[Label] | RequestError)]
+    let p = Promise[(PaginatedList[Label] | req.RequestError)]
     let r = PaginatedResultReceiver[Label](creds, p, plc)
 
     try
       PaginatedJsonRequester(creds.auth).apply[Label](url, r)?
     else
       let m = "Unable to initiate get_repo request to " + url
-      p(RequestError(where message' = consume m))
+      p(req.RequestError(where message' = consume m))
     end
 
     p
 
 primitive GetOrganizationRepositories
   fun apply(org: String,
-    creds: Credentials): Promise[(PaginatedList[Repository] | RequestError)]
+    creds: req.Credentials): Promise[(PaginatedList[Repository] | req.RequestError)]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/orgs{/org}/repos"
       end,
@@ -440,31 +440,31 @@ primitive GetOrganizationRepositories
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: ParseError =>
-      Promise[(PaginatedList[Repository] | RequestError)].>apply(
-        RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[(PaginatedList[Repository] | req.RequestError)].>apply(
+        req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
-    creds: Credentials): Promise[(PaginatedList[Repository] | RequestError)]
+    creds: req.Credentials): Promise[(PaginatedList[Repository] | req.RequestError)]
   =>
     let rc = RepositoryJsonConverter
     let plc = PaginatedListJsonConverter[Repository](creds, rc)
-    let p = Promise[(PaginatedList[Repository] | RequestError)]
+    let p = Promise[(PaginatedList[Repository] | req.RequestError)]
     let r = PaginatedResultReceiver[Repository](creds, p, plc)
 
     try
       PaginatedJsonRequester(creds.auth).apply[Repository](url, r)?
     else
       let m = "Unable to initiate get_org_repos request to " + url
-      p(RequestError(where message' = consume m))
+      p(req.RequestError(where message' = consume m))
     end
 
     p
 
-primitive RepositoryJsonConverter is JsonConverter[Repository]
+primitive RepositoryJsonConverter is req.JsonConverter[Repository]
   fun apply(json: JsonType val,
-    creds: Credentials): Repository ?
+    creds: req.Credentials): Repository ?
   =>
     let obj = JsonExtractor(json).as_object()?
     let id = JsonExtractor(obj("id")?).as_i64()?
