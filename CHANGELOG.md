@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Fixed
 
+- Fix always-true redirect status check in HTTP handlers ([PR #53](https://github.com/ponylang/github_rest_api/pull/53))
 
 ### Added
 
