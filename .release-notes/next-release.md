@@ -86,3 +86,18 @@ github.get_repo("ponylang", "ponyc").next[None]({
 
 The `is_pull_request` field on `Issue` indicates whether an issue is actually a pull request, since the GitHub issues API returns both.
 
+## Add QueryParams for building URL query strings
+
+Added a `QueryParams` primitive in the `request` package that builds URL query strings from key-value pairs with proper RFC 3986 percent-encoding.
+
+```pony
+let params = recover val
+  [("state", "open"); ("labels", "bug,enhancement")]
+end
+let query = QueryParams(params)
+// "?state=open&labels=bug%2Cenhancement"
+```
+
+## Fix missing URL encoding of query parameter values
+
+Query parameter values passed to `GetRepositoryIssues` and `Repository.get_issues()` are now properly percent-encoded. Previously, values containing special characters (spaces, `&`, `=`, etc.) would produce malformed URLs.

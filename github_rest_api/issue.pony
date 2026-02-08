@@ -114,8 +114,15 @@ primitive GetRepositoryIssues
 
     match u
     | let u': String =>
-      let url = _build_url(u', labels, state)
-      by_url(url, creds)
+      let params = recover val
+        let p = Array[(String, String)]
+        p.push(("state", state))
+        if labels.size() > 0 then
+          p.push(("labels", labels))
+        end
+        p
+      end
+      by_url(u' + QueryParams(params), creds)
     | let e: ParseError =>
       Promise[(PaginatedList[Issue] | RequestError)].>apply(
         RequestError(where message' = e.message))
@@ -138,15 +145,6 @@ primitive GetRepositoryIssues
 
     p
 
-  fun _build_url(base: String, labels: String, state: String): String =>
-    let query = recover iso String end
-    query.append("?state=")
-    query.append(state)
-    if labels.size() > 0 then
-      query.append("&labels=")
-      query.append(labels)
-    end
-    base + consume query
 
 primitive IssueJsonConverter is JsonConverter[Issue]
   fun apply(json: JsonType val, creds: Credentials): Issue ? =>

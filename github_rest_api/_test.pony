@@ -1,5 +1,6 @@
 use "pony_test"
 use plp = "pagination_link_parser"
+use req = "request"
 use sut = "simple_uri_template"
 
 
@@ -12,4 +13,5 @@ actor \nodoc\ Main is TestList
 
   fun tag tests(test: PonyTest) =>
     plp.Tests.make().tests(test)
+    req.QueryParamsTests.make().tests(test)
     sut.Tests.make().tests(test)
