@@ -16,6 +16,8 @@ class val Issue
   let state: (String | None)
   let body: (String | None)
 
+  let is_pull_request: Bool
+
   let url: String
   let respository_url: String
   let labels_url: String
@@ -35,7 +37,8 @@ class val Issue
     user': User,
     labels': Array[Label] val,
     state': (String | None),
-    body': (String | None))
+    body': (String | None),
+    is_pull_request': Bool = false)
   =>
     _creds = creds
     url = url'
@@ -50,6 +53,7 @@ class val Issue
     labels = labels'
     state = state'
     body = body'
+    is_pull_request = is_pull_request'
 
   fun create_comment(comment: String): Promise[IssueCommentOrError] =>
     CreateIssueComment.by_url(comments_url, comment, _creds)
@@ -93,6 +97,57 @@ primitive GetIssue
 
     p
 
+primitive GetRepositoryIssues
+  fun apply(owner: String,
+    repo: String,
+    creds: Credentials,
+    labels: String = "",
+    state: String = "open"): Promise[(PaginatedList[Issue] | RequestError)]
+  =>
+    let u = SimpleURITemplate(
+      recover val
+        "https://api.github.com/repos{/owner}{/repo}/issues"
+      end,
+      recover val
+        [ ("owner", owner); ("repo", repo) ]
+      end)
+
+    match u
+    | let u': String =>
+      let url = _build_url(u', labels, state)
+      by_url(url, creds)
+    | let e: ParseError =>
+      Promise[(PaginatedList[Issue] | RequestError)].>apply(
+        RequestError(where message' = e.message))
+    end
+
+  fun by_url(url: String,
+    creds: Credentials): Promise[(PaginatedList[Issue] | RequestError)]
+  =>
+    let ic = IssueJsonConverter
+    let plc = PaginatedListJsonConverter[Issue](creds, ic)
+    let p = Promise[(PaginatedList[Issue] | RequestError)]
+    let r = PaginatedResultReceiver[Issue](creds, p, plc)
+
+    try
+      PaginatedJsonRequester(creds.auth).apply[Issue](url, r)?
+    else
+      let m = "Unable to initiate get_repository_issues request to " + url
+      p(RequestError(where message' = consume m))
+    end
+
+    p
+
+  fun _build_url(base: String, labels: String, state: String): String =>
+    let query = recover iso String end
+    query.append("?state=")
+    query.append(state)
+    if labels.size() > 0 then
+      query.append("&labels=")
+      query.append(labels)
+    end
+    base + consume query
+
 primitive IssueJsonConverter is JsonConverter[Issue]
   fun apply(json: JsonType val, creds: Credentials): Issue ? =>
     let obj = JsonExtractor(json).as_object()?
@@ -116,6 +171,8 @@ primitive IssueJsonConverter is JsonConverter[Issue]
       labels.push(l)
     end
 
+    let is_pull_request = obj.contains("pull_request")
+
     Issue(creds,
       url,
       respository_url,
@@ -128,4 +185,5 @@ primitive IssueJsonConverter is JsonConverter[Issue]
       user,
       consume labels,
       state,
-      body)
+      body,
+      is_pull_request)

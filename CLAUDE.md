@@ -27,9 +27,9 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 
 ```
 github_rest_api/
-  github.pony              -- GitHub class (entry point, only has get_repo)
+  github.pony              -- GitHub class (entry point, has get_repo and get_org_repos)
   repository.pony          -- Repository model + GetRepository, GetRepositoryLabels
-  issue.pony               -- Issue model + GetIssue
+  issue.pony               -- Issue model + GetIssue, GetRepositoryIssues
   pull_request.pony        -- PullRequest model + GetPullRequest
   pull_request_base.pony   -- PullRequestBase model (head/base refs)
   pull_request_file.pony   -- PullRequestFile model + GetPullRequestFiles
@@ -74,13 +74,14 @@ All API operations return `Promise[(T | RequestError)]`. The flow is:
 
 Models have methods that chain to further API calls:
 - `GitHub.get_repo(owner, repo)` -> `Repository`
-- `Repository.create_label(...)`, `.create_release(...)`, `.delete_label(...)`, `.get_commit(...)`, `.get_issue(...)`, `.get_pull_request(...)`
+- `GitHub.get_org_repos(org)` -> `PaginatedList[Repository]`
+- `Repository.create_label(...)`, `.create_release(...)`, `.delete_label(...)`, `.get_commit(...)`, `.get_issue(...)`, `.get_issues(...)`, `.get_pull_request(...)`
 - `Issue.create_comment(...)`, `.get_comments()`
 - `PullRequest.get_files()`
 
 ### Pagination
 
-`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the PEG-based `ExtractPaginationLinks` parser. Currently used by `GetRepositoryLabels`.
+`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the PEG-based `ExtractPaginationLinks` parser. Used by `GetRepositoryLabels`, `GetOrganizationRepositories`, and `GetRepositoryIssues`.
 
 ### Auth
 
@@ -114,7 +115,7 @@ commonly-used categories that a GitHub API library would typically need.
 | `/repos/{owner}/{repo}` | GET | GetRepository |
 | `/repos/{owner}/{repo}` | PATCH | **missing** |
 | `/repos/{owner}/{repo}` | DELETE | **missing** |
-| `/orgs/{org}/repos` | GET | **missing** |
+| `/orgs/{org}/repos` | GET | GetOrganizationRepositories |
 | `/orgs/{org}/repos` | POST | **missing** |
 | `/user/repos` | GET | **missing** |
 | `/user/repos` | POST | **missing** |
@@ -131,7 +132,7 @@ commonly-used categories that a GitHub API library would typically need.
 | Endpoint | Method | Library |
 |----------|--------|---------|
 | `/repos/{owner}/{repo}/issues/{number}` | GET | GetIssue |
-| `/repos/{owner}/{repo}/issues` | GET (list) | **missing** |
+| `/repos/{owner}/{repo}/issues` | GET (list) | GetRepositoryIssues |
 | `/repos/{owner}/{repo}/issues` | POST | **missing** |
 | `/repos/{owner}/{repo}/issues/{number}` | PATCH | **missing** |
 | `/repos/{owner}/{repo}/issues/{number}/lock` | PUT | **missing** |
