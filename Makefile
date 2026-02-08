@@ -12,9 +12,9 @@ tests_binary := $(BUILD_DIR)/$(PACKAGE)
 docs_dir := build/$(PACKAGE)-docs
 
 ifdef config
-	ifeq (,$(filter $(config),debug release))
-		$(error Unknown configuration "$(config)")
-	endif
+  ifeq (,$(filter $(config),debug release))
+    $(error Unknown configuration "$(config)")
+  endif
 endif
 
 ifeq ($(config),release)
@@ -24,15 +24,15 @@ else
 endif
 
 ifeq (,$(filter $(MAKECMDGOALS),clean docs realclean TAGS))
-	ifeq ($(ssl), 3.0.x)
-		SSL = -Dopenssl_3.0.x
-	else ifeq ($(ssl), 1.1.x)
-		SSL = -Dopenssl_1.1.x
-	else ifeq ($(ssl), 0.9.0)
-		SSL = -Dopenssl_0.9.0
-	else
-		$(error Unknown SSL version "$(ssl)". Must set using 'ssl=FOO')
-	endif
+  ifeq ($(ssl), 3.0.x)
+    SSL = -Dopenssl_3.0.x
+  else ifeq ($(ssl), 1.1.x)
+    SSL = -Dopenssl_1.1.x
+  else ifeq ($(ssl), 0.9.0)
+    SSL = -Dopenssl_0.9.0
+  else
+    $(error Unknown SSL version "$(ssl)". Must set using 'ssl=FOO')
+  endif
 endif
 
 PONYC := $(PONYC) $(SSL)
