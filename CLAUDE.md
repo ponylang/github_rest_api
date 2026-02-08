@@ -52,6 +52,8 @@ github_rest_api/
     http_delete.pony       -- HTTPDelete (DELETE, expects 204)
     request_error.pony     -- RequestError (status, response_body, message)
     json.pony              -- JsonConverter interface
+    query_params.pony      -- QueryParams (URL query string builder with percent-encoding)
+    _test.pony             -- QueryParams tests (example + property-based)
   simple_uri_template/     -- RFC 6570 path segment expansion (PEG-based; temporary home, intended to be extracted to its own library)
   pagination_link_parser/  -- RFC 5988 Link header parser (PEG-based)
   _test.pony               -- Test runner (delegates to subpackage tests)

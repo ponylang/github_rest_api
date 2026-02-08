@@ -324,8 +324,15 @@ class val Repository
 
     match u
     | let u': String =>
-      let issues_url' = GetRepositoryIssues._build_url(u', labels, state)
-      GetRepositoryIssues.by_url(issues_url', _creds)
+      let params = recover val
+        let p = Array[(String, String)]
+        p.push(("state", state))
+        if labels.size() > 0 then
+          p.push(("labels", labels))
+        end
+        p
+      end
+      GetRepositoryIssues.by_url(u' + QueryParams(params), _creds)
     | let e: ParseError =>
       Promise[(PaginatedList[Issue] | RequestError)].>apply(
         RequestError(where message' = e.message))

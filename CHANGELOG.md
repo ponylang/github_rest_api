@@ -7,12 +7,14 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 
 - Fix always-true redirect status check in HTTP handlers ([PR #53](https://github.com/ponylang/github_rest_api/pull/53))
+- Fix missing URL encoding of query parameter values in GetRepositoryIssues ([PR #59](https://github.com/ponylang/github_rest_api/pull/59))
 
 ### Added
 
 - Add pagination support to search results ([PR #50](https://github.com/ponylang/github_rest_api/pull/50))
 - Add GetOrganizationRepositories ([PR #52](https://github.com/ponylang/github_rest_api/pull/52))
 - Add GetRepositoryIssues with paginated issue listing ([PR #57](https://github.com/ponylang/github_rest_api/pull/57))
+- Add QueryParams for building URL query strings with percent-encoding ([PR #59](https://github.com/ponylang/github_rest_api/pull/59))
 
 ### Changed
 
