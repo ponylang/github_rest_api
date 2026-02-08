@@ -15,11 +15,13 @@ All notable changes to this project will be documented in this file. This projec
 - Add GetOrganizationRepositories ([PR #52](https://github.com/ponylang/github_rest_api/pull/52))
 - Add GetRepositoryIssues with paginated issue listing ([PR #57](https://github.com/ponylang/github_rest_api/pull/57))
 - Add QueryParams for building URL query strings with percent-encoding ([PR #59](https://github.com/ponylang/github_rest_api/pull/59))
+- Add IssuePullRequest model for pull request metadata on issues ([PR #62](https://github.com/ponylang/github_rest_api/pull/62))
 
 ### Changed
 
 - Update ponylang/peg dependency to 0.1.6 ([PR #42](https://github.com/ponylang/github_rest_api/pull/42))
 - Make several Repository fields nullable to match GitHub API ([PR #52](https://github.com/ponylang/github_rest_api/pull/52))
+- Replace `is_pull_request: Bool` with `pull_request: (IssuePullRequest | None)` on Issue ([PR #62](https://github.com/ponylang/github_rest_api/pull/62))
 
 ## [0.2.1] - 2025-07-16
 

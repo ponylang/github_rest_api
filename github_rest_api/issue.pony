@@ -16,7 +16,7 @@ class val Issue
   let state: (String | None)
   let body: (String | None)
 
-  let is_pull_request: Bool
+  let pull_request: (IssuePullRequest | None)
 
   let url: String
   let respository_url: String
@@ -38,7 +38,7 @@ class val Issue
     labels': Array[Label] val,
     state': (String | None),
     body': (String | None),
-    is_pull_request': Bool = false)
+    pull_request': (IssuePullRequest | None) = None)
   =>
     _creds = creds
     url = url'
@@ -53,7 +53,7 @@ class val Issue
     labels = labels'
     state = state'
     body = body'
-    is_pull_request = is_pull_request'
+    pull_request = pull_request'
 
   fun create_comment(comment: String): Promise[IssueCommentOrError] =>
     CreateIssueComment.by_url(comments_url, comment, _creds)
@@ -169,7 +169,12 @@ primitive IssueJsonConverter is req.JsonConverter[Issue]
       labels.push(l)
     end
 
-    let is_pull_request = obj.contains("pull_request")
+    let pull_request =
+      if obj.contains("pull_request") then
+        IssuePullRequestJsonConverter(obj("pull_request")?, creds)?
+      else
+        None
+      end
 
     Issue(creds,
       url,
@@ -184,4 +189,4 @@ primitive IssueJsonConverter is req.JsonConverter[Issue]
       consume labels,
       state,
       body,
-      is_pull_request)
+      pull_request)
