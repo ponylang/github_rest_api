@@ -390,4 +390,3 @@ These API categories have zero coverage in the library:
 | CommitFile sparse | Only has sha, status, filename; missing additions, deletions, changes, patch |
 | No rate limiting | No handling of rate limit headers or 429 responses |
 | No conditional requests | No ETag/If-None-Match support |
-| HTTP error in redirects | `http_get.pony:108` has `(_status != 301) or (_status != 307)` which is always true (should be `and`) |

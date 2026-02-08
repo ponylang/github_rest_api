@@ -233,6 +233,6 @@ class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler
       else
         _receiver.failure(_status, "", "Failed to parse response")
       end
-    elseif (_status != 301) or (_status != 307) then
+    elseif (_status != 301) and (_status != 307) then
       _receiver.failure(_status, consume y, "")
     end
