@@ -87,7 +87,7 @@ primitive GetIssue
     let receiver = req.ResultReceiver[Issue](creds, p, IssueJsonConverter)
 
     try
-      req.JsonRequester(creds.auth)(url, receiver)?
+      req.JsonRequester(creds)(url, receiver)?
     else
       let m = recover val
         "Unable to initiate get_issue request to" + url
@@ -137,7 +137,7 @@ primitive GetRepositoryIssues
     let r = PaginatedResultReceiver[Issue](creds, p, plc)
 
     try
-      PaginatedJsonRequester(creds.auth).apply[Issue](url, r)?
+      PaginatedJsonRequester(creds).apply[Issue](url, r)?
     else
       let m = "Unable to initiate get_repository_issues request to " + url
       p(req.RequestError(where message' = consume m))
