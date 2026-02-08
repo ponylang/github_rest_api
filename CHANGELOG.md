@@ -10,10 +10,12 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - Add pagination support to search results ([PR #50](https://github.com/ponylang/github_rest_api/pull/50))
+- Add GetOrganizationRepositories ([PR #52](https://github.com/ponylang/github_rest_api/pull/52))
 
 ### Changed
 
 - Update ponylang/peg dependency to 0.1.6 ([PR #42](https://github.com/ponylang/github_rest_api/pull/42))
+- Make several Repository fields nullable to match GitHub API ([PR #52](https://github.com/ponylang/github_rest_api/pull/52))
 
 ## [0.2.1] - 2025-07-16
 

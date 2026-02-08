@@ -19,3 +19,39 @@ primitive HandleResults
     end
 ```
 
+## Add GetOrganizationRepositories
+
+List all repositories in a GitHub organization with pagination support.
+
+```pony
+github.get_org_repos("ponylang").next[None]({
+  (result: (PaginatedList[Repository] | RequestError)) =>
+    match result
+    | let repos: PaginatedList[Repository] =>
+      for repo in repos.results.values() do
+        env.out.print(repo.full_name)
+      end
+    end
+})
+```
+
+## Make several Repository fields nullable to match GitHub API
+
+Several `Repository` fields are now nullable to match the GitHub API's actual response shape:
+- `network_count` and `subscribers_count`: `I64` → `(I64 | None)`
+- `description`, `homepage`, and `language`: `String` → `(String | None)`
+
+Code that accesses these fields directly will need to match on the union:
+
+Before:
+```pony
+env.out.print(repo.description)
+```
+
+After:
+```pony
+match repo.description
+| let d: String => env.out.print(d)
+end
+```
+

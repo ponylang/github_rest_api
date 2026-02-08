@@ -15,3 +15,8 @@ class val GitHub
   =>
     GetRepository(owner, repo, _creds)
 
+  fun get_org_repos(org: String)
+    : Promise[(PaginatedList[Repository] | RequestError)]
+  =>
+    GetOrganizationRepositories(org, _creds)
+
