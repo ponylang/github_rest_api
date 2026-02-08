@@ -1,14 +1,14 @@
 use "json"
-use "request"
+use req = "request"
 
 class val GitCommit
-  let _creds: Credentials
+  let _creds: req.Credentials
   let author: GitPerson
   let committer: GitPerson
   let message: String
   let url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     author': GitPerson,
     committer': GitPerson,
     message': String,
@@ -20,8 +20,8 @@ class val GitCommit
     message = message'
     url = url'
 
-primitive GitCommitJsonConverter is JsonConverter[GitCommit]
-  fun apply(json: JsonType val, creds: Credentials): GitCommit ? =>
+primitive GitCommitJsonConverter is req.JsonConverter[GitCommit]
+  fun apply(json: JsonType val, creds: req.Credentials): GitCommit ? =>
     let obj = JsonExtractor(json).as_object()?
     let author = GitPersonJsonConverter(obj("author")?, creds)?
     let committer = GitPersonJsonConverter(obj("committer")?, creds)?

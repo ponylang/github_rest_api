@@ -2,21 +2,21 @@ use "collections"
 use "json"
 use "net"
 use "promises"
-use "request"
-use "simple_uri_template"
+use req = "request"
+use sut = "simple_uri_template"
 
-type IssueCommentOrError is (IssueComment | RequestError)
+type IssueCommentOrError is (IssueComment | req.RequestError)
 type IssueComments is Array[IssueComment] val
-type IssueCommentsOrError is (IssueComments | RequestError)
+type IssueCommentsOrError is (IssueComments | req.RequestError)
 
 class val IssueComment
-  let _creds: Credentials
+  let _creds: req.Credentials
   let body: String
   let url: String
   let html_url: String
   let issue_url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     body': String,
     url': String,
     html_url': String,
@@ -33,24 +33,24 @@ primitive CreateIssueComment
     repo: String,
     number: I64,
     comment: String,
-    creds: Credentials): Promise[IssueCommentOrError]
+    creds: req.Credentials): Promise[IssueCommentOrError]
   =>
     let u = IssueCommentsURL(owner, repo, number)
 
     match u
     | let u': String =>
       by_url(u', comment, creds)
-    | let e: ParseError =>
+    | let e: sut.ParseError =>
       Promise[IssueCommentOrError].>apply(
-        RequestError(where message' = e.message))
+        req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     comment: String,
-    creds: Credentials): Promise[IssueCommentOrError]
+    creds: req.Credentials): Promise[IssueCommentOrError]
   =>
     let p = Promise[IssueCommentOrError]
-    let r = ResultReceiver[IssueComment](creds,
+    let r = req.ResultReceiver[IssueComment](creds,
       p,
       IssueCommentJsonConverter)
 
@@ -59,12 +59,12 @@ primitive CreateIssueComment
     let json = JsonObject.from_map(m).string()
 
     try
-      HTTPPost(creds.auth)(url,
+      req.HTTPPost(creds.auth)(url,
         json,
         r,
         creds.token)?
     else
-      p(RequestError(
+      p(req.RequestError(
         where message' = "Unable to create issue comment on " + url))
     end
 
@@ -74,39 +74,39 @@ primitive GetIssueComments
   fun apply(owner: String,
     repo: String,
     number: I64,
-    creds: Credentials): Promise[IssueCommentsOrError]
+    creds: req.Credentials): Promise[IssueCommentsOrError]
   =>
     let u = IssueCommentsURL(owner, repo, number)
 
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: ParseError =>
+    | let e: sut.ParseError =>
       Promise[IssueCommentsOrError].>apply(
-        RequestError(where message' = e.message))
+        req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: Credentials): Promise[IssueCommentsOrError] =>
+  fun by_url(url: String, creds: req.Credentials): Promise[IssueCommentsOrError] =>
     let p = Promise[IssueCommentsOrError]
-    let r = ResultReceiver[IssueComments](creds,
+    let r = req.ResultReceiver[IssueComments](creds,
       p,
       IssueCommentsJsonConverter)
 
     try
-      JsonRequester(creds.auth)(url, r)?
+      req.JsonRequester(creds.auth)(url, r)?
     else
       let m = recover val
         "Unable to initiate get_comments request to" + url
       end
 
-      p(RequestError(where message' = m))
+      p(req.RequestError(where message' = m))
     end
 
     p
 
 primitive IssueCommentsURL
-  fun apply(owner: String, repo: String, number: I64): (String | ParseError) =>
-    SimpleURITemplate(
+  fun apply(owner: String, repo: String, number: I64): (String | sut.ParseError) =>
+    sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/issues{/number}/comments"
       end,
@@ -114,9 +114,9 @@ primitive IssueCommentsURL
         [ ("owner", owner); ("repo", repo); ("number", number.string()) ]
       end)
 
-primitive IssueCommentJsonConverter is JsonConverter[IssueComment]
+primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
   fun apply(json: JsonType val,
-    creds: Credentials): IssueComment ?
+    creds: req.Credentials): IssueComment ?
   =>
     let obj = JsonExtractor(json).as_object()?
     let body = JsonExtractor(obj("body")?).as_string()?
@@ -126,9 +126,9 @@ primitive IssueCommentJsonConverter is JsonConverter[IssueComment]
 
     IssueComment(creds, body, url, html_url, issue_url)
 
-primitive IssueCommentsJsonConverter is JsonConverter[Array[IssueComment] val]
+primitive IssueCommentsJsonConverter is req.JsonConverter[Array[IssueComment] val]
   fun apply(json: JsonType val,
-    creds: Credentials): Array[IssueComment] val ?
+    creds: req.Credentials): Array[IssueComment] val ?
   =>
     let comments = recover trn Array[IssueComment] end
 

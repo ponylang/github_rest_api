@@ -1,12 +1,12 @@
 use "json"
 use "promises"
-use "request"
-use "simple_uri_template"
+use req = "request"
+use sut = "simple_uri_template"
 
-type CommitOrError is (Commit | RequestError)
+type CommitOrError is (Commit | req.RequestError)
 
 class val Commit
-  let _creds: Credentials
+  let _creds: req.Credentials
   let sha: String
   let files: Array[CommitFile] val
   let git_commit: GitCommit
@@ -14,7 +14,7 @@ class val Commit
   let html_url: String
   let comments_url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     sha': String,
     files': Array[CommitFile] val,
     git_commit': GitCommit,
@@ -34,9 +34,9 @@ primitive GetCommit
   fun apply(owner: String,
     repo: String,
     sha: String,
-    creds: Credentials): Promise[CommitOrError]
+    creds: req.Credentials): Promise[CommitOrError]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/commits{/sha}"
       end,
@@ -47,27 +47,27 @@ primitive GetCommit
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: ParseError =>
-      Promise[CommitOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[CommitOrError].>apply(req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: Credentials): Promise[CommitOrError] =>
+  fun by_url(url: String, creds: req.Credentials): Promise[CommitOrError] =>
     let p = Promise[CommitOrError]
-    let receiver = ResultReceiver[Commit](creds, p, CommitJsonConverter)
+    let receiver = req.ResultReceiver[Commit](creds, p, CommitJsonConverter)
 
     try
-      JsonRequester(creds.auth)(url, receiver)?
+      req.JsonRequester(creds.auth)(url, receiver)?
     else
       let m = recover val
         "Unable to initiate get commit request to" + url
       end
-      p(RequestError(where message' = m))
+      p(req.RequestError(where message' = m))
     end
 
     p
 
-primitive CommitJsonConverter is JsonConverter[Commit]
-  fun apply(json: JsonType val, creds: Credentials): Commit ? =>
+primitive CommitJsonConverter is req.JsonConverter[Commit]
+  fun apply(json: JsonType val, creds: req.Credentials): Commit ? =>
     let obj = JsonExtractor(json).as_object()?
     let sha = JsonExtractor(obj("sha")?).as_string()?
 

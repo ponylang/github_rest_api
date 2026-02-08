@@ -1,13 +1,13 @@
 use "collections"
 use "json"
 use "promises"
-use "request"
-use "simple_uri_template"
+use req = "request"
+use sut = "simple_uri_template"
 
-type IssueOrError is (Issue | RequestError)
+type IssueOrError is (Issue | req.RequestError)
 
 class val Issue
-  let _creds: Credentials
+  let _creds: req.Credentials
 
   let number: I64
   let title: String
@@ -25,7 +25,7 @@ class val Issue
   let events_url: String
   let html_url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     url': String,
     respository_url': String,
     labels_url': String,
@@ -65,9 +65,9 @@ primitive GetIssue
   fun apply(owner: String,
     repo: String,
     number: I64,
-    creds: Credentials): Promise[IssueOrError]
+    creds: req.Credentials): Promise[IssueOrError]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/issues{/number}"
       end,
@@ -78,21 +78,21 @@ primitive GetIssue
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: ParseError =>
-      Promise[IssueOrError].>apply(RequestError(where message' = e.message))
+    | let e: sut.ParseError =>
+      Promise[IssueOrError].>apply(req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: Credentials): Promise[IssueOrError] =>
+  fun by_url(url: String, creds: req.Credentials): Promise[IssueOrError] =>
     let p = Promise[IssueOrError]
-    let receiver = ResultReceiver[Issue](creds, p, IssueJsonConverter)
+    let receiver = req.ResultReceiver[Issue](creds, p, IssueJsonConverter)
 
     try
-      JsonRequester(creds.auth)(url, receiver)?
+      req.JsonRequester(creds.auth)(url, receiver)?
     else
       let m = recover val
         "Unable to initiate get_issue request to" + url
       end
-      p(RequestError(where message' = m))
+      p(req.RequestError(where message' = m))
     end
 
     p
@@ -100,11 +100,11 @@ primitive GetIssue
 primitive GetRepositoryIssues
   fun apply(owner: String,
     repo: String,
-    creds: Credentials,
+    creds: req.Credentials,
     labels: String = "",
-    state: String = "open"): Promise[(PaginatedList[Issue] | RequestError)]
+    state: String = "open"): Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
-    let u = SimpleURITemplate(
+    let u = sut.SimpleURITemplate(
       recover val
         "https://api.github.com/repos{/owner}{/repo}/issues"
       end,
@@ -122,32 +122,32 @@ primitive GetRepositoryIssues
         end
         p
       end
-      by_url(u' + QueryParams(params), creds)
-    | let e: ParseError =>
-      Promise[(PaginatedList[Issue] | RequestError)].>apply(
-        RequestError(where message' = e.message))
+      by_url(u' + req.QueryParams(params), creds)
+    | let e: sut.ParseError =>
+      Promise[(PaginatedList[Issue] | req.RequestError)].>apply(
+        req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
-    creds: Credentials): Promise[(PaginatedList[Issue] | RequestError)]
+    creds: req.Credentials): Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
     let ic = IssueJsonConverter
     let plc = PaginatedListJsonConverter[Issue](creds, ic)
-    let p = Promise[(PaginatedList[Issue] | RequestError)]
+    let p = Promise[(PaginatedList[Issue] | req.RequestError)]
     let r = PaginatedResultReceiver[Issue](creds, p, plc)
 
     try
       PaginatedJsonRequester(creds.auth).apply[Issue](url, r)?
     else
       let m = "Unable to initiate get_repository_issues request to " + url
-      p(RequestError(where message' = consume m))
+      p(req.RequestError(where message' = consume m))
     end
 
     p
 
 
-primitive IssueJsonConverter is JsonConverter[Issue]
-  fun apply(json: JsonType val, creds: Credentials): Issue ? =>
+primitive IssueJsonConverter is req.JsonConverter[Issue]
+  fun apply(json: JsonType val, creds: req.Credentials): Issue ? =>
     let obj = JsonExtractor(json).as_object()?
 
     let url = JsonExtractor(obj("url")?).as_string()?

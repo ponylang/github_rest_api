@@ -1,15 +1,15 @@
 use "json"
-use "request"
+use req = "request"
 
 class val PullRequestBase
-  let _creds: Credentials
+  let _creds: req.Credentials
   let label: String
   let reference: String
   let sha: String
   let user: User
   let repo: Repository
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     label': String,
     reference': String,
     sha': String,
@@ -23,8 +23,8 @@ class val PullRequestBase
     user = user'
     repo = repo'
 
-primitive PullRequestBaseJsonConverter is JsonConverter[PullRequestBase]
-  fun apply(json: JsonType val, creds: Credentials): PullRequestBase ? =>
+primitive PullRequestBaseJsonConverter is req.JsonConverter[PullRequestBase]
+  fun apply(json: JsonType val, creds: req.Credentials): PullRequestBase ? =>
     let obj = JsonExtractor(json).as_object()?
     let label = JsonExtractor(obj("label")?).as_string()?
     let reference = JsonExtractor(obj("ref")?).as_string()?

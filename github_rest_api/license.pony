@@ -1,15 +1,15 @@
 use "json"
-use "request"
+use req = "request"
 
 class val License
-  let _creds: Credentials
+  let _creds: req.Credentials
   let node_id: String
   let name: String
   let key: String
   let spdx_id: String
   let url: String
 
-  new val create(creds: Credentials,
+  new val create(creds: req.Credentials,
     node_id': String,
     name': String,
     key': String,
@@ -23,8 +23,8 @@ class val License
     spdx_id = spdx_id'
     url = url'
 
-primitive LicenseJsonConverter is JsonConverter[License]
-  fun apply(json: JsonType val, creds: Credentials): License ? =>
+primitive LicenseJsonConverter is req.JsonConverter[License]
+  fun apply(json: JsonType val, creds: req.Credentials): License ? =>
     let obj = JsonExtractor(json).as_object()?
     let node_id = JsonExtractor(obj("node_id")?).as_string()?
     let name = JsonExtractor(obj("name")?).as_string()?
