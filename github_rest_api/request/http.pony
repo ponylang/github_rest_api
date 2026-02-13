@@ -26,7 +26,7 @@ actor ResultReceiver[A: Any val]
 
   be success(json: JsonType val) =>
     try
-      _p(_converter(json, _creds)?)
+      _p(_converter(JsonNav(json), _creds)?)
     else
       let m = recover val
         "Unable to convert json for " + JsonTypeString(json)

@@ -140,12 +140,10 @@ primitive CreateRelease
     p
 
 primitive ReleaseJsonConverter is req.JsonConverter[Release]
-  fun apply(json: JsonType val, creds: req.Credentials): Release ? =>
-    let nav = JsonNav(json)
-    let obj = nav.as_object()?
+  fun apply(nav: JsonNav, creds: req.Credentials): Release ? =>
     let id = nav("id").as_i64()?
     let node_id = nav("node_id").as_string()?
-    let author = UserJsonConverter(obj("author")?, creds)?
+    let author = UserJsonConverter(nav("author"), creds)?
     let tag_name = nav("tag_name").as_string()?
     let target_commitish = nav("target_commitish").as_string()?
     let name = nav("name").as_string()?
@@ -157,7 +155,7 @@ primitive ReleaseJsonConverter is req.JsonConverter[Release]
 
     let assets = recover trn Array[Asset] end
     for i in nav("assets").as_array()?.values() do
-      let a = AssetJsonConverter(i, creds)?
+      let a = AssetJsonConverter(JsonNav(i), creds)?
       assets.push(a)
     end
 

@@ -463,17 +463,15 @@ primitive GetOrganizationRepositories
     p
 
 primitive RepositoryJsonConverter is req.JsonConverter[Repository]
-  fun apply(json: JsonType val,
+  fun apply(nav: JsonNav,
     creds: req.Credentials): Repository ?
   =>
-    let nav = JsonNav(json)
-    let obj = nav.as_object()?
     let id = nav("id").as_i64()?
     let node_id = nav("node_id").as_string()?
     let name = nav("name").as_string()?
     let full_name = nav("full_name").as_string()?
     let description = JsonNavUtil.string_or_none(nav("description"))?
-    let owner = UserJsonConverter(obj("owner")?, creds)?
+    let owner = UserJsonConverter(nav("owner"), creds)?
     let private = nav("private").as_bool()?
     let fork = nav("fork").as_bool()?
     let created_at = nav("created_at").as_string()?
@@ -482,7 +480,7 @@ primitive RepositoryJsonConverter is req.JsonConverter[Repository]
     let homepage = JsonNavUtil.string_or_none(nav("homepage"))?
     let default_branch = nav("default_branch").as_string()?
     let organization = try
-      UserJsonConverter(obj("organization")?, creds)?
+      UserJsonConverter(nav("organization"), creds)?
     else
       None
     end
@@ -501,7 +499,7 @@ primitive RepositoryJsonConverter is req.JsonConverter[Repository]
     let watchers_count = nav("watchers_count").as_i64()?
     let language = JsonNavUtil.string_or_none(nav("language"))?
     let license = try
-      LicenseJsonConverter(obj("license")?, creds)?
+      LicenseJsonConverter(nav("license"), creds)?
     else
       None
     end

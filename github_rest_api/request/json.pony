@@ -2,7 +2,7 @@ use "json"
 use "net"
 
 interface val JsonConverter[A: Any #share]
-  fun apply(json: JsonType val, creds: Credentials): A ?
+  fun apply(nav: JsonNav, creds: Credentials): A ?
 
 primitive JsonTypeString
   """Convert a JsonType to its JSON string representation for error messages."""

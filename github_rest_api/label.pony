@@ -131,8 +131,7 @@ primitive DeleteLabel
     p
 
 primitive LabelJsonConverter is req.JsonConverter[Label]
-  fun apply(json: JsonType val, creds: req.Credentials): Label ? =>
-    let nav = JsonNav(json)
+  fun apply(nav: JsonNav, creds: req.Credentials): Label ? =>
     let id = nav("id").as_i64()?
     let node_id = nav("node_id").as_string()?
     let url = nav("url").as_string()?

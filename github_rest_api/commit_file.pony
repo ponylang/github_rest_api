@@ -19,10 +19,9 @@ class val CommitFile
     filename = filename'
 
 primitive CommitFileJsonConverter is req.JsonConverter[CommitFile]
-  fun apply(json: JsonType val,
+  fun apply(nav: JsonNav,
     creds: req.Credentials): CommitFile ?
   =>
-    let nav = JsonNav(json)
     let sha = nav("sha").as_string()?
     let status = nav("status").as_string()?
     let filename = nav("filename").as_string()?

@@ -93,17 +93,16 @@ class val PaginatedSearchJsonConverter[A: Any val]
     _creds = creds
     _converter = converter
 
-  fun apply(json: JsonType val,
+  fun apply(nav: JsonNav,
     link_header: String,
     creds: req.Credentials): SearchResults[A] ?
   =>
-    let nav = JsonNav(json)
     let total_count = nav("total_count").as_i64()?
     let incomplete = nav("incomplete_results").as_bool()?
 
     let items = recover trn Array[A] end
     for i in nav("items").as_array()?.values() do
-      let item = _converter(i, creds)?
+      let item = _converter(JsonNav(i), creds)?
       items.push(item)
     end
 
@@ -137,7 +136,7 @@ actor SearchResultReceiver[A: Any val]
 
   be success(json: JsonType val, link_header: String) =>
     try
-      _p(_converter(json, link_header, _creds)?)
+      _p(_converter(JsonNav(json), link_header, _creds)?)
     else
       let m = recover val
         "Unable to convert json for " + req.JsonTypeString(json)

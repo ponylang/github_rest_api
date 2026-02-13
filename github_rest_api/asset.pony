@@ -50,14 +50,12 @@ class val Asset
     browser_download_url = browser_download_url'
 
 primitive AssetJsonConverter is req.JsonConverter[Asset]
-  fun apply(json: JsonType val, creds: req.Credentials): Asset ? =>
-    let nav = JsonNav(json)
-    let obj = nav.as_object()?
+  fun apply(nav: JsonNav, creds: req.Credentials): Asset ? =>
     let id = nav("id").as_i64()?
     let node_id = nav("node_id").as_string()?
     let name = nav("name").as_string()?
     let label = JsonNavUtil.string_or_none(nav("label"))?
-    let uploader = UserJsonConverter(obj("uploader")?, creds)?
+    let uploader = UserJsonConverter(nav("uploader"), creds)?
     let content_type = nav("content_type").as_string()?
     let state = nav("state").as_string()?
     let size = nav("size").as_i64()?

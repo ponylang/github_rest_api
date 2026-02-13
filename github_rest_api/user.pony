@@ -63,8 +63,7 @@ class val User
     site_admin = site_admin'
 
 primitive UserJsonConverter is req.JsonConverter[User]
-  fun apply(json: JsonType val, creds: req.Credentials): User ? =>
-    let nav = JsonNav(json)
+  fun apply(nav: JsonNav, creds: req.Credentials): User ? =>
     let login = nav("login").as_string()?
     let id = nav("id").as_i64()?
     let node_id = nav("node_id").as_string()?

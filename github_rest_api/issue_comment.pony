@@ -112,10 +112,9 @@ primitive IssueCommentsURL
       end)
 
 primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
-  fun apply(json: JsonType val,
+  fun apply(nav: JsonNav,
     creds: req.Credentials): IssueComment ?
   =>
-    let nav = JsonNav(json)
     let body = nav("body").as_string()?
     let url = nav("url").as_string()?
     let html_url = nav("html_url").as_string()?
@@ -124,13 +123,13 @@ primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
     IssueComment(creds, body, url, html_url, issue_url)
 
 primitive IssueCommentsJsonConverter is req.JsonConverter[Array[IssueComment] val]
-  fun apply(json: JsonType val,
+  fun apply(nav: JsonNav,
     creds: req.Credentials): Array[IssueComment] val ?
   =>
     let comments = recover trn Array[IssueComment] end
 
-    for i in JsonNav(json).as_array()?.values() do
-      let comment = IssueCommentJsonConverter(i, creds)?
+    for i in nav.as_array()?.values() do
+      let comment = IssueCommentJsonConverter(JsonNav(i), creds)?
       comments.push(comment)
     end
 

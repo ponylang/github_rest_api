@@ -74,14 +74,14 @@ class val PaginatedListJsonConverter[A: Any val]
     _creds = creds
     _converter = converter
 
-  fun apply(json: JsonType val,
+  fun apply(nav: JsonNav,
     link_header: String,
     creds: req.Credentials): PaginatedList[A] ?
   =>
     let entries = recover trn Array[A] end
 
-    for i in JsonNav(json).as_array()?.values() do
-      let e = _converter(i, creds)?
+    for i in nav.as_array()?.values() do
+      let e = _converter(JsonNav(i), creds)?
       entries.push(e)
     end
 
@@ -116,7 +116,7 @@ actor PaginatedResultReceiver[A: Any val]
 
   be success(json: JsonType val, link_header: String) =>
     try
-      _p(_converter(json, link_header, _creds)?)
+      _p(_converter(JsonNav(json), link_header, _creds)?)
     else
       let m = recover val
         "Unable to convert json for " + req.JsonTypeString(json)

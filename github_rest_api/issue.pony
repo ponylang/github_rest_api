@@ -146,10 +146,7 @@ primitive GetRepositoryIssues
 
 
 primitive IssueJsonConverter is req.JsonConverter[Issue]
-  fun apply(json: JsonType val, creds: req.Credentials): Issue ? =>
-    let nav = JsonNav(json)
-    let obj = nav.as_object()?
-
+  fun apply(nav: JsonNav, creds: req.Credentials): Issue ? =>
     let url = nav("url").as_string()?
     let respository_url = nav("repository_url").as_string()?
     let labels_url = nav("labels_url").as_string()?
@@ -159,22 +156,23 @@ primitive IssueJsonConverter is req.JsonConverter[Issue]
 
     let number = nav("number").as_i64()?
     let title = nav("title").as_string()?
-    let user = UserJsonConverter(obj("user")?, creds)?
+    let user = UserJsonConverter(nav("user"), creds)?
     let state = JsonNavUtil.string_or_none(nav("state"))?
     let body = JsonNavUtil.string_or_none(nav("body"))?
 
     let labels = recover trn Array[Label] end
     for i in nav("labels").as_array()?.values() do
-      let l = LabelJsonConverter(i, creds)?
+      let l = LabelJsonConverter(JsonNav(i), creds)?
       labels.push(l)
     end
 
-    let pull_request =
-      if obj.contains("pull_request") then
-        IssuePullRequestJsonConverter(obj("pull_request")?, creds)?
-      else
-        None
-      end
+    let pr_nav = nav("pull_request")
+    let pull_request = match pr_nav.json()
+    | let _: JsonType =>
+      IssuePullRequestJsonConverter(pr_nav, creds)?
+    else
+      None
+    end
 
     Issue(creds,
       url,
