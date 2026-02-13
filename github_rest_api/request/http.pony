@@ -24,12 +24,12 @@ actor ResultReceiver[A: Any val]
     _p = p
     _converter = c
 
-  be success(json: JsonType val) =>
+  be success(nav: JsonNav) =>
     try
-      _p(_converter(JsonNav(json), _creds)?)
+      _p(_converter(nav, _creds)?)
     else
       let m = recover val
-        "Unable to convert json for " + JsonTypeString(json)
+        "Unable to convert json for " + JsonTypeString(nav)
       end
 
       _p(RequestError(where message' = m))

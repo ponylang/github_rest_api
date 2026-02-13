@@ -114,12 +114,12 @@ actor PaginatedResultReceiver[A: Any val]
     _p = p
     _converter = c
 
-  be success(json: JsonType val, link_header: String) =>
+  be success(nav: JsonNav, link_header: String) =>
     try
-      _p(_converter(JsonNav(json), link_header, _creds)?)
+      _p(_converter(nav, link_header, _creds)?)
     else
       let m = recover val
-        "Unable to convert json for " + req.JsonTypeString(json)
+        "Unable to convert json for " + req.JsonTypeString(nav)
       end
 
       _p(req.RequestError(where message' = m))
@@ -225,7 +225,7 @@ class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler
 
     if _status == 200 then
       match JsonParser.parse(consume y)
-      | let json: JsonType => _receiver.success(json, _link_header)
+      | let json: JsonType => _receiver.success(JsonNav(json), _link_header)
       | let _: JsonParseError => _receiver.failure(_status, "",
         "Failed to parse response")
       end

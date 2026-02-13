@@ -4,7 +4,7 @@ use "net"
 use "ssl/net"
 
 interface tag PostResultReceiver
-  be success(json: JsonType val)
+  be success(nav: JsonNav)
   be failure(status: U16, response_body: String, message: String)
 
 class HTTPPost
@@ -83,7 +83,7 @@ class HTTPPostHandler is HTTPHandler
 
     if _status == 201 then
       match JsonParser.parse(consume y)
-      | let json: JsonType => _receiver.success(json)
+      | let json: JsonType => _receiver.success(JsonNav(json))
       | let _: JsonParseError => _receiver.failure(_status, "",
         "Failed to parse response")
       end
