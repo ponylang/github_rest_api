@@ -64,28 +64,25 @@ class val User
 
 primitive UserJsonConverter is req.JsonConverter[User]
   fun apply(json: JsonType val, creds: req.Credentials): User ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let login = JsonExtractor(obj("login")?).as_string()?
-    let id = JsonExtractor(obj("id")?).as_i64()?
-    let node_id = JsonExtractor(obj("node_id")?).as_string()?
-    let avatar_url = JsonExtractor(obj("avatar_url")?).as_string()?
-    let gravatar_id = JsonExtractor(obj("gravatar_id")?).as_string()?
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-    let followers_url = JsonExtractor(obj("followers_url")?).as_string()?
-    let following_url = JsonExtractor(obj("following_url")?).as_string()?
-    let gists_url = JsonExtractor(obj("gists_url")?).as_string()?
-    let starred_url = JsonExtractor(obj("starred_url")?).as_string()?
-    let subscriptions_url =
-      JsonExtractor(obj("subscriptions_url")?).as_string()?
-    let organizations_url =
-      JsonExtractor(obj("organizations_url")?).as_string()?
-    let repos_url = JsonExtractor(obj("repos_url")?).as_string()?
-    let events_url = JsonExtractor(obj("events_url")?).as_string()?
-    let received_events_url =
-      JsonExtractor(obj("received_events_url")?).as_string()?
-    let user_type = JsonExtractor(obj("type")?).as_string()?
-    let site_admin = JsonExtractor(obj("site_admin")?).as_bool()?
+    let nav = JsonNav(json)
+    let login = nav("login").as_string()?
+    let id = nav("id").as_i64()?
+    let node_id = nav("node_id").as_string()?
+    let avatar_url = nav("avatar_url").as_string()?
+    let gravatar_id = nav("gravatar_id").as_string()?
+    let url = nav("url").as_string()?
+    let html_url = nav("html_url").as_string()?
+    let followers_url = nav("followers_url").as_string()?
+    let following_url = nav("following_url").as_string()?
+    let gists_url = nav("gists_url").as_string()?
+    let starred_url = nav("starred_url").as_string()?
+    let subscriptions_url = nav("subscriptions_url").as_string()?
+    let organizations_url = nav("organizations_url").as_string()?
+    let repos_url = nav("repos_url").as_string()?
+    let events_url = nav("events_url").as_string()?
+    let received_events_url = nav("received_events_url").as_string()?
+    let user_type = nav("type").as_string()?
+    let site_admin = nav("site_admin").as_bool()?
 
     User(creds,
       login,

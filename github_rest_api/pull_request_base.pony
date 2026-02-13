@@ -25,10 +25,11 @@ class val PullRequestBase
 
 primitive PullRequestBaseJsonConverter is req.JsonConverter[PullRequestBase]
   fun apply(json: JsonType val, creds: req.Credentials): PullRequestBase ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let label = JsonExtractor(obj("label")?).as_string()?
-    let reference = JsonExtractor(obj("ref")?).as_string()?
-    let sha = JsonExtractor(obj("sha")?).as_string()?
+    let nav = JsonNav(json)
+    let obj = nav.as_object()?
+    let label = nav("label").as_string()?
+    let reference = nav("ref").as_string()?
+    let sha = nav("sha").as_string()?
     let user = UserJsonConverter(obj("user")?, creds)?
     let repo = RepositoryJsonConverter(obj("repo")?, creds)?
 

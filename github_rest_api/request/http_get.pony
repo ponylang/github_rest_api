@@ -29,7 +29,7 @@ class JsonRequester
     client(consume r)?
 
 interface tag JsonRequesterResultReceiver
-  be success(json: JsonDoc val)
+  be success(json: JsonType val)
   be failure(status: U16, response_body: String, message: String)
 
 class JsonRequesterHandlerFactory is HandlerFactory
@@ -96,13 +96,10 @@ class JsonRequesterHandler is HTTPHandler
     let y: String iso = String.from_iso_array(consume x)
 
     if _status == 200 then
-      try
-        let json = recover val
-          JsonDoc.>parse(consume y)?
-        end
-        _receiver.success(json)
-      else
-        _receiver.failure(_status, "", "Failed to parse response")
+      match JsonParser.parse(consume y)
+      | let json: JsonType => _receiver.success(json)
+      | let _: JsonParseError => _receiver.failure(_status, "",
+        "Failed to parse response")
       end
     elseif (_status != 301) and (_status != 307) then
       _receiver.failure(_status, consume y, "")

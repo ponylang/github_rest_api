@@ -1,4 +1,3 @@
-use "collections"
 use "json"
 use "promises"
 use req = "request"
@@ -148,23 +147,24 @@ primitive GetRepositoryIssues
 
 primitive IssueJsonConverter is req.JsonConverter[Issue]
   fun apply(json: JsonType val, creds: req.Credentials): Issue ? =>
-    let obj = JsonExtractor(json).as_object()?
+    let nav = JsonNav(json)
+    let obj = nav.as_object()?
 
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let respository_url = JsonExtractor(obj("repository_url")?).as_string()?
-    let labels_url = JsonExtractor(obj("labels_url")?).as_string()?
-    let comments_url = JsonExtractor(obj("comments_url")?).as_string()?
-    let events_url = JsonExtractor(obj("events_url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
+    let url = nav("url").as_string()?
+    let respository_url = nav("repository_url").as_string()?
+    let labels_url = nav("labels_url").as_string()?
+    let comments_url = nav("comments_url").as_string()?
+    let events_url = nav("events_url").as_string()?
+    let html_url = nav("html_url").as_string()?
 
-    let number = JsonExtractor(obj("number")?).as_i64()?
-    let title = JsonExtractor(obj("title")?).as_string()?
+    let number = nav("number").as_i64()?
+    let title = nav("title").as_string()?
     let user = UserJsonConverter(obj("user")?, creds)?
-    let state = JsonExtractor(obj("state")?).as_string_or_none()?
-    let body = JsonExtractor(obj("body")?).as_string_or_none()?
+    let state = JsonNavUtil.string_or_none(nav("state"))?
+    let body = JsonNavUtil.string_or_none(nav("body"))?
 
     let labels = recover trn Array[Label] end
-    for i in JsonExtractor(obj("labels")?).as_array()?.values() do
+    for i in nav("labels").as_array()?.values() do
       let l = LabelJsonConverter(i, creds)?
       labels.push(l)
     end

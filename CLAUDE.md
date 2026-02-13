@@ -21,7 +21,7 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 - `github.com/ponylang/http.git` -- HTTP client
 - `github.com/ponylang/net_ssl.git` (via http) -- SSL/TLS
 - `github.com/kulibali/kiuatan.git` -- PEG parsing (for URI templates and Link headers)
-- `github.com/ponylang/json.git` -- JSON parsing
+- `github.com/ponylang/json-ng.git` -- JSON parsing (immutable, persistent collections)
 
 ## Source Layout
 
@@ -45,6 +45,7 @@ github_rest_api/
   search.pony              -- SearchIssues + SearchResults generic
   user.pony                -- User model
   license.pony             -- License model
+  json_nav_util.pony       -- JsonNavUtil (string_or_none for nullable JSON fields)
   paginated_list.pony      -- PaginatedList[A] with prev/next page navigation
   request/                 -- HTTP request infrastructure (temporary home, intended to be extracted to its own library)
     http.pony              -- Credentials, ResultReceiver, RequestFactory
@@ -52,7 +53,7 @@ github_rest_api/
     http_post.pony         -- HTTPPost (POST with JSON response)
     http_delete.pony       -- HTTPDelete (DELETE, expects 204)
     request_error.pony     -- RequestError (status, response_body, message)
-    json.pony              -- JsonConverter interface
+    json.pony              -- JsonConverter interface, JsonTypeString utility
     query_params.pony      -- QueryParams (URL query string builder with percent-encoding)
     _test.pony             -- QueryParams tests (example + property-based)
   simple_uri_template/     -- RFC 6570 path segment expansion (PEG-based; temporary home, intended to be extracted to its own library)

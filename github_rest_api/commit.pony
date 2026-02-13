@@ -68,19 +68,20 @@ primitive GetCommit
 
 primitive CommitJsonConverter is req.JsonConverter[Commit]
   fun apply(json: JsonType val, creds: req.Credentials): Commit ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let sha = JsonExtractor(obj("sha")?).as_string()?
+    let nav = JsonNav(json)
+    let obj = nav.as_object()?
+    let sha = nav("sha").as_string()?
 
     let files = recover trn Array[CommitFile] end
-    for f in JsonExtractor(obj("files")?).as_array()?.values() do
+    for f in nav("files").as_array()?.values() do
       let file = CommitFileJsonConverter(f, creds)?
       files.push(file)
     end
 
     let git_commit = GitCommitJsonConverter(obj("commit")?, creds)?
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-    let comments_url = JsonExtractor(obj("comments_url")?).as_string()?
+    let url = nav("url").as_string()?
+    let html_url = nav("html_url").as_string()?
+    let comments_url = nav("comments_url").as_string()?
 
     Commit(creds,
       sha,

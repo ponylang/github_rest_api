@@ -30,11 +30,11 @@ class val IssuePullRequest
 
 primitive IssuePullRequestJsonConverter is req.JsonConverter[IssuePullRequest]
   fun apply(json: JsonType val, creds: req.Credentials): IssuePullRequest ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-    let diff_url = JsonExtractor(obj("diff_url")?).as_string()?
-    let patch_url = JsonExtractor(obj("patch_url")?).as_string()?
-    let merged_at = JsonExtractor(obj("merged_at")?).as_string_or_none()?
+    let nav = JsonNav(json)
+    let url = nav("url").as_string()?
+    let html_url = nav("html_url").as_string()?
+    let diff_url = nav("diff_url").as_string()?
+    let patch_url = nav("patch_url").as_string()?
+    let merged_at = JsonNavUtil.string_or_none(nav("merged_at"))?
 
     IssuePullRequest(url, html_url, diff_url, patch_url, merged_at)

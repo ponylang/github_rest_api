@@ -22,9 +22,9 @@ primitive CommitFileJsonConverter is req.JsonConverter[CommitFile]
   fun apply(json: JsonType val,
     creds: req.Credentials): CommitFile ?
   =>
-    let obj = JsonExtractor(json).as_object()?
-    let sha = JsonExtractor(obj("sha")?).as_string()?
-    let status = JsonExtractor(obj("status")?).as_string()?
-    let filename = JsonExtractor(obj("filename")?).as_string()?
+    let nav = JsonNav(json)
+    let sha = nav("sha").as_string()?
+    let status = nav("status").as_string()?
+    let filename = nav("filename").as_string()?
 
     CommitFile(creds, sha, status, filename)

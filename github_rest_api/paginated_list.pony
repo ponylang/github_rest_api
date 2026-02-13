@@ -80,7 +80,7 @@ class val PaginatedListJsonConverter[A: Any val]
   =>
     let entries = recover trn Array[A] end
 
-    for i in JsonExtractor(json).as_array()?.values() do
+    for i in JsonNav(json).as_array()?.values() do
       let e = _converter(i, creds)?
       entries.push(e)
     end
@@ -114,12 +114,12 @@ actor PaginatedResultReceiver[A: Any val]
     _p = p
     _converter = c
 
-  be success(json: JsonDoc val, link_header: String) =>
+  be success(json: JsonType val, link_header: String) =>
     try
-      _p(_converter(json.data, link_header, _creds)?)
+      _p(_converter(json, link_header, _creds)?)
     else
       let m = recover val
-        "Unable to convert json for " + json.string()
+        "Unable to convert json for " + req.JsonTypeString(json)
       end
 
       _p(req.RequestError(where message' = m))
@@ -224,13 +224,10 @@ class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler
     let y: String iso = String.from_iso_array(consume x)
 
     if _status == 200 then
-      try
-        let json = recover val
-          JsonDoc.>parse(consume y)?
-        end
-        _receiver.success(json, _link_header)
-      else
-        _receiver.failure(_status, "", "Failed to parse response")
+      match JsonParser.parse(consume y)
+      | let json: JsonType => _receiver.success(json, _link_header)
+      | let _: JsonParseError => _receiver.failure(_status, "",
+        "Failed to parse response")
       end
     elseif (_status != 301) and (_status != 307) then
       _receiver.failure(_status, consume y, "")

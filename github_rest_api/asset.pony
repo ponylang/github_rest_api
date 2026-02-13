@@ -51,21 +51,21 @@ class val Asset
 
 primitive AssetJsonConverter is req.JsonConverter[Asset]
   fun apply(json: JsonType val, creds: req.Credentials): Asset ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let id = JsonExtractor(obj("id")?).as_i64()?
-    let node_id = JsonExtractor(obj("node_id")?).as_string()?
-    let name = JsonExtractor(obj("name")?).as_string()?
-    let label = JsonExtractor(obj("label")?).as_string_or_none()?
+    let nav = JsonNav(json)
+    let obj = nav.as_object()?
+    let id = nav("id").as_i64()?
+    let node_id = nav("node_id").as_string()?
+    let name = nav("name").as_string()?
+    let label = JsonNavUtil.string_or_none(nav("label"))?
     let uploader = UserJsonConverter(obj("uploader")?, creds)?
-    let content_type = JsonExtractor(obj("content_type")?).as_string()?
-    let state = JsonExtractor(obj("state")?).as_string()?
-    let size = JsonExtractor(obj("size")?).as_i64()?
-    let download_count = JsonExtractor(obj("download_count")?).as_i64()?
-    let created_at = JsonExtractor(obj("created_at")?).as_string()?
-    let updated_at = JsonExtractor(obj("updated_at")?).as_string()?
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let browser_download_url =
-      JsonExtractor(obj("browser_download_url")?).as_string()?
+    let content_type = nav("content_type").as_string()?
+    let state = nav("state").as_string()?
+    let size = nav("size").as_i64()?
+    let download_count = nav("download_count").as_i64()?
+    let created_at = nav("created_at").as_string()?
+    let updated_at = nav("updated_at").as_string()?
+    let url = nav("url").as_string()?
+    let browser_download_url = nav("browser_download_url").as_string()?
 
     Asset(creds,
       id,

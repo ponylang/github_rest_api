@@ -64,9 +64,9 @@ primitive PullRequestFilesJsonConverter is
   =>
     let files = recover trn Array[PullRequestFile] end
 
-    for i in JsonExtractor(json).as_array()?.values() do
-      let j = JsonExtractor(i).as_object()?
-      let filename = JsonExtractor(j("filename")?).as_string()?
+    for i in JsonNav(json).as_array()?.values() do
+      let nav_i = JsonNav(i)
+      let filename = nav_i("filename").as_string()?
       let file = PullRequestFile(creds, filename)
       files.push(file)
     end

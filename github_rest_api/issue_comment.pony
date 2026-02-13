@@ -1,4 +1,3 @@
-use "collections"
 use "json"
 use "net"
 use "promises"
@@ -54,13 +53,11 @@ primitive CreateIssueComment
       p,
       IssueCommentJsonConverter)
 
-    let m: Map[String, JsonType] = m.create()
-    m.update("body", comment)
-    let json = JsonObject.from_map(m).string()
+    let json = JsonObject.update("body", comment).string()
 
     try
       req.HTTPPost(creds.auth)(url,
-        json,
+        consume json,
         r,
         creds.token)?
     else
@@ -118,11 +115,11 @@ primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
   fun apply(json: JsonType val,
     creds: req.Credentials): IssueComment ?
   =>
-    let obj = JsonExtractor(json).as_object()?
-    let body = JsonExtractor(obj("body")?).as_string()?
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-    let issue_url = JsonExtractor(obj("issue_url")?).as_string()?
+    let nav = JsonNav(json)
+    let body = nav("body").as_string()?
+    let url = nav("url").as_string()?
+    let html_url = nav("html_url").as_string()?
+    let issue_url = nav("issue_url").as_string()?
 
     IssueComment(creds, body, url, html_url, issue_url)
 
@@ -132,7 +129,7 @@ primitive IssueCommentsJsonConverter is req.JsonConverter[Array[IssueComment] va
   =>
     let comments = recover trn Array[IssueComment] end
 
-    for i in JsonExtractor(json).as_array()?.values() do
+    for i in JsonNav(json).as_array()?.values() do
       let comment = IssueCommentJsonConverter(i, creds)?
       comments.push(comment)
     end
