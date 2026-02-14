@@ -24,13 +24,12 @@ class val License
     url = url'
 
 primitive LicenseJsonConverter is req.JsonConverter[License]
-  fun apply(json: JsonType val, creds: req.Credentials): License ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let node_id = JsonExtractor(obj("node_id")?).as_string()?
-    let name = JsonExtractor(obj("name")?).as_string()?
-    let key = JsonExtractor(obj("key")?).as_string()?
-    let spdx_id = JsonExtractor(obj("spdx_id")?).as_string()?
-    let url = JsonExtractor(obj("url")?).as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): License ? =>
+    let node_id = json("node_id").as_string()?
+    let name = json("name").as_string()?
+    let key = json("key").as_string()?
+    let spdx_id = json("spdx_id").as_string()?
+    let url = json("url").as_string()?
 
     License(creds,
       node_id,

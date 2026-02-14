@@ -86,25 +86,23 @@ primitive GetPullRequest
     p
 
 primitive PullRequestJsonConverter is req.JsonConverter[PullRequest]
-  fun apply(json: JsonType val, creds: req.Credentials): PullRequest ? =>
-    let obj = JsonExtractor(json).as_object()?
-
-    let number = JsonExtractor(obj("number")?).as_i64()?
-    let title = JsonExtractor(obj("title")?).as_string()?
-    let body = JsonExtractor(obj("body")?).as_string_or_none()?
-    let state = JsonExtractor(obj("state")?).as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): PullRequest ? =>
+    let number = json("number").as_i64()?
+    let title = json("title").as_string()?
+    let body = JsonNavUtil.string_or_none(json("body"))?
+    let state = json("state").as_string()?
 
     let labels = recover trn Array[Label] end
-    for i in JsonExtractor(obj("labels")?).as_array()?.values() do
-      let l = LabelJsonConverter(i, creds)?
+    for i in json("labels").as_array()?.values() do
+      let l = LabelJsonConverter(JsonNav(i), creds)?
       labels.push(l)
     end
 
-    let base = PullRequestBaseJsonConverter(obj("base")?, creds)?
+    let base = PullRequestBaseJsonConverter(json("base"), creds)?
 
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-    let comments_url = JsonExtractor(obj("comments_url")?).as_string()?
+    let url = json("url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let comments_url = json("comments_url").as_string()?
 
     PullRequest(creds,
       number,

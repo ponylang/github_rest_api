@@ -1,4 +1,3 @@
-use "collections"
 use "json"
 use "promises"
 use req = "request"
@@ -117,21 +116,20 @@ primitive CreateRelease
       p,
       ReleaseJsonConverter)
 
-    let m: Map[String, JsonType] = m.create()
-    m.update("tag_name", tag_name)
-    m.update("name", name)
-    m.update("body", body)
+    var obj = JsonObject
+      .update("tag_name", tag_name)
+      .update("name", name)
+      .update("body", body)
     match target_commitish
     | let tc: String =>
-      m.update("target_commitish", tc)
+      obj = obj.update("target_commitish", tc)
     end
-    m.update("draft", draft)
-    m.update("prerelease", prerelease)
-    let json = JsonObject.from_map(m).string()
+    obj = obj.update("draft", draft).update("prerelease", prerelease)
+    let json = obj.string()
 
     try
       req.HTTPPost(creds.auth)(url,
-        json,
+        consume json,
         r,
         creds.token)?
     else
@@ -142,32 +140,31 @@ primitive CreateRelease
     p
 
 primitive ReleaseJsonConverter is req.JsonConverter[Release]
-  fun apply(json: JsonType val, creds: req.Credentials): Release ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let id = JsonExtractor(obj("id")?).as_i64()?
-    let node_id = JsonExtractor(obj("node_id")?).as_string()?
-    let author = UserJsonConverter(obj("author")?, creds)?
-    let tag_name = JsonExtractor(obj("tag_name")?).as_string()?
-    let target_commitish = JsonExtractor(obj("target_commitish")?).as_string()?
-    let name = JsonExtractor(obj("name")?).as_string()?
-    let body = JsonExtractor(obj("body")?).as_string()?
-    let draft = JsonExtractor(obj("draft")?).as_bool()?
-    let prerelease = JsonExtractor(obj("prerelease")?).as_bool()?
-    let created_at = JsonExtractor(obj("created_at")?).as_string()?
-    let published_at = JsonExtractor(obj("published_at")?).as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): Release ? =>
+    let id = json("id").as_i64()?
+    let node_id = json("node_id").as_string()?
+    let author = UserJsonConverter(json("author"), creds)?
+    let tag_name = json("tag_name").as_string()?
+    let target_commitish = json("target_commitish").as_string()?
+    let name = json("name").as_string()?
+    let body = json("body").as_string()?
+    let draft = json("draft").as_bool()?
+    let prerelease = json("prerelease").as_bool()?
+    let created_at = json("created_at").as_string()?
+    let published_at = json("published_at").as_string()?
 
     let assets = recover trn Array[Asset] end
-    for i in JsonExtractor(obj("assets")?).as_array()?.values() do
-      let a = AssetJsonConverter(i, creds)?
+    for i in json("assets").as_array()?.values() do
+      let a = AssetJsonConverter(JsonNav(i), creds)?
       assets.push(a)
     end
 
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let assets_url = JsonExtractor(obj("assets_url")?).as_string()?
-    let upload_url = JsonExtractor(obj("upload_url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-    let tarball_url = JsonExtractor(obj("tarball_url")?).as_string()?
-    let zipball_url = JsonExtractor(obj("zipball_url")?).as_string()?
+    let url = json("url").as_string()?
+    let assets_url = json("assets_url").as_string()?
+    let upload_url = json("upload_url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let tarball_url = json("tarball_url").as_string()?
+    let zipball_url = json("zipball_url").as_string()?
 
     Release(creds,
       id,

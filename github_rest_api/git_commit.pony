@@ -21,11 +21,10 @@ class val GitCommit
     url = url'
 
 primitive GitCommitJsonConverter is req.JsonConverter[GitCommit]
-  fun apply(json: JsonType val, creds: req.Credentials): GitCommit ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let author = GitPersonJsonConverter(obj("author")?, creds)?
-    let committer = GitPersonJsonConverter(obj("committer")?, creds)?
-    let message = JsonExtractor(obj("message")?).as_string()?
-    let url = JsonExtractor(obj("url")?).as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): GitCommit ? =>
+    let author = GitPersonJsonConverter(json("author"), creds)?
+    let committer = GitPersonJsonConverter(json("committer"), creds)?
+    let message = json("message").as_string()?
+    let url = json("url").as_string()?
 
     GitCommit(creds, author, committer, message, url)

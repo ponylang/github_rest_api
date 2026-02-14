@@ -1,4 +1,3 @@
-use "collections"
 use "json"
 use "promises"
 use req = "request"
@@ -69,19 +68,18 @@ primitive CreateLabel
       p,
       LabelJsonConverter)
 
-    let m: Map[String, JsonType] = m.create()
-    m.update("name", name)
+    var obj = JsonObject.update("name", name)
     match color
-    | let c: String => m.update("color", c)
+    | let c: String => obj = obj.update("color", c)
     end
     match description
-    | let d: String => m.update("description", d)
+    | let d: String => obj = obj.update("description", d)
     end
-    let json = JsonObject.from_map(m).string()
+    let json = obj.string()
 
     try
       req.HTTPPost(creds.auth)(url,
-        json,
+        consume json,
         r,
         creds.token)?
     else
@@ -133,15 +131,14 @@ primitive DeleteLabel
     p
 
 primitive LabelJsonConverter is req.JsonConverter[Label]
-  fun apply(json: JsonType val, creds: req.Credentials): Label ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let id = JsonExtractor(obj("id")?).as_i64()?
-    let node_id = JsonExtractor(obj("node_id")?).as_string()?
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let name = JsonExtractor(obj("name")?).as_string()?
-    let color = JsonExtractor(obj("color")?).as_string()?
-    let default = JsonExtractor(obj("default")?).as_bool()?
-    let description = JsonExtractor(obj("description")?).as_string_or_none()?
+  fun apply(json: JsonNav, creds: req.Credentials): Label ? =>
+    let id = json("id").as_i64()?
+    let node_id = json("node_id").as_string()?
+    let url = json("url").as_string()?
+    let name = json("name").as_string()?
+    let color = json("color").as_string()?
+    let default = json("default").as_bool()?
+    let description = JsonNavUtil.string_or_none(json("description"))?
 
     Label(creds,
       id,

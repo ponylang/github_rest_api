@@ -10,9 +10,8 @@ class val GitPerson
     email = email'
 
 primitive GitPersonJsonConverter is req.JsonConverter[GitPerson]
-  fun apply(json: JsonType val, creds: req.Credentials): GitPerson ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let name = JsonExtractor(obj("name")?).as_string()?
-    let email = JsonExtractor(obj("email")?).as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): GitPerson ? =>
+    let name = json("name").as_string()?
+    let email = json("email").as_string()?
 
     GitPerson(name, email)

@@ -1,4 +1,3 @@
-use "collections"
 use "json"
 use "promises"
 use req = "request"
@@ -147,34 +146,33 @@ primitive GetRepositoryIssues
 
 
 primitive IssueJsonConverter is req.JsonConverter[Issue]
-  fun apply(json: JsonType val, creds: req.Credentials): Issue ? =>
-    let obj = JsonExtractor(json).as_object()?
+  fun apply(json: JsonNav, creds: req.Credentials): Issue ? =>
+    let url = json("url").as_string()?
+    let respository_url = json("repository_url").as_string()?
+    let labels_url = json("labels_url").as_string()?
+    let comments_url = json("comments_url").as_string()?
+    let events_url = json("events_url").as_string()?
+    let html_url = json("html_url").as_string()?
 
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let respository_url = JsonExtractor(obj("repository_url")?).as_string()?
-    let labels_url = JsonExtractor(obj("labels_url")?).as_string()?
-    let comments_url = JsonExtractor(obj("comments_url")?).as_string()?
-    let events_url = JsonExtractor(obj("events_url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-
-    let number = JsonExtractor(obj("number")?).as_i64()?
-    let title = JsonExtractor(obj("title")?).as_string()?
-    let user = UserJsonConverter(obj("user")?, creds)?
-    let state = JsonExtractor(obj("state")?).as_string_or_none()?
-    let body = JsonExtractor(obj("body")?).as_string_or_none()?
+    let number = json("number").as_i64()?
+    let title = json("title").as_string()?
+    let user = UserJsonConverter(json("user"), creds)?
+    let state = JsonNavUtil.string_or_none(json("state"))?
+    let body = JsonNavUtil.string_or_none(json("body"))?
 
     let labels = recover trn Array[Label] end
-    for i in JsonExtractor(obj("labels")?).as_array()?.values() do
-      let l = LabelJsonConverter(i, creds)?
+    for i in json("labels").as_array()?.values() do
+      let l = LabelJsonConverter(JsonNav(i), creds)?
       labels.push(l)
     end
 
-    let pull_request =
-      if obj.contains("pull_request") then
-        IssuePullRequestJsonConverter(obj("pull_request")?, creds)?
-      else
-        None
-      end
+    let pr_json = json("pull_request")
+    let pull_request = match pr_json.json()
+    | let _: JsonType =>
+      IssuePullRequestJsonConverter(pr_json, creds)?
+    else
+      None
+    end
 
     Issue(creds,
       url,

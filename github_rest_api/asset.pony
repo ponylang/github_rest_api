@@ -50,22 +50,20 @@ class val Asset
     browser_download_url = browser_download_url'
 
 primitive AssetJsonConverter is req.JsonConverter[Asset]
-  fun apply(json: JsonType val, creds: req.Credentials): Asset ? =>
-    let obj = JsonExtractor(json).as_object()?
-    let id = JsonExtractor(obj("id")?).as_i64()?
-    let node_id = JsonExtractor(obj("node_id")?).as_string()?
-    let name = JsonExtractor(obj("name")?).as_string()?
-    let label = JsonExtractor(obj("label")?).as_string_or_none()?
-    let uploader = UserJsonConverter(obj("uploader")?, creds)?
-    let content_type = JsonExtractor(obj("content_type")?).as_string()?
-    let state = JsonExtractor(obj("state")?).as_string()?
-    let size = JsonExtractor(obj("size")?).as_i64()?
-    let download_count = JsonExtractor(obj("download_count")?).as_i64()?
-    let created_at = JsonExtractor(obj("created_at")?).as_string()?
-    let updated_at = JsonExtractor(obj("updated_at")?).as_string()?
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let browser_download_url =
-      JsonExtractor(obj("browser_download_url")?).as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): Asset ? =>
+    let id = json("id").as_i64()?
+    let node_id = json("node_id").as_string()?
+    let name = json("name").as_string()?
+    let label = JsonNavUtil.string_or_none(json("label"))?
+    let uploader = UserJsonConverter(json("uploader"), creds)?
+    let content_type = json("content_type").as_string()?
+    let state = json("state").as_string()?
+    let size = json("size").as_i64()?
+    let download_count = json("download_count").as_i64()?
+    let created_at = json("created_at").as_string()?
+    let updated_at = json("updated_at").as_string()?
+    let url = json("url").as_string()?
+    let browser_download_url = json("browser_download_url").as_string()?
 
     Asset(creds,
       id,

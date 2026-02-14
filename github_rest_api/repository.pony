@@ -463,99 +463,96 @@ primitive GetOrganizationRepositories
     p
 
 primitive RepositoryJsonConverter is req.JsonConverter[Repository]
-  fun apply(json: JsonType val,
+  fun apply(json: JsonNav,
     creds: req.Credentials): Repository ?
   =>
-    let obj = JsonExtractor(json).as_object()?
-    let id = JsonExtractor(obj("id")?).as_i64()?
-    let node_id = JsonExtractor(obj("node_id")?).as_string()?
-    let name = JsonExtractor(obj("name")?).as_string()?
-    let full_name = JsonExtractor(obj("full_name")?).as_string()?
-    let description = JsonExtractor(obj("description")?).as_string_or_none()?
-    let owner = UserJsonConverter(obj("owner")?, creds)?
-    let private = JsonExtractor(obj("private")?).as_bool()?
-    let fork = JsonExtractor(obj("fork")?).as_bool()?
-    let created_at = JsonExtractor(obj("created_at")?).as_string()?
-    let pushed_at = JsonExtractor(obj("pushed_at")?).as_string()?
-    let updated_at = JsonExtractor(obj("updated_at")?).as_string()?
-    let homepage = JsonExtractor(obj("homepage")?).as_string_or_none()?
-    let default_branch = JsonExtractor(obj("default_branch")?).as_string()?
+    let id = json("id").as_i64()?
+    let node_id = json("node_id").as_string()?
+    let name = json("name").as_string()?
+    let full_name = json("full_name").as_string()?
+    let description = JsonNavUtil.string_or_none(json("description"))?
+    let owner = UserJsonConverter(json("owner"), creds)?
+    let private = json("private").as_bool()?
+    let fork = json("fork").as_bool()?
+    let created_at = json("created_at").as_string()?
+    let pushed_at = json("pushed_at").as_string()?
+    let updated_at = json("updated_at").as_string()?
+    let homepage = JsonNavUtil.string_or_none(json("homepage"))?
+    let default_branch = json("default_branch").as_string()?
     let organization = try
-      UserJsonConverter(obj("organization")?, creds)?
+      UserJsonConverter(json("organization"), creds)?
     else
       None
     end
 
-    let size = JsonExtractor(obj("size")?).as_i64()?
-    let forks = JsonExtractor(obj("forks")?).as_i64()?
-    let forks_count = JsonExtractor(obj("forks_count")?).as_i64()?
+    let size = json("size").as_i64()?
+    let forks = json("forks").as_i64()?
+    let forks_count = json("forks_count").as_i64()?
     let network_count =
-      try JsonExtractor(obj("network_count")?).as_i64()? else None end
-    let open_issues = JsonExtractor(obj("open_issues")?).as_i64()?
-    let open_issues_count = JsonExtractor(obj("open_issues_count")?).as_i64()?
-    let stargazers_count = JsonExtractor(obj("stargazers_count")?).as_i64()?
+      try json("network_count").as_i64()? else None end
+    let open_issues = json("open_issues").as_i64()?
+    let open_issues_count = json("open_issues_count").as_i64()?
+    let stargazers_count = json("stargazers_count").as_i64()?
     let subscribers_count =
-      try JsonExtractor(obj("subscribers_count")?).as_i64()? else None end
-    let watchers = JsonExtractor(obj("watchers")?).as_i64()?
-    let watchers_count = JsonExtractor(obj("watchers_count")?).as_i64()?
-    let language = JsonExtractor(obj("language")?).as_string_or_none()?
+      try json("subscribers_count").as_i64()? else None end
+    let watchers = json("watchers").as_i64()?
+    let watchers_count = json("watchers_count").as_i64()?
+    let language = JsonNavUtil.string_or_none(json("language"))?
     let license = try
-      LicenseJsonConverter(obj("license")?, creds)?
+      LicenseJsonConverter(json("license"), creds)?
     else
       None
     end
 
-    let archived = JsonExtractor(obj("archived")?).as_bool()?
-    let disabled = JsonExtractor(obj("disabled")?).as_bool()?
-    let has_downloads = JsonExtractor(obj("has_downloads")?).as_bool()?
-    let has_issues = JsonExtractor(obj("has_issues")?).as_bool()?
-    let has_pages = JsonExtractor(obj("has_pages")?).as_bool()?
-    let has_projects = JsonExtractor(obj("has_projects")?).as_bool()?
-    let has_wiki = JsonExtractor(obj("has_wiki")?).as_bool()?
+    let archived = json("archived").as_bool()?
+    let disabled = json("disabled").as_bool()?
+    let has_downloads = json("has_downloads").as_bool()?
+    let has_issues = json("has_issues").as_bool()?
+    let has_pages = json("has_pages").as_bool()?
+    let has_projects = json("has_projects").as_bool()?
+    let has_wiki = json("has_wiki").as_bool()?
 
-    let url = JsonExtractor(obj("url")?).as_string()?
-    let html_url = JsonExtractor(obj("html_url")?).as_string()?
-    let archive_url = JsonExtractor(obj("archive_url")?).as_string()?
-    let assignees_url = JsonExtractor(obj("assignees_url")?).as_string()?
-    let blobs_url = JsonExtractor(obj("blobs_url")?).as_string()?
-    let branches_url = JsonExtractor(obj("branches_url")?).as_string()?
-    let comments_url = JsonExtractor(obj("comments_url")?).as_string()?
-    let commits_url = JsonExtractor(obj("commits_url")?).as_string()?
-    let compare_url = JsonExtractor(obj("compare_url")?).as_string()?
-    let contents_url = JsonExtractor(obj("contents_url")?).as_string()?
-    let contributors_url = JsonExtractor(obj("contributors_url")?).as_string()?
-    let deployments_url = JsonExtractor(obj("deployments_url")?).as_string()?
-    let downloads_url = JsonExtractor(obj("downloads_url")?).as_string()?
-    let events_url = JsonExtractor(obj("events_url")?).as_string()?
-    let forks_url = JsonExtractor(obj("forks_url")?).as_string()?
-    let git_commits_url = JsonExtractor(obj("git_commits_url")?).as_string()?
-    let git_refs_url = JsonExtractor(obj("git_refs_url")?).as_string()?
-    let git_tags_url = JsonExtractor(obj("git_tags_url")?).as_string()?
-    let issue_comment_url =
-      JsonExtractor(obj("issue_comment_url")?).as_string()?
-    let issue_events_url = JsonExtractor(obj("issue_events_url")?).as_string()?
-    let issues_url = JsonExtractor(obj("issues_url")?).as_string()?
-    let keys_url = JsonExtractor(obj("keys_url")?).as_string()?
-    let labels_url = JsonExtractor(obj("labels_url")?).as_string()?
-    let languages_url = JsonExtractor(obj("languages_url")?).as_string()?
-    let merges_url = JsonExtractor(obj("merges_url")?).as_string()?
-    let milestones_url = JsonExtractor(obj("milestones_url")?).as_string()?
-    let notifications_url =
-      JsonExtractor(obj("notifications_url")?).as_string()?
-    let pulls_url = JsonExtractor(obj("pulls_url")?).as_string()?
-    let releases_url = JsonExtractor(obj("releases_url")?).as_string()?
-    let stargazers_url = JsonExtractor(obj("stargazers_url")?).as_string()?
-    let statuses_url = JsonExtractor(obj("statuses_url")?).as_string()?
-    let subscribers_url = JsonExtractor(obj("subscribers_url")?).as_string()?
-    let subscription_url = JsonExtractor(obj("subscription_url")?).as_string()?
-    let tags_url = JsonExtractor(obj("tags_url")?).as_string()?
-    let trees_url = JsonExtractor(obj("trees_url")?).as_string()?
+    let url = json("url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let archive_url = json("archive_url").as_string()?
+    let assignees_url = json("assignees_url").as_string()?
+    let blobs_url = json("blobs_url").as_string()?
+    let branches_url = json("branches_url").as_string()?
+    let comments_url = json("comments_url").as_string()?
+    let commits_url = json("commits_url").as_string()?
+    let compare_url = json("compare_url").as_string()?
+    let contents_url = json("contents_url").as_string()?
+    let contributors_url = json("contributors_url").as_string()?
+    let deployments_url = json("deployments_url").as_string()?
+    let downloads_url = json("downloads_url").as_string()?
+    let events_url = json("events_url").as_string()?
+    let forks_url = json("forks_url").as_string()?
+    let git_commits_url = json("git_commits_url").as_string()?
+    let git_refs_url = json("git_refs_url").as_string()?
+    let git_tags_url = json("git_tags_url").as_string()?
+    let issue_comment_url = json("issue_comment_url").as_string()?
+    let issue_events_url = json("issue_events_url").as_string()?
+    let issues_url = json("issues_url").as_string()?
+    let keys_url = json("keys_url").as_string()?
+    let labels_url = json("labels_url").as_string()?
+    let languages_url = json("languages_url").as_string()?
+    let merges_url = json("merges_url").as_string()?
+    let milestones_url = json("milestones_url").as_string()?
+    let notifications_url = json("notifications_url").as_string()?
+    let pulls_url = json("pulls_url").as_string()?
+    let releases_url = json("releases_url").as_string()?
+    let stargazers_url = json("stargazers_url").as_string()?
+    let statuses_url = json("statuses_url").as_string()?
+    let subscribers_url = json("subscribers_url").as_string()?
+    let subscription_url = json("subscription_url").as_string()?
+    let tags_url = json("tags_url").as_string()?
+    let trees_url = json("trees_url").as_string()?
 
-    let clone_url = JsonExtractor(obj("clone_url")?).as_string()?
-    let git_url = JsonExtractor(obj("git_url")?).as_string()?
-    let mirror_url = JsonExtractor(obj("mirror_url")?).as_string_or_none()?
-    let ssh_url = JsonExtractor(obj("ssh_url")?).as_string()?
-    let svn_url = JsonExtractor(obj("svn_url")?).as_string()?
+    let clone_url = json("clone_url").as_string()?
+    let git_url = json("git_url").as_string()?
+    let mirror_url = JsonNavUtil.string_or_none(json("mirror_url"))?
+    let ssh_url = json("ssh_url").as_string()?
+    let svn_url = json("svn_url").as_string()?
 
     Repository(creds,
       id,

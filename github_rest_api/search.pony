@@ -93,17 +93,16 @@ class val PaginatedSearchJsonConverter[A: Any val]
     _creds = creds
     _converter = converter
 
-  fun apply(json: JsonType val,
+  fun apply(json: JsonNav,
     link_header: String,
     creds: req.Credentials): SearchResults[A] ?
   =>
-    let obj = JsonExtractor(json).as_object()?
-    let total_count = JsonExtractor(obj("total_count")?).as_i64()?
-    let incomplete = JsonExtractor(obj("incomplete_results")?).as_bool()?
+    let total_count = json("total_count").as_i64()?
+    let incomplete = json("incomplete_results").as_bool()?
 
     let items = recover trn Array[A] end
-    for i in JsonExtractor(obj("items")?).as_array()?.values() do
-      let item = _converter(i, creds)?
+    for i in json("items").as_array()?.values() do
+      let item = _converter(JsonNav(i), creds)?
       items.push(item)
     end
 
@@ -135,12 +134,12 @@ actor SearchResultReceiver[A: Any val]
     _p = p
     _converter = c
 
-  be success(json: JsonDoc val, link_header: String) =>
+  be success(json: JsonNav, link_header: String) =>
     try
-      _p(_converter(json.data, link_header, _creds)?)
+      _p(_converter(json, link_header, _creds)?)
     else
       let m = recover val
-        "Unable to convert json for " + json.string()
+        "Unable to convert json for " + req.JsonTypeString(json)
       end
 
       _p(req.RequestError(where message' = m))
@@ -244,13 +243,10 @@ class SearchJsonRequesterHandler[A: Any val] is HTTPHandler
     let y: String iso = String.from_iso_array(consume x)
 
     if _status == 200 then
-      try
-        let json = recover val
-          JsonDoc.>parse(consume y)?
-        end
-        _receiver.success(json, _link_header)
-      else
-        _receiver.failure(_status, "", "Failed to parse response")
+      match JsonParser.parse(consume y)
+      | let json: JsonType => _receiver.success(JsonNav(json), _link_header)
+      | let _: JsonParseError => _receiver.failure(_status, "",
+        "Failed to parse response")
       end
     elseif (_status != 301) and (_status != 307) then
       _receiver.failure(_status, consume y, "")
