@@ -29,11 +29,11 @@ class val IssuePullRequest
     merged_at = merged_at'
 
 primitive IssuePullRequestJsonConverter is req.JsonConverter[IssuePullRequest]
-  fun apply(nav: JsonNav, creds: req.Credentials): IssuePullRequest ? =>
-    let url = nav("url").as_string()?
-    let html_url = nav("html_url").as_string()?
-    let diff_url = nav("diff_url").as_string()?
-    let patch_url = nav("patch_url").as_string()?
-    let merged_at = JsonNavUtil.string_or_none(nav("merged_at"))?
+  fun apply(json: JsonNav, creds: req.Credentials): IssuePullRequest ? =>
+    let url = json("url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let diff_url = json("diff_url").as_string()?
+    let patch_url = json("patch_url").as_string()?
+    let merged_at = JsonNavUtil.string_or_none(json("merged_at"))?
 
     IssuePullRequest(url, html_url, diff_url, patch_url, merged_at)

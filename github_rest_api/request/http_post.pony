@@ -4,7 +4,7 @@ use "net"
 use "ssl/net"
 
 interface tag PostResultReceiver
-  be success(nav: JsonNav)
+  be success(json: JsonNav)
   be failure(status: U16, response_body: String, message: String)
 
 class HTTPPost

@@ -140,31 +140,31 @@ primitive CreateRelease
     p
 
 primitive ReleaseJsonConverter is req.JsonConverter[Release]
-  fun apply(nav: JsonNav, creds: req.Credentials): Release ? =>
-    let id = nav("id").as_i64()?
-    let node_id = nav("node_id").as_string()?
-    let author = UserJsonConverter(nav("author"), creds)?
-    let tag_name = nav("tag_name").as_string()?
-    let target_commitish = nav("target_commitish").as_string()?
-    let name = nav("name").as_string()?
-    let body = nav("body").as_string()?
-    let draft = nav("draft").as_bool()?
-    let prerelease = nav("prerelease").as_bool()?
-    let created_at = nav("created_at").as_string()?
-    let published_at = nav("published_at").as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): Release ? =>
+    let id = json("id").as_i64()?
+    let node_id = json("node_id").as_string()?
+    let author = UserJsonConverter(json("author"), creds)?
+    let tag_name = json("tag_name").as_string()?
+    let target_commitish = json("target_commitish").as_string()?
+    let name = json("name").as_string()?
+    let body = json("body").as_string()?
+    let draft = json("draft").as_bool()?
+    let prerelease = json("prerelease").as_bool()?
+    let created_at = json("created_at").as_string()?
+    let published_at = json("published_at").as_string()?
 
     let assets = recover trn Array[Asset] end
-    for i in nav("assets").as_array()?.values() do
+    for i in json("assets").as_array()?.values() do
       let a = AssetJsonConverter(JsonNav(i), creds)?
       assets.push(a)
     end
 
-    let url = nav("url").as_string()?
-    let assets_url = nav("assets_url").as_string()?
-    let upload_url = nav("upload_url").as_string()?
-    let html_url = nav("html_url").as_string()?
-    let tarball_url = nav("tarball_url").as_string()?
-    let zipball_url = nav("zipball_url").as_string()?
+    let url = json("url").as_string()?
+    let assets_url = json("assets_url").as_string()?
+    let upload_url = json("upload_url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let tarball_url = json("tarball_url").as_string()?
+    let zipball_url = json("zipball_url").as_string()?
 
     Release(creds,
       id,

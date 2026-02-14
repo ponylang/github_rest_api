@@ -86,23 +86,23 @@ primitive GetPullRequest
     p
 
 primitive PullRequestJsonConverter is req.JsonConverter[PullRequest]
-  fun apply(nav: JsonNav, creds: req.Credentials): PullRequest ? =>
-    let number = nav("number").as_i64()?
-    let title = nav("title").as_string()?
-    let body = JsonNavUtil.string_or_none(nav("body"))?
-    let state = nav("state").as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): PullRequest ? =>
+    let number = json("number").as_i64()?
+    let title = json("title").as_string()?
+    let body = JsonNavUtil.string_or_none(json("body"))?
+    let state = json("state").as_string()?
 
     let labels = recover trn Array[Label] end
-    for i in nav("labels").as_array()?.values() do
+    for i in json("labels").as_array()?.values() do
       let l = LabelJsonConverter(JsonNav(i), creds)?
       labels.push(l)
     end
 
-    let base = PullRequestBaseJsonConverter(nav("base"), creds)?
+    let base = PullRequestBaseJsonConverter(json("base"), creds)?
 
-    let url = nav("url").as_string()?
-    let html_url = nav("html_url").as_string()?
-    let comments_url = nav("comments_url").as_string()?
+    let url = json("url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let comments_url = json("comments_url").as_string()?
 
     PullRequest(creds,
       number,

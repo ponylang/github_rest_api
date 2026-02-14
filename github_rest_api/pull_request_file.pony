@@ -59,14 +59,14 @@ primitive GetPullRequestFiles
 
 primitive PullRequestFilesJsonConverter is
   req.JsonConverter[Array[PullRequestFile] val]
-  fun apply(nav: JsonNav,
+  fun apply(json: JsonNav,
     creds: req.Credentials): Array[PullRequestFile] val ?
   =>
     let files = recover trn Array[PullRequestFile] end
 
-    for i in nav.as_array()?.values() do
-      let nav_i = JsonNav(i)
-      let filename = nav_i("filename").as_string()?
+    for i in json.as_array()?.values() do
+      let json_i = JsonNav(i)
+      let filename = json_i("filename").as_string()?
       let file = PullRequestFile(creds, filename)
       files.push(file)
     end

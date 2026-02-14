@@ -463,96 +463,96 @@ primitive GetOrganizationRepositories
     p
 
 primitive RepositoryJsonConverter is req.JsonConverter[Repository]
-  fun apply(nav: JsonNav,
+  fun apply(json: JsonNav,
     creds: req.Credentials): Repository ?
   =>
-    let id = nav("id").as_i64()?
-    let node_id = nav("node_id").as_string()?
-    let name = nav("name").as_string()?
-    let full_name = nav("full_name").as_string()?
-    let description = JsonNavUtil.string_or_none(nav("description"))?
-    let owner = UserJsonConverter(nav("owner"), creds)?
-    let private = nav("private").as_bool()?
-    let fork = nav("fork").as_bool()?
-    let created_at = nav("created_at").as_string()?
-    let pushed_at = nav("pushed_at").as_string()?
-    let updated_at = nav("updated_at").as_string()?
-    let homepage = JsonNavUtil.string_or_none(nav("homepage"))?
-    let default_branch = nav("default_branch").as_string()?
+    let id = json("id").as_i64()?
+    let node_id = json("node_id").as_string()?
+    let name = json("name").as_string()?
+    let full_name = json("full_name").as_string()?
+    let description = JsonNavUtil.string_or_none(json("description"))?
+    let owner = UserJsonConverter(json("owner"), creds)?
+    let private = json("private").as_bool()?
+    let fork = json("fork").as_bool()?
+    let created_at = json("created_at").as_string()?
+    let pushed_at = json("pushed_at").as_string()?
+    let updated_at = json("updated_at").as_string()?
+    let homepage = JsonNavUtil.string_or_none(json("homepage"))?
+    let default_branch = json("default_branch").as_string()?
     let organization = try
-      UserJsonConverter(nav("organization"), creds)?
+      UserJsonConverter(json("organization"), creds)?
     else
       None
     end
 
-    let size = nav("size").as_i64()?
-    let forks = nav("forks").as_i64()?
-    let forks_count = nav("forks_count").as_i64()?
+    let size = json("size").as_i64()?
+    let forks = json("forks").as_i64()?
+    let forks_count = json("forks_count").as_i64()?
     let network_count =
-      try nav("network_count").as_i64()? else None end
-    let open_issues = nav("open_issues").as_i64()?
-    let open_issues_count = nav("open_issues_count").as_i64()?
-    let stargazers_count = nav("stargazers_count").as_i64()?
+      try json("network_count").as_i64()? else None end
+    let open_issues = json("open_issues").as_i64()?
+    let open_issues_count = json("open_issues_count").as_i64()?
+    let stargazers_count = json("stargazers_count").as_i64()?
     let subscribers_count =
-      try nav("subscribers_count").as_i64()? else None end
-    let watchers = nav("watchers").as_i64()?
-    let watchers_count = nav("watchers_count").as_i64()?
-    let language = JsonNavUtil.string_or_none(nav("language"))?
+      try json("subscribers_count").as_i64()? else None end
+    let watchers = json("watchers").as_i64()?
+    let watchers_count = json("watchers_count").as_i64()?
+    let language = JsonNavUtil.string_or_none(json("language"))?
     let license = try
-      LicenseJsonConverter(nav("license"), creds)?
+      LicenseJsonConverter(json("license"), creds)?
     else
       None
     end
 
-    let archived = nav("archived").as_bool()?
-    let disabled = nav("disabled").as_bool()?
-    let has_downloads = nav("has_downloads").as_bool()?
-    let has_issues = nav("has_issues").as_bool()?
-    let has_pages = nav("has_pages").as_bool()?
-    let has_projects = nav("has_projects").as_bool()?
-    let has_wiki = nav("has_wiki").as_bool()?
+    let archived = json("archived").as_bool()?
+    let disabled = json("disabled").as_bool()?
+    let has_downloads = json("has_downloads").as_bool()?
+    let has_issues = json("has_issues").as_bool()?
+    let has_pages = json("has_pages").as_bool()?
+    let has_projects = json("has_projects").as_bool()?
+    let has_wiki = json("has_wiki").as_bool()?
 
-    let url = nav("url").as_string()?
-    let html_url = nav("html_url").as_string()?
-    let archive_url = nav("archive_url").as_string()?
-    let assignees_url = nav("assignees_url").as_string()?
-    let blobs_url = nav("blobs_url").as_string()?
-    let branches_url = nav("branches_url").as_string()?
-    let comments_url = nav("comments_url").as_string()?
-    let commits_url = nav("commits_url").as_string()?
-    let compare_url = nav("compare_url").as_string()?
-    let contents_url = nav("contents_url").as_string()?
-    let contributors_url = nav("contributors_url").as_string()?
-    let deployments_url = nav("deployments_url").as_string()?
-    let downloads_url = nav("downloads_url").as_string()?
-    let events_url = nav("events_url").as_string()?
-    let forks_url = nav("forks_url").as_string()?
-    let git_commits_url = nav("git_commits_url").as_string()?
-    let git_refs_url = nav("git_refs_url").as_string()?
-    let git_tags_url = nav("git_tags_url").as_string()?
-    let issue_comment_url = nav("issue_comment_url").as_string()?
-    let issue_events_url = nav("issue_events_url").as_string()?
-    let issues_url = nav("issues_url").as_string()?
-    let keys_url = nav("keys_url").as_string()?
-    let labels_url = nav("labels_url").as_string()?
-    let languages_url = nav("languages_url").as_string()?
-    let merges_url = nav("merges_url").as_string()?
-    let milestones_url = nav("milestones_url").as_string()?
-    let notifications_url = nav("notifications_url").as_string()?
-    let pulls_url = nav("pulls_url").as_string()?
-    let releases_url = nav("releases_url").as_string()?
-    let stargazers_url = nav("stargazers_url").as_string()?
-    let statuses_url = nav("statuses_url").as_string()?
-    let subscribers_url = nav("subscribers_url").as_string()?
-    let subscription_url = nav("subscription_url").as_string()?
-    let tags_url = nav("tags_url").as_string()?
-    let trees_url = nav("trees_url").as_string()?
+    let url = json("url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let archive_url = json("archive_url").as_string()?
+    let assignees_url = json("assignees_url").as_string()?
+    let blobs_url = json("blobs_url").as_string()?
+    let branches_url = json("branches_url").as_string()?
+    let comments_url = json("comments_url").as_string()?
+    let commits_url = json("commits_url").as_string()?
+    let compare_url = json("compare_url").as_string()?
+    let contents_url = json("contents_url").as_string()?
+    let contributors_url = json("contributors_url").as_string()?
+    let deployments_url = json("deployments_url").as_string()?
+    let downloads_url = json("downloads_url").as_string()?
+    let events_url = json("events_url").as_string()?
+    let forks_url = json("forks_url").as_string()?
+    let git_commits_url = json("git_commits_url").as_string()?
+    let git_refs_url = json("git_refs_url").as_string()?
+    let git_tags_url = json("git_tags_url").as_string()?
+    let issue_comment_url = json("issue_comment_url").as_string()?
+    let issue_events_url = json("issue_events_url").as_string()?
+    let issues_url = json("issues_url").as_string()?
+    let keys_url = json("keys_url").as_string()?
+    let labels_url = json("labels_url").as_string()?
+    let languages_url = json("languages_url").as_string()?
+    let merges_url = json("merges_url").as_string()?
+    let milestones_url = json("milestones_url").as_string()?
+    let notifications_url = json("notifications_url").as_string()?
+    let pulls_url = json("pulls_url").as_string()?
+    let releases_url = json("releases_url").as_string()?
+    let stargazers_url = json("stargazers_url").as_string()?
+    let statuses_url = json("statuses_url").as_string()?
+    let subscribers_url = json("subscribers_url").as_string()?
+    let subscription_url = json("subscription_url").as_string()?
+    let tags_url = json("tags_url").as_string()?
+    let trees_url = json("trees_url").as_string()?
 
-    let clone_url = nav("clone_url").as_string()?
-    let git_url = nav("git_url").as_string()?
-    let mirror_url = JsonNavUtil.string_or_none(nav("mirror_url"))?
-    let ssh_url = nav("ssh_url").as_string()?
-    let svn_url = nav("svn_url").as_string()?
+    let clone_url = json("clone_url").as_string()?
+    let git_url = json("git_url").as_string()?
+    let mirror_url = JsonNavUtil.string_or_none(json("mirror_url"))?
+    let ssh_url = json("ssh_url").as_string()?
+    let svn_url = json("svn_url").as_string()?
 
     Repository(creds,
       id,

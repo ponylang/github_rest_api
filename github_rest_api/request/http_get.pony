@@ -29,7 +29,7 @@ class JsonRequester
     client(consume r)?
 
 interface tag JsonRequesterResultReceiver
-  be success(nav: JsonNav)
+  be success(json: JsonNav)
   be failure(status: U16, response_body: String, message: String)
 
 class JsonRequesterHandlerFactory is HandlerFactory

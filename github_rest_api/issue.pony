@@ -146,30 +146,30 @@ primitive GetRepositoryIssues
 
 
 primitive IssueJsonConverter is req.JsonConverter[Issue]
-  fun apply(nav: JsonNav, creds: req.Credentials): Issue ? =>
-    let url = nav("url").as_string()?
-    let respository_url = nav("repository_url").as_string()?
-    let labels_url = nav("labels_url").as_string()?
-    let comments_url = nav("comments_url").as_string()?
-    let events_url = nav("events_url").as_string()?
-    let html_url = nav("html_url").as_string()?
+  fun apply(json: JsonNav, creds: req.Credentials): Issue ? =>
+    let url = json("url").as_string()?
+    let respository_url = json("repository_url").as_string()?
+    let labels_url = json("labels_url").as_string()?
+    let comments_url = json("comments_url").as_string()?
+    let events_url = json("events_url").as_string()?
+    let html_url = json("html_url").as_string()?
 
-    let number = nav("number").as_i64()?
-    let title = nav("title").as_string()?
-    let user = UserJsonConverter(nav("user"), creds)?
-    let state = JsonNavUtil.string_or_none(nav("state"))?
-    let body = JsonNavUtil.string_or_none(nav("body"))?
+    let number = json("number").as_i64()?
+    let title = json("title").as_string()?
+    let user = UserJsonConverter(json("user"), creds)?
+    let state = JsonNavUtil.string_or_none(json("state"))?
+    let body = JsonNavUtil.string_or_none(json("body"))?
 
     let labels = recover trn Array[Label] end
-    for i in nav("labels").as_array()?.values() do
+    for i in json("labels").as_array()?.values() do
       let l = LabelJsonConverter(JsonNav(i), creds)?
       labels.push(l)
     end
 
-    let pr_nav = nav("pull_request")
-    let pull_request = match pr_nav.json()
+    let pr_json = json("pull_request")
+    let pull_request = match pr_json.json()
     | let _: JsonType =>
-      IssuePullRequestJsonConverter(pr_nav, creds)?
+      IssuePullRequestJsonConverter(pr_json, creds)?
     else
       None
     end

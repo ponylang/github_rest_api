@@ -10,8 +10,8 @@ primitive JsonNavUtil
   null. Raises an error if the navigation failed (key missing) or the value is
   any other type.
   """
-  fun string_or_none(nav: JsonNav): (String | None) ? =>
-    match nav.json()
+  fun string_or_none(json: JsonNav): (String | None) ? =>
+    match json.json()
     | let s: String => s
     | JsonNull => None
     else error

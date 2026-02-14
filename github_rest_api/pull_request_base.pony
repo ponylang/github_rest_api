@@ -24,11 +24,11 @@ class val PullRequestBase
     repo = repo'
 
 primitive PullRequestBaseJsonConverter is req.JsonConverter[PullRequestBase]
-  fun apply(nav: JsonNav, creds: req.Credentials): PullRequestBase ? =>
-    let label = nav("label").as_string()?
-    let reference = nav("ref").as_string()?
-    let sha = nav("sha").as_string()?
-    let user = UserJsonConverter(nav("user"), creds)?
-    let repo = RepositoryJsonConverter(nav("repo"), creds)?
+  fun apply(json: JsonNav, creds: req.Credentials): PullRequestBase ? =>
+    let label = json("label").as_string()?
+    let reference = json("ref").as_string()?
+    let sha = json("sha").as_string()?
+    let user = UserJsonConverter(json("user"), creds)?
+    let repo = RepositoryJsonConverter(json("repo"), creds)?
 
     PullRequestBase(creds, label, reference, sha, user, repo)

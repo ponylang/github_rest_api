@@ -63,25 +63,25 @@ class val User
     site_admin = site_admin'
 
 primitive UserJsonConverter is req.JsonConverter[User]
-  fun apply(nav: JsonNav, creds: req.Credentials): User ? =>
-    let login = nav("login").as_string()?
-    let id = nav("id").as_i64()?
-    let node_id = nav("node_id").as_string()?
-    let avatar_url = nav("avatar_url").as_string()?
-    let gravatar_id = nav("gravatar_id").as_string()?
-    let url = nav("url").as_string()?
-    let html_url = nav("html_url").as_string()?
-    let followers_url = nav("followers_url").as_string()?
-    let following_url = nav("following_url").as_string()?
-    let gists_url = nav("gists_url").as_string()?
-    let starred_url = nav("starred_url").as_string()?
-    let subscriptions_url = nav("subscriptions_url").as_string()?
-    let organizations_url = nav("organizations_url").as_string()?
-    let repos_url = nav("repos_url").as_string()?
-    let events_url = nav("events_url").as_string()?
-    let received_events_url = nav("received_events_url").as_string()?
-    let user_type = nav("type").as_string()?
-    let site_admin = nav("site_admin").as_bool()?
+  fun apply(json: JsonNav, creds: req.Credentials): User ? =>
+    let login = json("login").as_string()?
+    let id = json("id").as_i64()?
+    let node_id = json("node_id").as_string()?
+    let avatar_url = json("avatar_url").as_string()?
+    let gravatar_id = json("gravatar_id").as_string()?
+    let url = json("url").as_string()?
+    let html_url = json("html_url").as_string()?
+    let followers_url = json("followers_url").as_string()?
+    let following_url = json("following_url").as_string()?
+    let gists_url = json("gists_url").as_string()?
+    let starred_url = json("starred_url").as_string()?
+    let subscriptions_url = json("subscriptions_url").as_string()?
+    let organizations_url = json("organizations_url").as_string()?
+    let repos_url = json("repos_url").as_string()?
+    let events_url = json("events_url").as_string()?
+    let received_events_url = json("received_events_url").as_string()?
+    let user_type = json("type").as_string()?
+    let site_admin = json("site_admin").as_bool()?
 
     User(creds,
       login,
