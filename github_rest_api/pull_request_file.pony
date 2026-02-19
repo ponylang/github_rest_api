@@ -2,7 +2,7 @@ use "json"
 use "net"
 use "promises"
 use req = "request"
-use sut = "simple_uri_template"
+use ut = "uri/template"
 
 type PullRequestFiles is Array[PullRequestFile] val
 type PullRequestFilesOrError is (PullRequestFiles | req.RequestError)
@@ -21,18 +21,16 @@ primitive GetPullRequestFiles
     number: I64,
     creds: req.Credentials): Promise[PullRequestFilesOrError]
   =>
-    let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}/pulls{/number}/files"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo); ("number", number.string()) ]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u', creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(
+      "https://api.github.com/repos{/owner}{/repo}/pulls{/number}/files")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+        .>set("owner", owner)
+        .>set("repo", repo)
+        .>set("number", number.string())
+      let u: String val = tpl.expand(vars)
+      by_url(u, creds)
+    | let e: ut.URITemplateParseError =>
       Promise[PullRequestFilesOrError].>apply(
         req.RequestError(where message' = e.message))
     end

@@ -1,7 +1,7 @@
 use "json"
 use "promises"
 use req = "request"
-use sut = "simple_uri_template"
+use ut = "uri/template"
 
 type CommitOrError is (Commit | req.RequestError)
 
@@ -36,18 +36,16 @@ primitive GetCommit
     sha: String,
     creds: req.Credentials): Promise[CommitOrError]
   =>
-    let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}/commits{/sha}"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo); ("sha", sha) ]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u', creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(
+      "https://api.github.com/repos{/owner}{/repo}/commits{/sha}")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+        .>set("owner", owner)
+        .>set("repo", repo)
+        .>set("sha", sha)
+      let u: String val = tpl.expand(vars)
+      by_url(u, creds)
+    | let e: ut.URITemplateParseError =>
       Promise[CommitOrError].>apply(req.RequestError(where message' = e.message))
     end
 

@@ -2,8 +2,7 @@
   "packages": [
     "github_rest_api",
     "github_rest_api/pagination_link_parser",
-    "github_rest_api/request",
-    "github_rest_api/simple_uri_template"
+    "github_rest_api/request"
   ],
   "deps": [
     {
@@ -16,6 +15,10 @@
     },
     {
       "locator": "github.com/ponylang/json-ng.git",
+      "version": "0.1.0"
+    },
+    {
+      "locator": "github.com/ponylang/uri.git",
       "version": "0.1.0"
     }
   ],

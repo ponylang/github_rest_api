@@ -1,7 +1,7 @@
 use "json"
 use "promises"
 use req = "request"
-use sut = "simple_uri_template"
+use ut = "uri/template"
 
 type LabelOrError is (Label | req.RequestError)
 
@@ -41,18 +41,15 @@ primitive CreateLabel
     color: (String | None) = None,
     description: (String | None) = None): Promise[LabelOrError]
   =>
-    let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}/labels"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo) ]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u', name, creds, color, description)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(
+      "https://api.github.com/repos{/owner}{/repo}/labels")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+        .>set("owner", owner)
+        .>set("repo", repo)
+      let u: String val = tpl.expand(vars)
+      by_url(u, name, creds, color, description)
+    | let e: ut.URITemplateParseError =>
       Promise[LabelOrError].>apply(
         req.RequestError(where message' = e.message))
     end
@@ -95,18 +92,16 @@ primitive DeleteLabel
     name: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}/labels{/name}"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo); ("name", name) ]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u', name, creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(
+      "https://api.github.com/repos{/owner}{/repo}/labels{/name}")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+        .>set("owner", owner)
+        .>set("repo", repo)
+        .>set("name", name)
+      let u: String val = tpl.expand(vars)
+      by_url(u, name, creds)
+    | let e: ut.URITemplateParseError =>
       Promise[req.DeletedOrError].>apply(
         req.RequestError(where message' = e.message))
     end
