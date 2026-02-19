@@ -281,7 +281,7 @@ class val Repository
     match ut.URITemplateParse(labels_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("name", label_name)
+        .>set("name", label_name)
       let u: String val = tpl.expand(vars)
       DeleteLabel.by_url(u, label_name, _creds)
     | let e: ut.URITemplateParseError =>
@@ -292,7 +292,7 @@ class val Repository
     match ut.URITemplateParse(commits_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("sha", sha)
+        .>set("sha", sha)
       let u: String val = tpl.expand(vars)
       GetCommit.by_url(u, _creds)
     | let e: ut.URITemplateParseError =>
@@ -303,7 +303,7 @@ class val Repository
     match ut.URITemplateParse(issues_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("number", number.string())
+        .>set("number", number.string())
       let u: String val = tpl.expand(vars)
       GetIssue.by_url(u, _creds)
     | let e: ut.URITemplateParseError =>
@@ -334,7 +334,7 @@ class val Repository
     match ut.URITemplateParse(pulls_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("number", number.string())
+        .>set("number", number.string())
       let u: String val = tpl.expand(vars)
       GetPullRequest.by_url(u, _creds)
     | let e: ut.URITemplateParseError =>
@@ -350,8 +350,8 @@ primitive GetRepository
     match ut.URITemplateParse("https://api.github.com/repos{/owner}{/repo}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
+        .>set("owner", owner)
+        .>set("repo", repo)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
@@ -383,8 +383,8 @@ primitive GetRepositoryLabels
       "https://api.github.com/repos{/owner}{/repo}/labels")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
+        .>set("owner", owner)
+        .>set("repo", repo)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
@@ -416,7 +416,7 @@ primitive GetOrganizationRepositories
     match ut.URITemplateParse("https://api.github.com/orgs{/org}/repos")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("org", org)
+        .>set("org", org)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>

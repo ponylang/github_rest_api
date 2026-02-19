@@ -84,8 +84,8 @@ primitive CreateRelease
       "https://api.github.com/repos{/owner}{/repo}/releases")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
+        .>set("owner", owner)
+        .>set("repo", repo)
       let u: String val = tpl.expand(vars)
       by_url(u,
         tag_name,

@@ -45,8 +45,8 @@ primitive CreateLabel
       "https://api.github.com/repos{/owner}{/repo}/labels")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
+        .>set("owner", owner)
+        .>set("repo", repo)
       let u: String val = tpl.expand(vars)
       by_url(u, name, creds, color, description)
     | let e: ut.URITemplateParseError =>
@@ -96,9 +96,9 @@ primitive DeleteLabel
       "https://api.github.com/repos{/owner}{/repo}/labels{/name}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
-      vars.set("name", name)
+        .>set("owner", owner)
+        .>set("repo", repo)
+        .>set("name", name)
       let u: String val = tpl.expand(vars)
       by_url(u, name, creds)
     | let e: ut.URITemplateParseError =>

@@ -56,9 +56,9 @@ primitive GetPullRequest
       "https://api.github.com/repos{/owner}{/repo}/pulls{/number}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
-      vars.set("number", number.string())
+        .>set("owner", owner)
+        .>set("repo", repo)
+        .>set("number", number.string())
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>

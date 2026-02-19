@@ -40,9 +40,9 @@ primitive GetCommit
       "https://api.github.com/repos{/owner}{/repo}/commits{/sha}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
-      vars.set("sha", sha)
+        .>set("owner", owner)
+        .>set("repo", repo)
+        .>set("sha", sha)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>

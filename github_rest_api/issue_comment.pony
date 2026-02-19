@@ -109,9 +109,9 @@ primitive IssueCommentsURL
       "https://api.github.com/repos{/owner}{/repo}/issues{/number}/comments")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-      vars.set("owner", owner)
-      vars.set("repo", repo)
-      vars.set("number", number.string())
+        .>set("owner", owner)
+        .>set("repo", repo)
+        .>set("number", number.string())
       tpl.expand(vars)
     | let e: ut.URITemplateParseError =>
       e
