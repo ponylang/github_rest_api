@@ -2,7 +2,7 @@ use "json"
 use "net"
 use "promises"
 use req = "request"
-use sut = "simple_uri_template"
+use ut = "uri/template"
 
 class val Repository
   let _creds: req.Credentials
@@ -243,17 +243,15 @@ class val Repository
     color: (String | None) = None,
     label_description: (String | None) = None): Promise[LabelOrError]
   =>
-    let u = sut.SimpleURITemplate(labels_url,
-      recover val Array[(String, String)] end)
-
-    match u
-    | let u': String =>
-      CreateLabel.by_url(u',
+    match ut.URITemplateParse(labels_url)
+    | let tpl: ut.URITemplate =>
+      let u: String val = tpl.expand(ut.URITemplateVariables)
+      CreateLabel.by_url(u,
         label_name,
         _creds,
         color,
         label_description)
-    | let e: sut.ParseError =>
+    | let e: ut.URITemplateParseError =>
       Promise[LabelOrError].>apply(req.RequestError(where message' = e.message))
     end
 
@@ -264,12 +262,10 @@ class val Repository
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
-    let u = sut.SimpleURITemplate(releases_url,
-      recover val Array[(String, String)] end)
-
-    match u
-    | let u': String =>
-      CreateRelease.by_url(u',
+    match ut.URITemplateParse(releases_url)
+    | let tpl: ut.URITemplate =>
+      let u: String val = tpl.expand(ut.URITemplateVariables)
+      CreateRelease.by_url(u,
         tag_name,
         release_name,
         body,
@@ -277,53 +273,49 @@ class val Repository
         target_commitish,
         draft,
         prerelease)
-    | let e: sut.ParseError =>
+    | let e: ut.URITemplateParseError =>
       Promise[ReleaseOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun delete_label(label_name: String): Promise[req.DeletedOrError] =>
-    let u = sut.SimpleURITemplate(labels_url,
-      recover val [ ("name", label_name) ] end)
-
-    match u
-    | let u': String =>
-      DeleteLabel.by_url(u', label_name, _creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(labels_url)
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("name", label_name)
+      let u: String val = tpl.expand(vars)
+      DeleteLabel.by_url(u, label_name, _creds)
+    | let e: ut.URITemplateParseError =>
       Promise[req.DeletedOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun get_commit(sha: String): Promise[CommitOrError] =>
-     let u = sut.SimpleURITemplate(
-      commits_url,
-      recover val [("sha", sha)] end)
-
-    match u
-    | let u': String =>
-      GetCommit.by_url(u', _creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(commits_url)
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("sha", sha)
+      let u: String val = tpl.expand(vars)
+      GetCommit.by_url(u, _creds)
+    | let e: ut.URITemplateParseError =>
       Promise[CommitOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun get_issue(number: I64): Promise[IssueOrError] =>
-    let u = sut.SimpleURITemplate(
-      issues_url,
-      recover val [("number", number.string())] end)
-
-    match u
-    | let u': String =>
-      GetIssue.by_url(u', _creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(issues_url)
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("number", number.string())
+      let u: String val = tpl.expand(vars)
+      GetIssue.by_url(u, _creds)
+    | let e: ut.URITemplateParseError =>
       Promise[IssueOrError].>apply(req.RequestError(where message' = e.message))
     end
 
   fun get_issues(labels: String = "", state: String = "open")
     : Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
-    let u = sut.SimpleURITemplate(issues_url,
-      recover val Array[(String, String)] end)
-
-    match u
-    | let u': String =>
+    match ut.URITemplateParse(issues_url)
+    | let tpl: ut.URITemplate =>
+      let u: String val = tpl.expand(ut.URITemplateVariables)
       let params = recover val
         let p = Array[(String, String)]
         p.push(("state", state))
@@ -332,21 +324,20 @@ class val Repository
         end
         p
       end
-      GetRepositoryIssues.by_url(u' + req.QueryParams(params), _creds)
-    | let e: sut.ParseError =>
+      GetRepositoryIssues.by_url(u + req.QueryParams(params), _creds)
+    | let e: ut.URITemplateParseError =>
       Promise[(PaginatedList[Issue] | req.RequestError)].>apply(
         req.RequestError(where message' = e.message))
     end
 
   fun get_pull_request(number: I64): Promise[PullRequestOrError] =>
-      let u = sut.SimpleURITemplate(
-      pulls_url,
-      recover val [("number", number.string())] end)
-
-    match u
-    | let u': String =>
-      GetPullRequest.by_url(u', _creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(pulls_url)
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("number", number.string())
+      let u: String val = tpl.expand(vars)
+      GetPullRequest.by_url(u, _creds)
+    | let e: ut.URITemplateParseError =>
       Promise[PullRequestOrError].>apply(
         req.RequestError(where message' = e.message))
     end
@@ -356,18 +347,14 @@ primitive GetRepository
     repo: String,
     creds: req.Credentials): Promise[RepositoryOrError]
   =>
-    let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo) ]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u', creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse("https://api.github.com/repos{/owner}{/repo}")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("owner", owner)
+      vars.set("repo", repo)
+      let u: String val = tpl.expand(vars)
+      by_url(u, creds)
+    | let e: ut.URITemplateParseError =>
       Promise[RepositoryOrError].>apply(
         req.RequestError(where message' = e.message))
     end
@@ -392,18 +379,15 @@ primitive GetRepositoryLabels
     repo: String,
     creds: req.Credentials): Promise[(PaginatedList[Label] | req.RequestError)]
   =>
-     let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}/labels"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo) ]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u', creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse(
+      "https://api.github.com/repos{/owner}{/repo}/labels")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("owner", owner)
+      vars.set("repo", repo)
+      let u: String val = tpl.expand(vars)
+      by_url(u, creds)
+    | let e: ut.URITemplateParseError =>
       Promise[(PaginatedList[Label] | req.RequestError)].>apply(
         req.RequestError(where message' = e.message))
     end
@@ -429,18 +413,13 @@ primitive GetOrganizationRepositories
   fun apply(org: String,
     creds: req.Credentials): Promise[(PaginatedList[Repository] | req.RequestError)]
   =>
-    let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/orgs{/org}/repos"
-      end,
-      recover val
-        [("org", org)]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u', creds)
-    | let e: sut.ParseError =>
+    match ut.URITemplateParse("https://api.github.com/orgs{/org}/repos")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("org", org)
+      let u: String val = tpl.expand(vars)
+      by_url(u, creds)
+    | let e: ut.URITemplateParseError =>
       Promise[(PaginatedList[Repository] | req.RequestError)].>apply(
         req.RequestError(where message' = e.message))
     end

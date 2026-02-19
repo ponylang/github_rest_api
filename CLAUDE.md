@@ -20,8 +20,9 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 
 - `github.com/ponylang/http.git` -- HTTP client
 - `github.com/ponylang/net_ssl.git` (via http) -- SSL/TLS
-- `github.com/kulibali/kiuatan.git` -- PEG parsing (for URI templates and Link headers)
+- `github.com/kulibali/kiuatan.git` -- PEG parsing (for Link headers via pagination_link_parser)
 - `github.com/ponylang/json-ng.git` -- JSON parsing (immutable, persistent collections)
+- `github.com/ponylang/uri.git` -- RFC 6570 URI template expansion
 
 ## Source Layout
 
@@ -56,7 +57,6 @@ github_rest_api/
     json.pony              -- JsonConverter interface, JsonTypeString utility
     query_params.pony      -- QueryParams (URL query string builder with percent-encoding)
     _test.pony             -- QueryParams tests (example + property-based)
-  simple_uri_template/     -- RFC 6570 path segment expansion (PEG-based; temporary home, intended to be extracted to its own library)
   pagination_link_parser/  -- RFC 5988 Link header parser (PEG-based)
   _test.pony               -- Test runner (delegates to subpackage tests)
 ```
@@ -69,7 +69,7 @@ All API operations return `Promise[(T | RequestError)]`. The flow is:
 
 1. Operation primitive (e.g., `GetRepository`) creates a `Promise`
 2. Creates a `ResultReceiver[T]` actor with the promise and a `JsonConverter[T]`
-3. Builds URL using `SimpleURITemplate` for path parameters
+3. Builds URL using `ponylang/uri` RFC 6570 template expansion for path parameters
 4. Issues HTTP request via `JsonRequester` / `HTTPPost` / `HTTPDelete`
 5. On success, JSON is parsed and converted to model via `JsonConverter`
 6. Promise is fulfilled with either the model or a `RequestError`
@@ -95,17 +95,16 @@ Models have methods that chain to further API calls:
 
 - All models are `class val` (immutable, shareable)
 - JSON converters are primitives implementing `JsonConverter[T]` interface
-- `Unreachable` primitive for impossible PEG parser states (duplicated in both subpackages)
+- `Unreachable` primitive for impossible PEG parser states (in pagination_link_parser)
 - Type aliases for result unions: `RepositoryOrError`, `IssueOrError`, etc.
 - `\nodoc\` annotation on test classes
-- Tests only cover infrastructure (URI template + Link header parsing), not API operations
+- Tests only cover infrastructure (Link header parsing + query params), not API operations
 - Keep CLAUDE.md in sync when adding or changing features — update the source layout, OO convenience API, pagination section, and coverage table as part of the PR that introduces the change
 
 ## Known TODOs in Code
 
 1. Search pagination not implemented (search.pony)
 2. Potential HTTP GET duplication with paginated variant (paginated_list.pony)
-3. SimpleURITemplate doesn't handle removing unmatched template values (though tests show it works)
 
 ## GitHub REST API Coverage Comparison
 

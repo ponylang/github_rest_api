@@ -1,7 +1,7 @@
 use "json"
 use "promises"
 use req = "request"
-use sut = "simple_uri_template"
+use ut = "uri/template"
 
 type ReleaseOrError is (Release | req.RequestError)
 
@@ -80,17 +80,14 @@ primitive CreateRelease
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
-    let u = sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}/releases"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo) ]
-      end)
-
-    match u
-    | let u': String =>
-      by_url(u',
+    match ut.URITemplateParse(
+      "https://api.github.com/repos{/owner}{/repo}/releases")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("owner", owner)
+      vars.set("repo", repo)
+      let u: String val = tpl.expand(vars)
+      by_url(u,
         tag_name,
         name,
         body,
@@ -98,7 +95,7 @@ primitive CreateRelease
         target_commitish,
         draft,
         prerelease)
-    | let e: sut.ParseError =>
+    | let e: ut.URITemplateParseError =>
       Promise[ReleaseOrError].>apply(req.RequestError(where message' = e.message))
     end
 

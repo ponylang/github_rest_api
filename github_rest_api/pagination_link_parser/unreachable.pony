@@ -1,6 +1,6 @@
-use @exit[None](status: U8)
-use @fprintf[I32](stream: Pointer[U8] tag, fmt: Pointer[U8] tag, ...)
-use @pony_os_stderr[Pointer[U8]]()
+use @exit[None](code: I32)
+use @fprintf[I32](stream: Pointer[None] tag, fmt: Pointer[U8] tag, ...)
+use @pony_os_stderr[Pointer[None]]()
 
 // TODO: add issue URL
 primitive Unreachable

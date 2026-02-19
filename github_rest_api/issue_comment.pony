@@ -2,7 +2,7 @@ use "json"
 use "net"
 use "promises"
 use req = "request"
-use sut = "simple_uri_template"
+use ut = "uri/template"
 
 type IssueCommentOrError is (IssueComment | req.RequestError)
 type IssueComments is Array[IssueComment] val
@@ -39,7 +39,7 @@ primitive CreateIssueComment
     match u
     | let u': String =>
       by_url(u', comment, creds)
-    | let e: sut.ParseError =>
+    | let e: ut.URITemplateParseError =>
       Promise[IssueCommentOrError].>apply(
         req.RequestError(where message' = e.message))
     end
@@ -78,7 +78,7 @@ primitive GetIssueComments
     match u
     | let u': String =>
       by_url(u', creds)
-    | let e: sut.ParseError =>
+    | let e: ut.URITemplateParseError =>
       Promise[IssueCommentsOrError].>apply(
         req.RequestError(where message' = e.message))
     end
@@ -102,14 +102,20 @@ primitive GetIssueComments
     p
 
 primitive IssueCommentsURL
-  fun apply(owner: String, repo: String, number: I64): (String | sut.ParseError) =>
-    sut.SimpleURITemplate(
-      recover val
-        "https://api.github.com/repos{/owner}{/repo}/issues{/number}/comments"
-      end,
-      recover val
-        [ ("owner", owner); ("repo", repo); ("number", number.string()) ]
-      end)
+  fun apply(owner: String, repo: String, number: I64)
+    : (String | ut.URITemplateParseError)
+  =>
+    match ut.URITemplateParse(
+      "https://api.github.com/repos{/owner}{/repo}/issues{/number}/comments")
+    | let tpl: ut.URITemplate =>
+      let vars = ut.URITemplateVariables
+      vars.set("owner", owner)
+      vars.set("repo", repo)
+      vars.set("number", number.string())
+      tpl.expand(vars)
+    | let e: ut.URITemplateParseError =>
+      e
+    end
 
 primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
   fun apply(json: JsonNav,
