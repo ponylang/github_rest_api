@@ -1,7 +1,6 @@
 use "http"
 use "json"
 use "ssl/net"
-use plp = "pagination_link_parser"
 use "promises"
 use req = "request"
 
@@ -106,12 +105,7 @@ class val PaginatedSearchJsonConverter[A: Any val]
       items.push(item)
     end
 
-    (let prev, let next) = match plp.ExtractPaginationLinks(link_header)
-    | let links: plp.PaginationLinks =>
-      (links.prev, links.next)
-    else
-      (None, None)
-    end
+    (let prev, let next) = _ExtractPaginationLinks(link_header)
 
     SearchResults[A]._create(_creds,
       _converter,

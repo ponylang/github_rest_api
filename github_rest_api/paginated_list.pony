@@ -1,7 +1,6 @@
 use "http"
 use "json"
 use "ssl/net"
-use plp = "pagination_link_parser"
 use "promises"
 use req = "request"
 
@@ -85,15 +84,7 @@ class val PaginatedListJsonConverter[A: Any val]
       entries.push(e)
     end
 
-    // TODO: parse link headers to set up next and prev
-    (let prev, let next) = match plp.ExtractPaginationLinks(link_header)
-    | let links: plp.PaginationLinks =>
-      (links.prev, links.next)
-    else
-      // If there was a parser erorr then really, there's nothing to do here.
-      // There's "no links" so let's carry on without them,
-      (None, None)
-    end
+    (let prev, let next) = _ExtractPaginationLinks(link_header)
 
     PaginatedList[A]._from_array(_creds,
       _converter,

@@ -1,13 +1,12 @@
 {
   "packages": [
     "github_rest_api",
-    "github_rest_api/pagination_link_parser",
     "github_rest_api/request"
   ],
   "deps": [
     {
-      "locator": "github.com/ponylang/peg.git",
-      "version": "0.1.6"
+      "locator": "github.com/ponylang/web_link.git",
+      "version": "0.1.0"
     },
     {
       "locator": "github.com/ponylang/http.git",
