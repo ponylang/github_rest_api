@@ -20,7 +20,7 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 
 - `github.com/ponylang/http.git` -- HTTP client
 - `github.com/ponylang/net_ssl.git` (via http) -- SSL/TLS
-- `github.com/kulibali/kiuatan.git` -- PEG parsing (for Link headers via pagination_link_parser)
+- `github.com/ponylang/web_link.git` -- RFC 8288 Link header parsing
 - `github.com/ponylang/json-ng.git` -- JSON parsing (immutable, persistent collections)
 - `github.com/ponylang/uri.git` -- RFC 6570 URI template expansion
 
@@ -48,6 +48,7 @@ github_rest_api/
   license.pony             -- License model
   json_nav_util.pony       -- JsonNavUtil (string_or_none for nullable JSON fields)
   paginated_list.pony      -- PaginatedList[A] with prev/next page navigation
+  _extract_pagination_links.pony -- Extracts prev/next URLs from Link headers (via web_link)
   request/                 -- HTTP request infrastructure (temporary home, intended to be extracted to its own library)
     http.pony              -- Credentials, ResultReceiver, RequestFactory
     http_get.pony          -- JsonRequester (GET with JSON response)
@@ -57,8 +58,7 @@ github_rest_api/
     json.pony              -- JsonConverter interface, JsonTypeString utility
     query_params.pony      -- QueryParams (URL query string builder with percent-encoding)
     _test.pony             -- QueryParams tests (example + property-based)
-  pagination_link_parser/  -- RFC 5988 Link header parser (PEG-based)
-  _test.pony               -- Test runner (delegates to subpackage tests)
+  _test.pony               -- Test runner (pagination link extraction + delegates to subpackage tests)
 ```
 
 ## Architecture
@@ -85,7 +85,7 @@ Models have methods that chain to further API calls:
 
 ### Pagination
 
-`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the PEG-based `ExtractPaginationLinks` parser. Used by `GetRepositoryLabels`, `GetOrganizationRepositories`, and `GetRepositoryIssues`.
+`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the `ponylang/web_link` library (via `_ExtractPaginationLinks`). Used by `GetRepositoryLabels`, `GetOrganizationRepositories`, `GetRepositoryIssues`, and `SearchIssues`.
 
 ### Auth
 
@@ -95,7 +95,6 @@ Models have methods that chain to further API calls:
 
 - All models are `class val` (immutable, shareable)
 - JSON converters are primitives implementing `JsonConverter[T]` interface
-- `Unreachable` primitive for impossible PEG parser states (in pagination_link_parser)
 - Type aliases for result unions: `RepositoryOrError`, `IssueOrError`, etc.
 - `\nodoc\` annotation on test classes
 - Tests only cover infrastructure (Link header parsing + query params), not API operations
@@ -103,8 +102,7 @@ Models have methods that chain to further API calls:
 
 ## Known TODOs in Code
 
-1. Search pagination not implemented (search.pony)
-2. Potential HTTP GET duplication with paginated variant (paginated_list.pony)
+1. Potential HTTP GET duplication with paginated variant (paginated_list.pony)
 
 ## GitHub REST API Coverage Comparison
 
@@ -270,7 +268,7 @@ commonly-used categories that a GitHub API library would typically need.
 
 | Endpoint | Method | Library |
 |----------|--------|---------|
-| `/search/issues` | GET | SearchIssues (no pagination) |
+| `/search/issues` | GET | SearchIssues |
 | `/search/code` | GET | **missing** |
 | `/search/commits` | GET | **missing** |
 | `/search/labels` | GET | **missing** |
@@ -388,7 +386,6 @@ These API categories have zero coverage in the library:
 | Gap | Notes |
 |-----|-------|
 | No HTTP PUT/PATCH support | Can't update any resources. Need `HTTPPut` and `HTTPPatch` classes |
-| Search pagination | TODO in code; needs different converter interface |
 | List operations | Most resources only have "get one", not "list many" |
 | GetPullRequestFiles not paginated | GitHub paginates this but library returns plain Array |
 | PullRequestFile sparse | Only has `filename`; GitHub returns sha, status, additions, deletions, changes, patch, etc. |
