@@ -13,6 +13,6 @@ primitive JsonNavUtil
   fun string_or_none(json: JsonNav): (String | None) ? =>
     match json.json()
     | let s: String => s
-    | JsonNull => None
+    | None => None
     else error
     end
