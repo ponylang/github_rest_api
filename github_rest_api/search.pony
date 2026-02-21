@@ -238,7 +238,7 @@ class SearchJsonRequesterHandler[A: Any val] is HTTPHandler
 
     if _status == 200 then
       match JsonParser.parse(consume y)
-      | let json: JsonType => _receiver.success(JsonNav(json), _link_header)
+      | let json: JsonValue => _receiver.success(JsonNav(json), _link_header)
       | let _: JsonParseError => _receiver.failure(_status, "",
         "Failed to parse response")
       end

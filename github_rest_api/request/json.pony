@@ -14,6 +14,6 @@ primitive JsonTypeString
     | let i: I64 => i.string()
     | let f: F64 => f.string()
     | let b: Bool => b.string()
-    | JsonNull => "null"
-    | NotFound => "NotFound"
+    | None => "null"
+    | JsonNotFound => "JsonNotFound"
     end

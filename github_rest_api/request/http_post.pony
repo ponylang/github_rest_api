@@ -83,7 +83,7 @@ class HTTPPostHandler is HTTPHandler
 
     if _status == 201 then
       match JsonParser.parse(consume y)
-      | let json: JsonType => _receiver.success(JsonNav(json))
+      | let json: JsonValue => _receiver.success(JsonNav(json))
       | let _: JsonParseError => _receiver.failure(_status, "",
         "Failed to parse response")
       end

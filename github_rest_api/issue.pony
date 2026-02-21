@@ -163,7 +163,7 @@ primitive IssueJsonConverter is req.JsonConverter[Issue]
 
     let pr_json = json("pull_request")
     let pull_request = match pr_json.json()
-    | let _: JsonType =>
+    | let _: JsonValue =>
       IssuePullRequestJsonConverter(pr_json, creds)?
     else
       None
