@@ -6,6 +6,10 @@ use ut = "uri/template"
 type CommitOrError is (Commit | req.RequestError)
 
 class val Commit
+  """
+  A GitHub commit, containing its SHA, changed files, and nested git commit
+  data (author, committer, message).
+  """
   let _creds: req.Credentials
   let sha: String
   let files: Array[CommitFile] val
@@ -31,6 +35,9 @@ class val Commit
     comments_url = comments_url'
 
 primitive GetCommit
+  """
+  Fetches a single commit by owner, repo, and SHA.
+  """
   fun apply(owner: String,
     repo: String,
     sha: String,
@@ -65,6 +72,9 @@ primitive GetCommit
     p
 
 primitive CommitJsonConverter is req.JsonConverter[Commit]
+  """
+  Converts a JSON object from the commits API into a Commit.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): Commit ? =>
     let sha = json("sha").as_string()?
 

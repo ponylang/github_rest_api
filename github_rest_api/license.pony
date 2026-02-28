@@ -2,6 +2,10 @@ use "json"
 use req = "request"
 
 class val License
+  """
+  A repository license as returned by the GitHub REST API. Contains the
+  license's SPDX identifier, display name, and key.
+  """
   let _creds: req.Credentials
   let node_id: String
   let name: String
@@ -24,6 +28,9 @@ class val License
     url = url'
 
 primitive LicenseJsonConverter is req.JsonConverter[License]
+  """
+  Converts a JSON object into a License.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): License ? =>
     let node_id = json("node_id").as_string()?
     let name = json("name").as_string()?

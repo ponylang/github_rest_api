@@ -29,6 +29,9 @@ class val IssuePullRequest
     merged_at = merged_at'
 
 primitive IssuePullRequestJsonConverter is req.JsonConverter[IssuePullRequest]
+  """
+  Converts a JSON object into an IssuePullRequest.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): IssuePullRequest ? =>
     let url = json("url").as_string()?
     let html_url = json("html_url").as_string()?

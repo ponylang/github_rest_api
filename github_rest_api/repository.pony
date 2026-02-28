@@ -5,6 +5,12 @@ use req = "request"
 use ut = "uri/template"
 
 class val Repository
+  """
+  A GitHub repository. Contains the repository's metadata, feature flags,
+  counts, and API/clone URLs. Provides convenience methods for creating labels
+  and releases, deleting labels, and fetching commits, issues, and pull
+  requests.
+  """
   let _creds: req.Credentials
   let id: I64
   let node_id: String
@@ -243,6 +249,9 @@ class val Repository
     color: (String | None) = None,
     label_description: (String | None) = None): Promise[LabelOrError]
   =>
+    """
+    Creates a new label on this repository.
+    """
     match ut.URITemplateParse(labels_url)
     | let tpl: ut.URITemplate =>
       let u: String val = tpl.expand(ut.URITemplateVariables)
@@ -262,6 +271,9 @@ class val Repository
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
+    """
+    Creates a new release on this repository.
+    """
     match ut.URITemplateParse(releases_url)
     | let tpl: ut.URITemplate =>
       let u: String val = tpl.expand(ut.URITemplateVariables)
@@ -278,6 +290,9 @@ class val Repository
     end
 
   fun delete_label(label_name: String): Promise[req.DeletedOrError] =>
+    """
+    Deletes a label from this repository.
+    """
     match ut.URITemplateParse(labels_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -289,6 +304,9 @@ class val Repository
     end
 
   fun get_commit(sha: String): Promise[CommitOrError] =>
+    """
+    Fetches a commit from this repository by its SHA.
+    """
     match ut.URITemplateParse(commits_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -300,6 +318,9 @@ class val Repository
     end
 
   fun get_issue(number: I64): Promise[IssueOrError] =>
+    """
+    Fetches a single issue from this repository by its number.
+    """
     match ut.URITemplateParse(issues_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -313,6 +334,9 @@ class val Repository
   fun get_issues(labels: String = "", state: String = "open")
     : Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
+    """
+    Lists issues in this repository, optionally filtered by labels and state.
+    """
     match ut.URITemplateParse(issues_url)
     | let tpl: ut.URITemplate =>
       let u: String val = tpl.expand(ut.URITemplateVariables)
@@ -331,6 +355,9 @@ class val Repository
     end
 
   fun get_pull_request(number: I64): Promise[PullRequestOrError] =>
+    """
+    Fetches a single pull request from this repository by its number.
+    """
     match ut.URITemplateParse(pulls_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -343,6 +370,9 @@ class val Repository
     end
 
 primitive GetRepository
+  """
+  Fetches a single repository by owner and name.
+  """
   fun apply(owner: String,
     repo: String,
     creds: req.Credentials): Promise[RepositoryOrError]
@@ -375,6 +405,9 @@ primitive GetRepository
     p
 
 primitive GetRepositoryLabels
+  """
+  Fetches labels for a repository as a paginated list.
+  """
   fun apply(owner: String,
     repo: String,
     creds: req.Credentials): Promise[(PaginatedList[Label] | req.RequestError)]
@@ -410,6 +443,9 @@ primitive GetRepositoryLabels
     p
 
 primitive GetOrganizationRepositories
+  """
+  Lists all repositories in a GitHub organization as a paginated list.
+  """
   fun apply(org: String,
     creds: req.Credentials): Promise[(PaginatedList[Repository] | req.RequestError)]
   =>
@@ -442,6 +478,9 @@ primitive GetOrganizationRepositories
     p
 
 primitive RepositoryJsonConverter is req.JsonConverter[Repository]
+  """
+  Converts a JSON object from the repositories API into a Repository.
+  """
   fun apply(json: JsonNav,
     creds: req.Credentials): Repository ?
   =>

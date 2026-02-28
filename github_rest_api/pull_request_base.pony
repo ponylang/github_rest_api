@@ -2,6 +2,10 @@ use "json"
 use req = "request"
 
 class val PullRequestBase
+  """
+  The head or base ref of a pull request, containing its label, ref name, SHA,
+  owner, and associated repository.
+  """
   let _creds: req.Credentials
   let label: String
   let reference: String
@@ -24,6 +28,9 @@ class val PullRequestBase
     repo = repo'
 
 primitive PullRequestBaseJsonConverter is req.JsonConverter[PullRequestBase]
+  """
+  Converts a JSON object into a PullRequestBase.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): PullRequestBase ? =>
     let label = json("label").as_string()?
     let reference = json("ref").as_string()?

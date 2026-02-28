@@ -8,6 +8,9 @@ type PullRequestFiles is Array[PullRequestFile] val
 type PullRequestFilesOrError is (PullRequestFiles | req.RequestError)
 
 class val PullRequestFile
+  """
+  A file changed in a pull request. Currently only captures the filename.
+  """
   let _creds: req.Credentials
   let filename: String
 
@@ -16,6 +19,9 @@ class val PullRequestFile
     filename = filename'
 
 primitive GetPullRequestFiles
+  """
+  Fetches the list of files changed in a pull request.
+  """
   fun apply(owner: String,
     repo: String,
     number: I64,
@@ -57,6 +63,10 @@ primitive GetPullRequestFiles
 
 primitive PullRequestFilesJsonConverter is
   req.JsonConverter[Array[PullRequestFile] val]
+  """
+  Converts a JSON array of pull request file objects into an Array of
+  PullRequestFile.
+  """
   fun apply(json: JsonNav,
     creds: req.Credentials): Array[PullRequestFile] val ?
   =>

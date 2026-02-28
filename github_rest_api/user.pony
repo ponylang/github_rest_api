@@ -2,6 +2,11 @@ use "json"
 use req = "request"
 
 class val User
+  """
+  A GitHub user account. Contains the user's login, profile URLs, and account
+  metadata. The `user_type` field corresponds to the `"type"` key in the
+  GitHub JSON response (renamed because `type` is a Pony keyword).
+  """
   let _creds: req.Credentials
   let login: String
   let id: I64
@@ -63,6 +68,9 @@ class val User
     site_admin = site_admin'
 
 primitive UserJsonConverter is req.JsonConverter[User]
+  """
+  Converts a JSON object into a User.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): User ? =>
     let login = json("login").as_string()?
     let id = json("id").as_i64()?
