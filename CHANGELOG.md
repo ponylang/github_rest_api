@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - Add full Gist API support ([PR #72](https://github.com/ponylang/github_rest_api/pull/72))
+- Add query parameters to GetRepositoryIssues ([PR #85](https://github.com/ponylang/github_rest_api/pull/85))
 
 ### Changed
 
