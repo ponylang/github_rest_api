@@ -2,8 +2,6 @@
 
 Library for interacting with the GitHub REST API.
 
-See [the examples](examples) for usage.
-
 ## Status
 
 GitHub REST API is an alpha-level package.
@@ -18,6 +16,33 @@ Additional API surface and functionality will be added as needed. If you need fu
 * `corral fetch` to fetch your dependencies
 * `use "github_rest_api"` to include this package
 * `corral run -- ponyc` to compile your application
+
+## Usage
+
+```pony
+use "github_rest_api"
+use "github_rest_api/request"
+use "net"
+
+actor Main
+  new create(env: Env) =>
+    let auth = TCPConnectAuth(env.root)
+    let creds = Credentials(auth, "your-github-token")
+
+    GitHub(creds).get_repo("ponylang", "ponyc")
+      .next[None](PrintRepository~apply(env.out))
+
+primitive PrintRepository
+  fun apply(out: OutStream, result: RepositoryOrError) =>
+    match result
+    | let repo: Repository =>
+      out.print(repo.full_name)
+    | let err: RequestError =>
+      out.print(err.message)
+    end
+```
+
+See the [examples](examples/) directory for more.
 
 ## API Documentation
 
