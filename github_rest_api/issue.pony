@@ -5,6 +5,68 @@ use ut = "uri/template"
 
 type IssueOrError is (Issue | req.RequestError)
 
+primitive SortCreated
+  """
+  Sort issues by creation time.
+  """
+  fun query_value(): String val =>
+    """
+    Returns the query parameter value for this sort option.
+    """
+    "created"
+
+primitive SortUpdated
+  """
+  Sort issues by last update time.
+  """
+  fun query_value(): String val =>
+    """
+    Returns the query parameter value for this sort option.
+    """
+    "updated"
+
+primitive SortComments
+  """
+  Sort issues by number of comments.
+  """
+  fun query_value(): String val =>
+    """
+    Returns the query parameter value for this sort option.
+    """
+    "comments"
+
+type IssueSort is (SortCreated | SortUpdated | SortComments)
+  """
+  Controls how issues are sorted when listing repository issues.
+  """
+
+primitive SortAscending
+  """
+  Sort in ascending order (oldest first for time-based sorts, fewest first for
+  comment count).
+  """
+  fun query_value(): String val =>
+    """
+    Returns the query parameter value for this sort direction.
+    """
+    "asc"
+
+primitive SortDescending
+  """
+  Sort in descending order (newest first for time-based sorts, most first for
+  comment count).
+  """
+  fun query_value(): String val =>
+    """
+    Returns the query parameter value for this sort direction.
+    """
+    "desc"
+
+type SortDirection is (SortAscending | SortDescending)
+  """
+  Controls the ordering direction when listing repository issues.
+  """
+
 class val Issue
   """
   A GitHub issue. Provides convenience methods to create comments and list
@@ -111,13 +173,19 @@ primitive GetIssue
 primitive GetRepositoryIssues
   """
   Lists issues in a repository as a paginated list, optionally filtered by
-  labels and state.
+  labels and state. Results can be sorted by creation time, update time, or
+  comment count, and ordered ascending or descending. The per_page parameter
+  controls page size (1-100, GitHub defaults to 30).
   """
   fun apply(owner: String,
     repo: String,
     creds: req.Credentials,
     labels: String = "",
-    state: String = "open"): Promise[(PaginatedList[Issue] | req.RequestError)]
+    state: String = "open",
+    sort: IssueSort = SortCreated,
+    direction: SortDirection = SortDescending,
+    since: String = "",
+    per_page: (I64 | None) = None): Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
     match ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/issues")
@@ -129,8 +197,16 @@ primitive GetRepositoryIssues
       let params = recover val
         let p = Array[(String, String)]
         p.push(("state", state))
+        p.push(("sort", sort.query_value()))
+        p.push(("direction", direction.query_value()))
         if labels.size() > 0 then
           p.push(("labels", labels))
+        end
+        if since.size() > 0 then
+          p.push(("since", since))
+        end
+        match per_page
+        | let n: I64 => p.push(("per_page", n.string()))
         end
         p
       end

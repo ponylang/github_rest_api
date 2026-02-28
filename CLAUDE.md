@@ -30,7 +30,7 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 github_rest_api/
   github.pony              -- GitHub class (entry point, has get_repo, get_org_repos, gist operations)
   repository.pony          -- Repository model + GetRepository, GetRepositoryLabels
-  issue.pony               -- Issue model + GetIssue, GetRepositoryIssues
+  issue.pony               -- Issue model + GetIssue, GetRepositoryIssues, IssueSort, SortDirection
   issue_pull_request.pony  -- IssuePullRequest model (PR metadata on issues)
   pull_request.pony        -- PullRequest model + GetPullRequest
   pull_request_base.pony   -- PullRequestBase model (head/base refs)
@@ -90,7 +90,7 @@ Models have methods that chain to further API calls:
 - `GitHub.get_gist(gist_id)` -> `Gist`
 - `GitHub.create_gist(files, description, is_public)` -> `Gist`
 - `GitHub.get_user_gists()`, `.get_public_gists()`, `.get_starred_gists()`, `.get_username_gists(username)` -> `PaginatedList[Gist]`
-- `Repository.create_label(...)`, `.create_release(...)`, `.delete_label(...)`, `.get_commit(...)`, `.get_issue(...)`, `.get_issues(...)`, `.get_pull_request(...)`
+- `Repository.create_label(...)`, `.create_release(...)`, `.delete_label(...)`, `.get_commit(...)`, `.get_issue(...)`, `.get_issues(labels, state, sort, direction, since, per_page)`, `.get_pull_request(...)`
 - `Issue.create_comment(...)`, `.get_comments()`
 - `PullRequest.get_files()`
 - `Gist.update_gist(files, description)`, `.delete_gist()`, `.get_revision(sha)`, `.fork()`, `.get_forks()`, `.get_commits()`, `.star()`, `.unstar()`, `.is_starred()`, `.create_comment(body)`, `.get_comments()`

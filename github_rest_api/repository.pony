@@ -331,11 +331,19 @@ class val Repository
       Promise[IssueOrError].>apply(req.RequestError(where message' = e.message))
     end
 
-  fun get_issues(labels: String = "", state: String = "open")
+  fun get_issues(labels: String = "",
+    state: String = "open",
+    sort: IssueSort = SortCreated,
+    direction: SortDirection = SortDescending,
+    since: String = "",
+    per_page: (I64 | None) = None)
     : Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
     """
     Lists issues in this repository, optionally filtered by labels and state.
+    Results can be sorted by creation time, update time, or comment count, and
+    ordered ascending or descending. The per_page parameter controls page size
+    (1-100, GitHub defaults to 30).
     """
     match ut.URITemplateParse(issues_url)
     | let tpl: ut.URITemplate =>
@@ -343,8 +351,16 @@ class val Repository
       let params = recover val
         let p = Array[(String, String)]
         p.push(("state", state))
+        p.push(("sort", sort.query_value()))
+        p.push(("direction", direction.query_value()))
         if labels.size() > 0 then
           p.push(("labels", labels))
+        end
+        if since.size() > 0 then
+          p.push(("since", since))
+        end
+        match per_page
+        | let n: I64 => p.push(("per_page", n.string()))
         end
         p
       end
