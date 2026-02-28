@@ -50,13 +50,14 @@ test: unit-tests build-examples
 unit-tests: $(tests_binary)
 	$^ --exclude=integration --sequential
 
-$(tests_binary): $(SOURCE_FILES) | $(BUILD_DIR)
-	$(GET_DEPENDENCIES_WITH)
+$(tests_binary): $(SOURCE_FILES) | $(BUILD_DIR) fetch
 	$(PONYC) -o $(BUILD_DIR) $(SRC_DIR)
 
-build-examples:
-	$(GET_DEPENDENCIES_WITH)
+build-examples: | fetch
 	@$(MAKE) -j$(PARALLEL) _build_examples GET_DEPENDENCIES_WITH=true
+
+fetch:
+	$(GET_DEPENDENCIES_WITH)
 
 _build_examples: $(EXAMPLES_BINARIES)
 
@@ -82,4 +83,4 @@ all: test
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-.PHONY: all build-examples _build_examples clean TAGS test
+.PHONY: all build-examples _build_examples clean fetch TAGS test
