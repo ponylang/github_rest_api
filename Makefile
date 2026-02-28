@@ -53,10 +53,14 @@ $(tests_binary): $(SOURCE_FILES) | $(BUILD_DIR)
 	$(GET_DEPENDENCIES_WITH)
 	$(PONYC) -o $(BUILD_DIR) $(SRC_DIR)
 
-build-examples: $(EXAMPLES_BINARIES)
+build-examples:
+	$(GET_DEPENDENCIES_WITH)
+	@$(MAKE) -j$(shell nproc) _build_examples GET_DEPENDENCIES_WITH=true
+
+_build_examples: $(EXAMPLES_BINARIES)
 
 $(EXAMPLES_BINARIES): $(BUILD_DIR)/%: $(SOURCE_FILES) $(EXAMPLES_SOURCE_FILES) | $(BUILD_DIR)
-	BUILD_DIR=$(mkfile_path)$(BUILD_DIR) make -C $(EXAMPLES_DIR)/$*
+	BUILD_DIR=$(mkfile_path)$(BUILD_DIR) $(MAKE) -C $(EXAMPLES_DIR)/$*
 
 clean:
 	$(CLEAN_DEPENDENCIES_WITH)
@@ -77,4 +81,4 @@ all: test
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-.PHONY: all build-examples clean TAGS test
+.PHONY: all build-examples _build_examples clean TAGS test
