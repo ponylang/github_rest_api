@@ -333,7 +333,7 @@ class val Repository
 
   fun get_issues(labels: String = "",
     state: String = "open",
-    sort: IssueSort = SortCreated,
+    sort: IssueSort = SortByCreated,
     direction: SortDirection = SortDescending,
     since: String = "",
     per_page: (I64 | None) = None)
