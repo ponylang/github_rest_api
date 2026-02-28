@@ -5,7 +5,7 @@ use ut = "uri/template"
 
 type IssueOrError is (Issue | req.RequestError)
 
-primitive SortCreated
+primitive SortByCreated
   """
   Sort issues by creation time.
   """
@@ -15,7 +15,7 @@ primitive SortCreated
     """
     "created"
 
-primitive SortUpdated
+primitive SortByUpdated
   """
   Sort issues by last update time.
   """
@@ -25,7 +25,7 @@ primitive SortUpdated
     """
     "updated"
 
-primitive SortComments
+primitive SortByComments
   """
   Sort issues by number of comments.
   """
@@ -35,7 +35,7 @@ primitive SortComments
     """
     "comments"
 
-type IssueSort is (SortCreated | SortUpdated | SortComments)
+type IssueSort is (SortByCreated | SortByUpdated | SortByComments)
   """
   Controls how issues are sorted when listing repository issues.
   """
@@ -182,7 +182,7 @@ primitive GetRepositoryIssues
     creds: req.Credentials,
     labels: String = "",
     state: String = "open",
-    sort: IssueSort = SortCreated,
+    sort: IssueSort = SortByCreated,
     direction: SortDirection = SortDescending,
     since: String = "",
     per_page: (I64 | None) = None): Promise[(PaginatedList[Issue] | req.RequestError)]
