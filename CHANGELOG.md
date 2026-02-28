@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
+- Add full Gist API support ([PR #72](https://github.com/ponylang/github_rest_api/pull/72))
 
 ### Changed
 
