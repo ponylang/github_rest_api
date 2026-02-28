@@ -43,6 +43,7 @@ EXAMPLES_SOURCE_FILES := $(shell find $(EXAMPLES_DIR) -name "*.pony")
 EXAMPLES_BINARIES := $(addprefix $(BUILD_DIR)/,$(EXAMPLES))
 
 mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+PARALLEL := $(shell n=$$(nproc); echo $$(( n < 4 ? n : 4 )))
 
 test: unit-tests build-examples
 
@@ -55,7 +56,7 @@ $(tests_binary): $(SOURCE_FILES) | $(BUILD_DIR)
 
 build-examples:
 	$(GET_DEPENDENCIES_WITH)
-	@$(MAKE) -j$(shell nproc) _build_examples GET_DEPENDENCIES_WITH=true
+	@$(MAKE) -j$(PARALLEL) _build_examples GET_DEPENDENCIES_WITH=true
 
 _build_examples: $(EXAMPLES_BINARIES)
 
