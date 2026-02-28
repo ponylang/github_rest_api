@@ -6,6 +6,9 @@ use ut = "uri/template"
 type LabelOrError is (Label | req.RequestError)
 
 class val Label
+  """
+  A label on a GitHub repository, with its name, color, and description.
+  """
   let _creds: req.Credentials
   let id: I64
   let node_id: String
@@ -34,6 +37,9 @@ class val Label
     description = description'
 
 primitive CreateLabel
+  """
+  Creates a new label on a repository.
+  """
   fun apply(owner: String,
     repo: String,
     name: String,
@@ -87,6 +93,9 @@ primitive CreateLabel
     p
 
 primitive DeleteLabel
+  """
+  Deletes a label from a repository.
+  """
   fun apply(owner: String,
     repo: String,
     name: String,
@@ -126,6 +135,9 @@ primitive DeleteLabel
     p
 
 primitive LabelJsonConverter is req.JsonConverter[Label]
+  """
+  Converts a JSON object into a Label.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): Label ? =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?

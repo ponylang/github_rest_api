@@ -7,6 +7,10 @@ use ut = "uri/template"
 type PullRequestOrError is (PullRequest | req.RequestError)
 
 class val PullRequest
+  """
+  A GitHub pull request. Provides a convenience method to fetch the files
+  changed in this pull request.
+  """
   let _creds: req.Credentials
 
   let number: I64
@@ -44,9 +48,15 @@ class val PullRequest
     files_url = url + "/files"
 
   fun get_files(): Promise[PullRequestFilesOrError] =>
+    """
+    Fetches the files changed in this pull request.
+    """
     GetPullRequestFiles.by_url(files_url, _creds)
 
 primitive GetPullRequest
+  """
+  Fetches a single pull request by owner, repo, and number.
+  """
   fun apply(owner: String,
     repo: String,
     number: I64,
@@ -84,6 +94,9 @@ primitive GetPullRequest
     p
 
 primitive PullRequestJsonConverter is req.JsonConverter[PullRequest]
+  """
+  Converts a JSON object from the pulls API into a PullRequest.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): PullRequest ? =>
     let number = json("number").as_i64()?
     let title = json("title").as_string()?

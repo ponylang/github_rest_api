@@ -3,6 +3,9 @@ use "promises"
 use req = "request"
 
 class val CommitFile
+  """
+  A file changed in a commit, with its SHA, modification status, and filename.
+  """
   let _creds: req.Credentials
   let sha: String
   let status: String
@@ -19,6 +22,9 @@ class val CommitFile
     filename = filename'
 
 primitive CommitFileJsonConverter is req.JsonConverter[CommitFile]
+  """
+  Converts a JSON object into a CommitFile.
+  """
   fun apply(json: JsonNav,
     creds: req.Credentials): CommitFile ?
   =>

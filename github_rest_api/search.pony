@@ -7,6 +7,9 @@ use req = "request"
 type IssueSearchResultsOrError is (SearchResults[Issue] | req.RequestError)
 
 primitive SearchIssues
+  """
+  Searches GitHub issues and pull requests using the given query string.
+  """
   fun apply(query: String,
     creds: req.Credentials): Promise[IssueSearchResultsOrError]
   =>
@@ -29,6 +32,11 @@ primitive SearchIssues
     p
 
 class val SearchResults[A: Any val]
+  """
+  A page of search results from the GitHub search API. Contains the total
+  match count, an incomplete-results flag, and the items for this page. Use
+  `prev_page()` and `next_page()` to navigate between pages.
+  """
   let _creds: req.Credentials
   let _converter: PaginatedSearchJsonConverter[A]
   let _prev_link: (String | None)
@@ -55,6 +63,9 @@ class val SearchResults[A: Any val]
     _next_link = next_link
 
   fun prev_page(): (Promise[(SearchResults[A] | req.RequestError)] | None) =>
+    """
+    Fetches the previous page, or returns None if on the first page.
+    """
     match _prev_link
     | let prev: String =>
       _retrieve_link(prev)
@@ -63,6 +74,9 @@ class val SearchResults[A: Any val]
     end
 
   fun next_page(): (Promise[(SearchResults[A] | req.RequestError)] | None) =>
+    """
+    Fetches the next page, or returns None if on the last page.
+    """
     match _next_link
     | let next: String =>
       _retrieve_link(next)
@@ -85,6 +99,10 @@ class val SearchResults[A: Any val]
     p
 
 class val PaginatedSearchJsonConverter[A: Any val]
+  """
+  Converts a JSON search response (with `total_count`, `incomplete_results`,
+  and `items` fields) plus Link header pagination into SearchResults.
+  """
   let _creds: req.Credentials
   let _converter: req.JsonConverter[A]
 
@@ -116,6 +134,10 @@ class val PaginatedSearchJsonConverter[A: Any val]
       next)
 
 actor SearchResultReceiver[A: Any val]
+  """
+  Receives the HTTP response for a search request and fulfills the associated
+  Promise with SearchResults or RequestError.
+  """
   let _creds: req.Credentials
   let _p: Promise[(SearchResults[A] | req.RequestError)]
   let _converter: PaginatedSearchJsonConverter[A]
@@ -143,6 +165,10 @@ actor SearchResultReceiver[A: Any val]
     _p(req.RequestError(status, response_body, message))
 
 class SearchJsonRequester
+  """
+  Issues an HTTP GET request and delivers the JSON response along with Link
+  headers to a SearchResultReceiver for search endpoints.
+  """
   let _creds: req.Credentials
   let _sslctx: (SSLContext | None)
 
@@ -169,6 +195,9 @@ class SearchJsonRequester
     client(consume r)?
 
 class SearchJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
+  """
+  Creates SearchJsonRequesterHandler instances for each HTTP session.
+  """
   let _creds: req.Credentials
   let _receiver: SearchResultReceiver[A]
 
@@ -183,6 +212,10 @@ class SearchJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
     SearchJsonRequesterHandler[A](requester, _receiver)
 
 class SearchJsonRequesterHandler[A: Any val] is HTTPHandler
+  """
+  Handles the HTTP response for a search request, assembling the response body
+  and extracting Link headers before delivering results to the receiver.
+  """
   let _requester: SearchJsonRequester
   let _receiver: SearchResultReceiver[A]
   var _payload_body: Array[U8] iso = recover Array[U8] end

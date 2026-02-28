@@ -14,6 +14,11 @@ use req = "request"
 // so there's JsonConverter and PaginatingJsonConverter
 // and a type alias that is (JsonConverter | PagingatingJsonConverter)
 class val PaginatedList[A: Any val]
+  """
+  A page of results from a paginated GitHub API endpoint. Use `prev_page()`
+  and `next_page()` to navigate between pages; each returns a Promise for the
+  adjacent page, or None if no such page exists.
+  """
   let _creds: req.Credentials
   let _converter: PaginatedListJsonConverter[A]
   // only for search. not present otherwise
@@ -36,6 +41,9 @@ class val PaginatedList[A: Any val]
     _next_link = next_link
 
   fun prev_page(): (Promise[(PaginatedList[A] | req.RequestError)] | None) =>
+    """
+    Fetches the previous page, or returns None if on the first page.
+    """
     match _prev_link
     | let prev: String =>
       _retrieve_link(prev)
@@ -44,6 +52,9 @@ class val PaginatedList[A: Any val]
     end
 
   fun next_page(): (Promise[(PaginatedList[A] | req.RequestError)] | None) =>
+    """
+    Fetches the next page, or returns None if on the last page.
+    """
     match _next_link
     | let next: String =>
       _retrieve_link(next)
@@ -66,6 +77,11 @@ class val PaginatedList[A: Any val]
     p
 
 class val PaginatedListJsonConverter[A: Any val]
+  """
+  Converts a JSON array response with Link header pagination into a
+  PaginatedList. Delegates individual item conversion to the wrapped
+  JsonConverter.
+  """
   let _creds: req.Credentials
   let _converter: req.JsonConverter[A]
 
@@ -93,6 +109,10 @@ class val PaginatedListJsonConverter[A: Any val]
       next)
 
 actor PaginatedResultReceiver[A: Any val]
+  """
+  Receives the HTTP response for a paginated request and fulfills the
+  associated Promise with a PaginatedList or RequestError.
+  """
   let _creds: req.Credentials
   let _p: Promise[(PaginatedList[A] | req.RequestError)]
   let _converter: PaginatedListJsonConverter[A]
@@ -121,6 +141,10 @@ actor PaginatedResultReceiver[A: Any val]
 
 // TODO: Could this be more generic?
 class PaginatedJsonRequester
+  """
+  Issues an HTTP GET request and delivers the JSON response along with Link
+  headers to a PaginatedResultReceiver for paginated endpoints.
+  """
   let _creds: req.Credentials
   let _sslctx: (SSLContext | None)
 
@@ -147,6 +171,9 @@ class PaginatedJsonRequester
     client(consume r)?
 
 class PaginatedJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
+  """
+  Creates PaginatedJsonRequesterHandler instances for each HTTP session.
+  """
   let _creds: req.Credentials
   let _receiver: PaginatedResultReceiver[A]
 
@@ -161,6 +188,10 @@ class PaginatedJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
     PaginatedJsonRequesterHandler[A](requester, _receiver)
 
 class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler
+  """
+  Handles the HTTP response for a paginated request, assembling the response
+  body and extracting Link headers before delivering results to the receiver.
+  """
   let _requester: PaginatedJsonRequester
   let _receiver: PaginatedResultReceiver[A]
   var _payload_body: Array[U8] iso = recover Array[U8] end

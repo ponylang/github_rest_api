@@ -6,6 +6,10 @@ use ut = "uri/template"
 type ReleaseOrError is (Release | req.RequestError)
 
 class val Release
+  """
+  A GitHub release, containing its tag, target commit, release notes body,
+  draft/prerelease status, and associated assets.
+  """
   let _creds: req.Credentials
 
   let id: I64
@@ -70,6 +74,9 @@ class val Release
     zipball_url = zipball_url'
 
 primitive CreateRelease
+  """
+  Creates a new release on a repository.
+  """
   fun apply(owner: String,
     repo: String,
     tag_name: String,
@@ -137,6 +144,9 @@ primitive CreateRelease
     p
 
 primitive ReleaseJsonConverter is req.JsonConverter[Release]
+  """
+  Converts a JSON object from the releases API into a Release.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): Release ? =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?

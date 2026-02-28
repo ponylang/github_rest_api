@@ -6,6 +6,11 @@ use ut = "uri/template"
 type IssueOrError is (Issue | req.RequestError)
 
 class val Issue
+  """
+  A GitHub issue. Provides convenience methods to create comments and list
+  existing comments on this issue. The `pull_request` field is present when the
+  issue is actually a pull request.
+  """
   let _creds: req.Credentials
 
   let number: I64
@@ -55,12 +60,21 @@ class val Issue
     pull_request = pull_request'
 
   fun create_comment(comment: String): Promise[IssueCommentOrError] =>
+    """
+    Creates a new comment on this issue.
+    """
     CreateIssueComment.by_url(comments_url, comment, _creds)
 
   fun get_comments(): Promise[IssueCommentsOrError] =>
+    """
+    Fetches all comments on this issue.
+    """
     GetIssueComments.by_url(comments_url, _creds)
 
 primitive GetIssue
+  """
+  Fetches a single issue by owner, repo, and number.
+  """
   fun apply(owner: String,
     repo: String,
     number: I64,
@@ -95,6 +109,10 @@ primitive GetIssue
     p
 
 primitive GetRepositoryIssues
+  """
+  Lists issues in a repository as a paginated list, optionally filtered by
+  labels and state.
+  """
   fun apply(owner: String,
     repo: String,
     creds: req.Credentials,
@@ -141,6 +159,9 @@ primitive GetRepositoryIssues
 
 
 primitive IssueJsonConverter is req.JsonConverter[Issue]
+  """
+  Converts a JSON object from the issues API into an Issue.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): Issue ? =>
     let url = json("url").as_string()?
     let respository_url = json("repository_url").as_string()?

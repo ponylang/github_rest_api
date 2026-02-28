@@ -9,6 +9,9 @@ type IssueComments is Array[IssueComment] val
 type IssueCommentsOrError is (IssueComments | req.RequestError)
 
 class val IssueComment
+  """
+  A comment on a GitHub issue.
+  """
   let _creds: req.Credentials
   let body: String
   let url: String
@@ -28,6 +31,9 @@ class val IssueComment
     issue_url = issue_url'
 
 primitive CreateIssueComment
+  """
+  Creates a new comment on an issue.
+  """
   fun apply(owner: String,
     repo: String,
     number: I64,
@@ -68,6 +74,9 @@ primitive CreateIssueComment
     p
 
 primitive GetIssueComments
+  """
+  Fetches all comments on an issue.
+  """
   fun apply(owner: String,
     repo: String,
     number: I64,
@@ -102,6 +111,10 @@ primitive GetIssueComments
     p
 
 primitive IssueCommentsURL
+  """
+  Builds the URL for an issue's comments endpoint from owner, repo, and issue
+  number.
+  """
   fun apply(owner: String, repo: String, number: I64)
     : (String | ut.URITemplateParseError)
   =>
@@ -118,6 +131,9 @@ primitive IssueCommentsURL
     end
 
 primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
+  """
+  Converts a JSON object into an IssueComment.
+  """
   fun apply(json: JsonNav,
     creds: req.Credentials): IssueComment ?
   =>
@@ -129,6 +145,9 @@ primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
     IssueComment(creds, body, url, html_url, issue_url)
 
 primitive IssueCommentsJsonConverter is req.JsonConverter[Array[IssueComment] val]
+  """
+  Converts a JSON array of issue comment objects into an Array of IssueComment.
+  """
   fun apply(json: JsonNav,
     creds: req.Credentials): Array[IssueComment] val ?
   =>

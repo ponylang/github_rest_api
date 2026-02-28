@@ -5,6 +5,12 @@ use req = "request"
 type RepositoryOrError is (Repository | req.RequestError)
 
 class val GitHub
+  """
+  Entry point for all GitHub REST API operations. Holds credentials and
+  authentication context used to issue requests. Each method corresponds to a
+  top-level API operation; returned models provide convenience methods for
+  further related calls.
+  """
   let _creds: req.Credentials
 
   new val create(creds: req.Credentials) =>

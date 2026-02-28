@@ -2,6 +2,10 @@ use "json"
 use req = "request"
 
 class val Asset
+  """
+  A file attached to a GitHub release. Contains the asset's metadata including
+  its name, size, download count, and the browser download URL.
+  """
   let _creds: req.Credentials
 
   let id: I64
@@ -50,6 +54,9 @@ class val Asset
     browser_download_url = browser_download_url'
 
 primitive AssetJsonConverter is req.JsonConverter[Asset]
+  """
+  Converts a JSON object into an Asset.
+  """
   fun apply(json: JsonNav, creds: req.Credentials): Asset ? =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
