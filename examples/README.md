@@ -33,6 +33,8 @@ Each example has its own `Makefile`. Build with `make ssl=3.0.x` (or the SSL ver
 |---------|-------|-------------|
 | `get-issue` | Functional | Fetch an issue by number |
 | `get-issue-oo` | OO | Same as `get-issue`, chaining through `Repository.get_issue()` |
+| `get-issues` | Functional | List issues in a repository with sort, direction, and filter options |
+| `get-issues-oo` | OO | Same as `get-issues`, chaining through `Repository.get_issues()` |
 | `get-issue-comments` | Functional | List comments on an issue |
 | `get-issue-comments-oo` | OO | Same as `get-issue-comments`, chaining through `Issue.get_comments()` |
 | `create-issue-comment` | Functional | Create a comment on an issue |
