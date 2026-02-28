@@ -28,7 +28,7 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 
 ```
 github_rest_api/
-  github.pony              -- GitHub class (entry point, has get_repo and get_org_repos)
+  github.pony              -- GitHub class (entry point, has get_repo, get_org_repos, gist operations)
   repository.pony          -- Repository model + GetRepository, GetRepositoryLabels
   issue.pony               -- Issue model + GetIssue, GetRepositoryIssues
   issue_pull_request.pony  -- IssuePullRequest model (PR metadata on issues)
@@ -43,6 +43,11 @@ github_rest_api/
   asset.pony               -- Asset model (release assets)
   label.pony               -- Label model + CreateLabel, DeleteLabel
   issue_comment.pony       -- IssueComment model + CreateIssueComment, GetIssueComments
+  gist.pony                -- Gist model + 15 gist operations (CRUD, lists, forks, commits, star)
+  gist_file.pony           -- GistFile model (file within a gist)
+  gist_file_update.pony    -- GistFileEdit, GistFileRename, GistFileDelete for update operations
+  gist_commit.pony         -- GistCommit + GistChangeStatus models
+  gist_comment.pony        -- GistComment model + 5 comment operations (CRUD + list)
   search.pony              -- SearchIssues + SearchResults generic
   user.pony                -- User model
   license.pony             -- License model
@@ -53,7 +58,10 @@ github_rest_api/
     http.pony              -- Credentials, ResultReceiver, RequestFactory
     http_get.pony          -- JsonRequester (GET with JSON response)
     http_post.pony         -- HTTPPost (POST with JSON response)
+    http_patch.pony        -- HTTPPatch (PATCH with JSON response, expects 200)
     http_delete.pony       -- HTTPDelete (DELETE, expects 204)
+    http_put.pony          -- HTTPPut (PUT with no body, expects 204)
+    http_check.pony        -- HTTPCheck (GET returning Bool: 204=true, 404=false)
     request_error.pony     -- RequestError (status, response_body, message)
     json.pony              -- JsonConverter interface, JsonTypeString utility
     query_params.pony      -- QueryParams (URL query string builder with percent-encoding)
@@ -70,7 +78,7 @@ All API operations return `Promise[(T | RequestError)]`. The flow is:
 1. Operation primitive (e.g., `GetRepository`) creates a `Promise`
 2. Creates a `ResultReceiver[T]` actor with the promise and a `JsonConverter[T]`
 3. Builds URL using `ponylang/uri` RFC 6570 template expansion for path parameters
-4. Issues HTTP request via `JsonRequester` / `HTTPPost` / `HTTPDelete`
+4. Issues HTTP request via `JsonRequester` / `HTTPPost` / `HTTPPatch` / `HTTPDelete` / `HTTPPut` / `HTTPCheck`
 5. On success, JSON is parsed and converted to model via `JsonConverter`
 6. Promise is fulfilled with either the model or a `RequestError`
 
@@ -79,13 +87,18 @@ All API operations return `Promise[(T | RequestError)]`. The flow is:
 Models have methods that chain to further API calls:
 - `GitHub.get_repo(owner, repo)` -> `Repository`
 - `GitHub.get_org_repos(org)` -> `PaginatedList[Repository]`
+- `GitHub.get_gist(gist_id)` -> `Gist`
+- `GitHub.create_gist(files, description, is_public)` -> `Gist`
+- `GitHub.get_user_gists()`, `.get_public_gists()`, `.get_starred_gists()`, `.get_username_gists(username)` -> `PaginatedList[Gist]`
 - `Repository.create_label(...)`, `.create_release(...)`, `.delete_label(...)`, `.get_commit(...)`, `.get_issue(...)`, `.get_issues(...)`, `.get_pull_request(...)`
 - `Issue.create_comment(...)`, `.get_comments()`
 - `PullRequest.get_files()`
+- `Gist.update_gist(files, description)`, `.delete_gist()`, `.get_revision(sha)`, `.fork()`, `.get_forks()`, `.get_commits()`, `.star()`, `.unstar()`, `.is_starred()`, `.create_comment(body)`, `.get_comments()`
+- `GistComment.update(new_body)`, `.delete()`
 
 ### Pagination
 
-`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the `ponylang/web_link` library (via `_ExtractPaginationLinks`). Used by `GetRepositoryLabels`, `GetOrganizationRepositories`, `GetRepositoryIssues`, and `SearchIssues`.
+`PaginatedList[A]` wraps an array of results with `prev_page()` / `next_page()` methods that return `(Promise | None)`. Pagination links are extracted from HTTP `Link` headers using the `ponylang/web_link` library (via `_ExtractPaginationLinks`). Used by `GetRepositoryLabels`, `GetOrganizationRepositories`, `GetRepositoryIssues`, `SearchIssues`, `GetUserGists`, `GetPublicGists`, `GetStarredGists`, `GetUsernameGists`, `GetGistForks`, `GetGistCommits`, and `GetGistComments`.
 
 ### Auth
 
@@ -264,6 +277,36 @@ commonly-used categories that a GitHub API library would typically need.
 | `/repos/{owner}/{repo}/releases/assets/{id}` | PATCH | **missing** |
 | `/repos/{owner}/{repo}/releases/assets/{id}` | DELETE | **missing** |
 
+### Gists
+
+| Endpoint | Method | Library |
+|----------|--------|---------|
+| `/gists/{gist_id}` | GET | GetGist |
+| `/gists` | POST | CreateGist |
+| `/gists/{gist_id}` | PATCH | UpdateGist |
+| `/gists/{gist_id}` | DELETE | DeleteGist |
+| `/gists` | GET (list) | GetUserGists (paginated) |
+| `/gists/public` | GET (list) | GetPublicGists (paginated) |
+| `/gists/starred` | GET (list) | GetStarredGists (paginated) |
+| `/users/{username}/gists` | GET (list) | GetUsernameGists (paginated) |
+| `/gists/{gist_id}/{sha}` | GET | GetGistRevision |
+| `/gists/{gist_id}/forks` | POST | ForkGist |
+| `/gists/{gist_id}/forks` | GET (list) | GetGistForks (paginated) |
+| `/gists/{gist_id}/commits` | GET (list) | GetGistCommits (paginated) |
+| `/gists/{gist_id}/star` | PUT | StarGist |
+| `/gists/{gist_id}/star` | DELETE | UnstarGist |
+| `/gists/{gist_id}/star` | GET | CheckGistStar |
+
+### Gist Comments
+
+| Endpoint | Method | Library |
+|----------|--------|---------|
+| `/gists/{gist_id}/comments/{comment_id}` | GET | GetGistComment |
+| `/gists/{gist_id}/comments` | GET (list) | GetGistComments (paginated) |
+| `/gists/{gist_id}/comments` | POST | CreateGistComment |
+| `/gists/{gist_id}/comments/{comment_id}` | PATCH | UpdateGistComment |
+| `/gists/{gist_id}/comments/{comment_id}` | DELETE | DeleteGistComment |
+
 ### Search
 
 | Endpoint | Method | Library |
@@ -373,7 +416,6 @@ These API categories have zero coverage in the library:
 - Code scanning
 - Codespaces
 - Deployments
-- Gists
 - Git database (blobs, trees, tags beyond refs)
 - GitHub Pages
 - Packages
@@ -385,7 +427,6 @@ These API categories have zero coverage in the library:
 
 | Gap | Notes |
 |-----|-------|
-| No HTTP PUT/PATCH support | Can't update any resources. Need `HTTPPut` and `HTTPPatch` classes |
 | List operations | Most resources only have "get one", not "list many" |
 | GetPullRequestFiles not paginated | GitHub paginates this but library returns plain Array |
 | PullRequestFile sparse | Only has `filename`; GitHub returns sha, status, additions, deletions, changes, patch, etc. |
