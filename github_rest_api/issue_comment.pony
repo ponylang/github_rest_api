@@ -42,7 +42,7 @@ primitive CreateIssueComment
   =>
     let u = IssueCommentsURL(owner, repo, number)
 
-    match u
+    match \exhaustive\ u
     | let u': String =>
       by_url(u', comment, creds)
     | let e: ut.URITemplateParseError =>
@@ -84,7 +84,7 @@ primitive GetIssueComments
   =>
     let u = IssueCommentsURL(owner, repo, number)
 
-    match u
+    match \exhaustive\ u
     | let u': String =>
       by_url(u', creds)
     | let e: ut.URITemplateParseError =>
@@ -118,7 +118,7 @@ primitive IssueCommentsURL
   fun apply(owner: String, repo: String, number: I64)
     : (String | ut.URITemplateParseError)
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/issues{/number}/comments")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables

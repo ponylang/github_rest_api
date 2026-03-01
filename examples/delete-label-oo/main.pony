@@ -21,7 +21,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -51,7 +51,7 @@ actor Main
 
 primitive RemoveLabel
   fun apply(label: String, r: RepositoryOrError): Promise[DeletedOrError] =>
-    match r
+    match \exhaustive\ r
     | let repo: Repository =>
       repo.delete_label(label)
     | let e: RequestError =>
@@ -60,7 +60,7 @@ primitive RemoveLabel
 
 primitive PrintResult
   fun apply(out: OutStream, label: String, d: DeletedOrError) =>
-    match d
+    match \exhaustive\ d
     | Deleted =>
       out.print("Label " + label + " has been deleted")
     | let e: RequestError =>

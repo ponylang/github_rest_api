@@ -23,7 +23,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -59,7 +59,7 @@ primitive MakeLabel
     description: String,
     r: RepositoryOrError): Promise[LabelOrError]
   =>
-    match r
+    match \exhaustive\ r
     | let repo: Repository =>
       repo.create_label(name, color, description)
     | let e: RequestError =>
@@ -68,7 +68,7 @@ primitive MakeLabel
 
 primitive PrintLabel
   fun apply(out: OutStream, l: LabelOrError) =>
-    match l
+    match \exhaustive\ l
     | let label: Label =>
       out.print("Label created")
       out.print(label.name)

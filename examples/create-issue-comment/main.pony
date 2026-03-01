@@ -19,7 +19,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -49,7 +49,7 @@ actor Main
 
 primitive PrintComment
   fun apply(out: OutStream, c: IssueCommentOrError) =>
-    match c
+    match \exhaustive\ c
     | let comment: IssueComment =>
       out.print("Comment created")
       out.print(comment.body)

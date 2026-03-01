@@ -252,7 +252,7 @@ class val Repository
     """
     Creates a new label on this repository.
     """
-    match ut.URITemplateParse(labels_url)
+    match \exhaustive\ ut.URITemplateParse(labels_url)
     | let tpl: ut.URITemplate =>
       let u: String val = tpl.expand(ut.URITemplateVariables)
       CreateLabel.by_url(u,
@@ -274,7 +274,7 @@ class val Repository
     """
     Creates a new release on this repository.
     """
-    match ut.URITemplateParse(releases_url)
+    match \exhaustive\ ut.URITemplateParse(releases_url)
     | let tpl: ut.URITemplate =>
       let u: String val = tpl.expand(ut.URITemplateVariables)
       CreateRelease.by_url(u,
@@ -293,7 +293,7 @@ class val Repository
     """
     Deletes a label from this repository.
     """
-    match ut.URITemplateParse(labels_url)
+    match \exhaustive\ ut.URITemplateParse(labels_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("name", label_name)
@@ -307,7 +307,7 @@ class val Repository
     """
     Fetches a commit from this repository by its SHA.
     """
-    match ut.URITemplateParse(commits_url)
+    match \exhaustive\ ut.URITemplateParse(commits_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("sha", sha)
@@ -321,7 +321,7 @@ class val Repository
     """
     Fetches a single issue from this repository by its number.
     """
-    match ut.URITemplateParse(issues_url)
+    match \exhaustive\ ut.URITemplateParse(issues_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("number", number.string())
@@ -345,7 +345,7 @@ class val Repository
     ordered ascending or descending. The per_page parameter controls page size
     (1-100, GitHub defaults to 30).
     """
-    match ut.URITemplateParse(issues_url)
+    match \exhaustive\ ut.URITemplateParse(issues_url)
     | let tpl: ut.URITemplate =>
       let u: String val = tpl.expand(ut.URITemplateVariables)
       let params = recover val
@@ -374,7 +374,7 @@ class val Repository
     """
     Fetches a single pull request from this repository by its number.
     """
-    match ut.URITemplateParse(pulls_url)
+    match \exhaustive\ ut.URITemplateParse(pulls_url)
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("number", number.string())
@@ -393,7 +393,7 @@ primitive GetRepository
     repo: String,
     creds: req.Credentials): Promise[RepositoryOrError]
   =>
-    match ut.URITemplateParse("https://api.github.com/repos{/owner}{/repo}")
+    match \exhaustive\ ut.URITemplateParse("https://api.github.com/repos{/owner}{/repo}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("owner", owner)
@@ -428,7 +428,7 @@ primitive GetRepositoryLabels
     repo: String,
     creds: req.Credentials): Promise[(PaginatedList[Label] | req.RequestError)]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/labels")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -465,7 +465,7 @@ primitive GetOrganizationRepositories
   fun apply(org: String,
     creds: req.Credentials): Promise[(PaginatedList[Repository] | req.RequestError)]
   =>
-    match ut.URITemplateParse("https://api.github.com/orgs{/org}/repos")
+    match \exhaustive\ ut.URITemplateParse("https://api.github.com/orgs{/org}/repos")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("org", org)

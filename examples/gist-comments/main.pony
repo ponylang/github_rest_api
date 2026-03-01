@@ -19,7 +19,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -48,7 +48,7 @@ primitive PrintComments
   fun apply(out: OutStream,
     r: (PaginatedList[GistComment] | RequestError))
   =>
-    match r
+    match \exhaustive\ r
     | let list: PaginatedList[GistComment] =>
       for c in list.results.values() do
         out.print("Comment #" + c.id.string() + " ==>")

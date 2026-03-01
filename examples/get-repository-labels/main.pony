@@ -20,7 +20,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -48,13 +48,13 @@ actor Main
 
 primitive PrintRepositoryLabels
   fun apply(out: OutStream, l: (PaginatedList[Label] | RequestError)) =>
-    match l
+    match \exhaustive\ l
     | let pl: PaginatedList[Label] =>
       for label in pl.results.values() do
         out.print("Label")
         out.print("-----")
         out.print(label.name)
-        match label.color
+        match \exhaustive\ label.color
         | let color: String =>
           out.print(color)
         end

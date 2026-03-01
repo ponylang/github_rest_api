@@ -38,7 +38,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -100,7 +100,7 @@ primitive RetrieveIssues
     r: RepositoryOrError)
     : Promise[(PaginatedList[Issue] | RequestError)]
   =>
-    match r
+    match \exhaustive\ r
     | let repo: Repository =>
       repo.get_issues(labels, state, sort, direction, since, per_page)
     | let e: RequestError =>
@@ -111,7 +111,7 @@ primitive PrintIssues
   fun apply(out: OutStream,
     r: (PaginatedList[Issue] | RequestError))
   =>
-    match r
+    match \exhaustive\ r
     | let list: PaginatedList[Issue] =>
       for issue in list.results.values() do
         let state = match issue.state

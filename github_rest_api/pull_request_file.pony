@@ -27,7 +27,7 @@ primitive GetPullRequestFiles
     number: I64,
     creds: req.Credentials): Promise[PullRequestFilesOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/pulls{/number}/files")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables

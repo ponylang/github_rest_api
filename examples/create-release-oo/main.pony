@@ -21,7 +21,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -57,7 +57,7 @@ primitive MakeRelease
     body: String,
     r: RepositoryOrError): Promise[ReleaseOrError]
   =>
-    match r
+    match \exhaustive\ r
     | let repo: Repository =>
       repo.create_release(tag_name, name, body)
     | let e: RequestError =>
@@ -66,7 +66,7 @@ primitive MakeRelease
 
 primitive PrintRelease
   fun apply(out: OutStream, r: ReleaseOrError) =>
-    match r
+    match \exhaustive\ r
     | let release: Release =>
       out.print("Release created")
       out.print(release.html_url)

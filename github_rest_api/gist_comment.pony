@@ -60,7 +60,7 @@ primitive GetGistComment
     comment_id: I64,
     creds: req.Credentials): Promise[GistCommentOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/comments{/comment_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -100,7 +100,7 @@ primitive GetGistComments
     creds: req.Credentials)
     : Promise[(PaginatedList[GistComment] | req.RequestError)]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/comments")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -140,7 +140,7 @@ primitive CreateGistComment
     body: String,
     creds: req.Credentials): Promise[GistCommentOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/comments")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -184,7 +184,7 @@ primitive UpdateGistComment
     body: String,
     creds: req.Credentials): Promise[GistCommentOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/comments{/comment_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -228,7 +228,7 @@ primitive DeleteGistComment
     comment_id: I64,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/comments{/comment_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables

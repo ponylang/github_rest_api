@@ -21,7 +21,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -52,7 +52,7 @@ actor Main
 
 primitive RetrievePullRequest
   fun apply(number: I64, r: RepositoryOrError): Promise[PullRequestOrError] =>
-    match r
+    match \exhaustive\ r
     | let repo: Repository =>
       repo.get_pull_request(number)
     | let e: RequestError =>
@@ -61,7 +61,7 @@ primitive RetrievePullRequest
 
 primitive RetrievePullReqestFiles
   fun apply(p: PullRequestOrError): Promise[PullRequestFilesOrError] =>
-    match p
+    match \exhaustive\ p
     | let pr: PullRequest =>
       pr.get_files()
     | let e: RequestError =>
@@ -70,7 +70,7 @@ primitive RetrievePullReqestFiles
 
 primitive PrintPullRequestFiles
   fun apply(out: OutStream, r: PullRequestFilesOrError) =>
-    match r
+    match \exhaustive\ r
     | let files: Array[PullRequestFile] val =>
       for f in files.values() do
         out.print(f.filename)

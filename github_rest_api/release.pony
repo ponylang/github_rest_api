@@ -87,7 +87,7 @@ primitive CreateRelease
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/releases")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables

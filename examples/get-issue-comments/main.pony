@@ -20,7 +20,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -49,7 +49,7 @@ actor Main
 
 primitive PrintIssueComments
   fun apply(out: OutStream, r: IssueCommentsOrError) =>
-    match r
+    match \exhaustive\ r
     | let comments: Array[IssueComment] val =>
       for c in comments.values() do
         out.print("Comment ==>")

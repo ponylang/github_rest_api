@@ -17,7 +17,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -46,7 +46,7 @@ actor Main
 
 primitive StarIt
   fun apply(g: GistOrError): Promise[DeletedOrError] =>
-    match g
+    match \exhaustive\ g
     | let gist: Gist =>
       gist.star()
     | let e: RequestError =>
@@ -55,7 +55,7 @@ primitive StarIt
 
 primitive CheckIt
   fun apply(d: DeletedOrError): Promise[BoolOrError] =>
-    match d
+    match \exhaustive\ d
     | Deleted =>
       // Star succeeded. We can't call is_starred() here because we don't
       // have the Gist reference in this chain step. In real code, keep the
@@ -67,7 +67,7 @@ primitive CheckIt
 
 primitive PrintResult
   fun apply(out: OutStream, r: BoolOrError) =>
-    match r
+    match \exhaustive\ r
     | let starred: Bool =>
       out.print("Is starred: " + starred.string())
     | let e: RequestError =>

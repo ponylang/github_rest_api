@@ -83,7 +83,7 @@ class JsonRequesterHandler is HTTPHandler
     _payload_body.append(data)
 
   fun ref failed(reason: HTTPFailureReason) =>
-    let msg = match reason
+    let msg = match \exhaustive\ reason
     | AuthFailed => "Authorization failure"
     | ConnectFailed => "Unable to connect"
     | ConnectionClosed => "Connection was prematurely closed"
@@ -96,7 +96,7 @@ class JsonRequesterHandler is HTTPHandler
     let y: String iso = String.from_iso_array(consume x)
 
     if _status == 200 then
-      match JsonParser.parse(consume y)
+      match \exhaustive\ JsonParser.parse(consume y)
       | let json: JsonValue => _receiver.success(JsonNav(json))
       | let _: JsonParseError => _receiver.failure(_status, "",
         "Failed to parse response")

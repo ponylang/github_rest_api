@@ -20,7 +20,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -53,7 +53,7 @@ primitive RemoveLabels
     creds: Credentials,
     l: (PaginatedList[Label] | RequestError))
   =>
-    match l
+    match \exhaustive\ l
     | let pl: PaginatedList[Label] =>
       try
         var index = USize(0)
@@ -94,7 +94,7 @@ primitive NotifyLabelDeleted
     cont: Bool,
     d: DeletedOrError)
   =>
-    match d
+    match \exhaustive\ d
     | Deleted =>
       out.print("Label " + label + " has been deleted")
       if cont then
@@ -136,7 +136,7 @@ primitive CreatePonyLabels
 
 primitive NotifyLabelCreated
   fun apply(out: OutStream, label: String, l: LabelOrError) =>
-    match l
+    match \exhaustive\ l
     | let l': Label =>
       out.print("Label " + label + " created")
     | let e: RequestError =>
