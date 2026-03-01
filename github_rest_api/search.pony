@@ -34,7 +34,7 @@ primitive SearchIssues
 class val SearchResults[A: Any val]
   """
   A page of search results from the GitHub search API. Contains the total
-  match \exhaustive\ count, an incomplete-results flag, and the items for this page. Use
+  match count, an incomplete-results flag, and the items for this page. Use
   `prev_page()` and `next_page()` to navigate between pages.
   """
   let _creds: req.Credentials
