@@ -21,7 +21,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -51,7 +51,7 @@ actor Main
 
 primitive RetrieveIssue
   fun apply(number: I64, r: RepositoryOrError): Promise[IssueOrError] =>
-    match r
+    match \exhaustive\ r
     | let repo: Repository =>
       repo.get_issue(number)
     | let e: RequestError =>
@@ -60,7 +60,7 @@ primitive RetrieveIssue
 
 primitive PrintIssue
   fun apply(out: OutStream, i: IssueOrError) =>
-    match i
+    match \exhaustive\ i
     | let issue: Issue =>
       out.print(issue.number.string())
       out.print(issue.title)

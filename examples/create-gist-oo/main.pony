@@ -23,7 +23,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -62,7 +62,7 @@ actor Main
 
 primitive PrintGist
   fun apply(out: OutStream, g: GistOrError) =>
-    match g
+    match \exhaustive\ g
     | let gist: Gist =>
       out.print("Gist created: " + gist.id)
       out.print(gist.html_url)

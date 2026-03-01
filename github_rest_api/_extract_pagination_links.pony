@@ -8,7 +8,7 @@ primitive _ExtractPaginationLinks
   On parse failure, returns (None, None) to gracefully degrade.
   """
   fun apply(link_header: String): ((String | None), (String | None)) =>
-    match wl.ParseLinkHeader(link_header)
+    match \exhaustive\ wl.ParseLinkHeader(link_header)
     | let links: Array[wl.WebLink val] val =>
       var prev: (String | None) = None
       var next: (String | None) = None

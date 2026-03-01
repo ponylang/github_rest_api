@@ -47,7 +47,7 @@ primitive CreateLabel
     color: (String | None) = None,
     description: (String | None) = None): Promise[LabelOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/labels")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -101,7 +101,7 @@ primitive DeleteLabel
     name: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/labels{/name}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables

@@ -43,7 +43,7 @@ primitive GetCommit
     sha: String,
     creds: req.Credentials): Promise[CommitOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/commits{/sha}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables

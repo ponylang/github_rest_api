@@ -44,7 +44,7 @@ class val PaginatedList[A: Any val]
     """
     Fetches the previous page, or returns None if on the first page.
     """
-    match _prev_link
+    match \exhaustive\ _prev_link
     | let prev: String =>
       _retrieve_link(prev)
     | None =>
@@ -55,7 +55,7 @@ class val PaginatedList[A: Any val]
     """
     Fetches the next page, or returns None if on the last page.
     """
-    match _next_link
+    match \exhaustive\ _next_link
     | let next: String =>
       _retrieve_link(next)
     | None =>
@@ -233,7 +233,7 @@ class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler
     _payload_body.append(data)
 
   fun ref failed(reason: HTTPFailureReason) =>
-    let msg = match reason
+    let msg = match \exhaustive\ reason
     | AuthFailed => "Authorization failure"
     | ConnectFailed => "Unable to connect"
     | ConnectionClosed => "Connection was prematurely closed"
@@ -246,7 +246,7 @@ class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler
     let y: String iso = String.from_iso_array(consume x)
 
     if _status == 200 then
-      match JsonParser.parse(consume y)
+      match \exhaustive\ JsonParser.parse(consume y)
       | let json: JsonValue => _receiver.success(JsonNav(json), _link_header)
       | let _: JsonParseError => _receiver.failure(_status, "",
         "Failed to parse response")

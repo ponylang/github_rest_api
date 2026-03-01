@@ -19,7 +19,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -46,7 +46,7 @@ actor Main
 
 primitive PrintResults
   fun apply(out: OutStream, r: IssueSearchResultsOrError) =>
-    match r
+    match \exhaustive\ r
     | let results: SearchResults[Issue] =>
       out.print("Total results: " + results.total_count.string())
       for i in results.items.values() do

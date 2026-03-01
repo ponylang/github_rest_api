@@ -68,7 +68,7 @@ class HTTPPutHandler is HTTPHandler
     _payload_body.append(data)
 
   fun ref failed(reason: HTTPFailureReason) =>
-    let msg = match reason
+    let msg = match \exhaustive\ reason
     | AuthFailed => "Authorization failure"
     | ConnectFailed => "Unable to connect"
     | ConnectionClosed => "Connection was prematurely closed"

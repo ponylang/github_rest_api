@@ -20,7 +20,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -49,7 +49,7 @@ actor Main
 
 primitive PrintPullRequestFiles
   fun apply(out: OutStream, r: PullRequestFilesOrError) =>
-    match r
+    match \exhaustive\ r
     | let files: Array[PullRequestFile] val =>
       for f in files.values() do
         out.print(f.filename)

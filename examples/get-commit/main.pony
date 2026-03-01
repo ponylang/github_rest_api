@@ -20,7 +20,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -49,7 +49,7 @@ actor Main
 
 primitive PrintCommit
   fun apply(out: OutStream, c: CommitOrError) =>
-    match c
+    match \exhaustive\ c
     | let commit: Commit =>
       out.print(commit.sha)
       out.print("Files ==>")

@@ -20,7 +20,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -51,7 +51,7 @@ actor Main
 
 primitive PrintRelease
   fun apply(out: OutStream, r: ReleaseOrError) =>
-    match r
+    match \exhaustive\ r
     | let release: Release =>
       out.print("Release created")
       out.print(release.html_url)

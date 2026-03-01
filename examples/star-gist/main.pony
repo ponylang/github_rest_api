@@ -17,7 +17,7 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match CommandParser(cs).parse(env.args, env.vars)
+      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
       | let c: Command =>
         c
       | let ch: CommandHelp =>
@@ -49,7 +49,7 @@ primitive CheckStar
     creds: Credentials,
     d: DeletedOrError): Promise[BoolOrError]
   =>
-    match d
+    match \exhaustive\ d
     | Deleted =>
       CheckGistStar(gist_id, creds)
     | let e: RequestError =>
@@ -58,7 +58,7 @@ primitive CheckStar
 
 primitive PrintResult
   fun apply(out: OutStream, r: BoolOrError) =>
-    match r
+    match \exhaustive\ r
     | let starred: Bool =>
       out.print("Is starred: " + starred.string())
     | let e: RequestError =>

@@ -166,7 +166,7 @@ primitive GetGist
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[GistOrError]
   =>
-    match ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
+    match \exhaustive\ ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("gist_id", gist_id)
@@ -255,7 +255,7 @@ primitive UpdateGist
     creds: req.Credentials,
     description: (String | None) = None): Promise[GistOrError]
   =>
-    match ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
+    match \exhaustive\ ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("gist_id", gist_id)
@@ -276,7 +276,7 @@ primitive UpdateGist
 
     var files_obj = JsonObject
     for (name, update) in files.values() do
-      match update
+      match \exhaustive\ update
       | let edit: GistFileEdit =>
         files_obj = files_obj.update(name,
           JsonObject.update("content", edit.content))
@@ -316,7 +316,7 @@ primitive DeleteGist
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    match ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
+    match \exhaustive\ ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
         .>set("gist_id", gist_id)
@@ -379,7 +379,7 @@ primitive GetUsernameGists
     creds: req.Credentials)
     : Promise[(PaginatedList[Gist] | req.RequestError)]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/users{/username}/gists")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -399,7 +399,7 @@ primitive GetGistRevision
     sha: String,
     creds: req.Credentials): Promise[GistOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}{/sha}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -419,7 +419,7 @@ primitive ForkGist
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[GistOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/forks")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -457,7 +457,7 @@ primitive GetGistForks
     creds: req.Credentials)
     : Promise[(PaginatedList[Gist] | req.RequestError)]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/forks")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -477,7 +477,7 @@ primitive GetGistCommits
     creds: req.Credentials)
     : Promise[(PaginatedList[GistCommit] | req.RequestError)]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/commits")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -516,7 +516,7 @@ primitive StarGist
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/star")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -552,7 +552,7 @@ primitive UnstarGist
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/star")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -589,7 +589,7 @@ primitive CheckGistStar
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[req.BoolOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/gists{/gist_id}/star")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables

@@ -142,7 +142,7 @@ primitive GetIssue
     number: I64,
     creds: req.Credentials): Promise[IssueOrError]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/issues{/number}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
@@ -187,7 +187,7 @@ primitive GetRepositoryIssues
     since: String = "",
     per_page: (I64 | None) = None): Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
-    match ut.URITemplateParse(
+    match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/issues")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
