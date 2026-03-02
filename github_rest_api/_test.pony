@@ -15,6 +15,14 @@ actor \nodoc\ Main is TestList
     test(_TestExtractPaginationLinksFirstPage)
     test(_TestExtractPaginationLinksLastPage)
     test(_TestExtractPaginationLinksBetweenPages)
+    test(_TestGitPersonJsonConverterPreservesValues)
+    test(_TestGitPersonJsonConverterMissingField)
+    test(_TestLicenseJsonConverterPreservesValues)
+    test(_TestLicenseJsonConverterMissingField)
+    test(_TestCommitFileJsonConverterPreservesValues)
+    test(_TestCommitFileJsonConverterMissingField)
+    test(_TestGistChangeStatusJsonConverterPreservesValues)
+    test(_TestGistChangeStatusJsonConverterMissingField)
     req.QueryParamsTests.make().tests(test)
 
 class \nodoc\ _TestExtractPaginationLinksNoLinks is UnitTest
