@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
-- Auth token required updated ([PR #91](https://github.com/ponylang/github_rest_api/pull/91))
+- Credentials.auth type ([PR #91](https://github.com/ponylang/github_rest_api/pull/91))
 
 ## [0.3.0] - 2026-02-08
 

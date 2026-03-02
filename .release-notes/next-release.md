@@ -33,7 +33,6 @@ end
 gist.update_gist(updates)
 ```
 
-
 ## Add query parameters to GetRepositoryIssues
 
 `GetRepositoryIssues` and `Repository.get_issues()` now accept `sort`, `direction`, `since`, and `per_page` parameters. All new parameters have defaults that match GitHub's API defaults, so existing callers are unaffected.
@@ -48,7 +47,7 @@ repo.get_issues(where sort = SortByUpdated, direction = SortAscending)
 repo.get_issues(where since = "2024-01-01T00:00:00Z", per_page = 50)
 ```
 
-## Port HTTP transport from ponylang/http to ponylang/courier
+## Credentials.auth type change
 
 The HTTP transport layer has been replaced with ponylang/courier, which uses an actor-based connection model instead of the handler factory pattern. All public API operations work the same way, but `Credentials.auth` has changed type.
 
