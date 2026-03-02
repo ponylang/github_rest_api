@@ -1,17 +1,25 @@
-use "http"
 use "json"
-use "net"
+use lori = "lori"
 use "promises"
 
 class val Credentials
-  let auth: TCPConnectAuth
+  """
+  Holds authentication context for GitHub API requests: a TCP connection
+  authority and an optional personal access token.
+  """
+  let auth: lori.TCPConnectAuth
   let token: (String | None)
 
-  new val create(auth': TCPConnectAuth, token': (String | None) = None) =>
+  new val create(auth': lori.TCPConnectAuth, token': (String | None) = None) =>
     auth = auth'
     token = token'
 
 actor ResultReceiver[A: Any val]
+  """
+  Generic receiver that converts a JSON response into a model type via a
+  JsonConverter and fulfills the associated Promise with the result or a
+  RequestError.
+  """
   let _creds: Credentials
   let _p: Promise[(A | RequestError)]
   let _converter: JsonConverter[A]
@@ -37,18 +45,3 @@ actor ResultReceiver[A: Any val]
 
   be failure(status: U16, response_body: String, message: String) =>
     _p(RequestError(status, response_body, message))
-
-primitive RequestFactory
-  fun apply(method: String,
-    url: URL,
-    auth_token: (String | None) = None): Payload iso^
-  =>
-    let r = Payload.request(method, url)
-    // we get a 403 from GitHub if the user-agent header isn't supplied
-    r("User-Agent") = "Pony GitHub Rest API Client"
-    r("Accept") = "application/vnd.github.v3+json"
-    match auth_token
-    | let token: String =>
-      r("Authorization") = recover val "token " + token end
-    end
-    consume r

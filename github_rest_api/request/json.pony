@@ -1,5 +1,4 @@
 use "json"
-use "net"
 
 interface val JsonConverter[A: Any #share]
   fun apply(json: JsonNav, creds: Credentials): A ?

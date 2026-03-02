@@ -60,15 +60,7 @@ primitive GetCommit
     let p = Promise[CommitOrError]
     let receiver = req.ResultReceiver[Commit](creds, p, CommitJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, receiver)?
-    else
-      let m = recover val
-        "Unable to initiate get commit request to" + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    req.JsonRequester.get(creds, url, receiver)
     p
 
 primitive CommitJsonConverter is req.JsonConverter[Commit]

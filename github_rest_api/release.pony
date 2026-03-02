@@ -130,17 +130,7 @@ primitive CreateRelease
     end
     obj = obj.update("draft", draft).update("prerelease", prerelease)
     let json = obj.string()
-
-    try
-      req.HTTPPost(creds.auth)(url,
-        consume json,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to create release at " + url))
-    end
-
+    req.JsonRequester.post(creds, url, consume json, r)
     p
 
 primitive ReleaseJsonConverter is req.JsonConverter[Release]

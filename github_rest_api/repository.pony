@@ -1,5 +1,4 @@
 use "json"
-use "net"
 use "promises"
 use req = "request"
 use ut = "uri/template"
@@ -411,13 +410,7 @@ primitive GetRepository
       p,
       RepositoryJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, r)?
-    else
-      let m = "Unable to initiate get_repo request to " + url
-      p(req.RequestError(where message' = consume m))
-    end
-
+    req.JsonRequester.get(creds, url, r)
     p
 
 primitive GetRepositoryLabels
@@ -449,13 +442,7 @@ primitive GetRepositoryLabels
     let p = Promise[(PaginatedList[Label] | req.RequestError)]
     let r = PaginatedResultReceiver[Label](creds, p, plc)
 
-    try
-      PaginatedJsonRequester(creds).apply[Label](url, r)?
-    else
-      let m = "Unable to initiate get_repo request to " + url
-      p(req.RequestError(where message' = consume m))
-    end
-
+    LinkedJsonRequester(creds, url, r)
     p
 
 primitive GetOrganizationRepositories
@@ -484,13 +471,7 @@ primitive GetOrganizationRepositories
     let p = Promise[(PaginatedList[Repository] | req.RequestError)]
     let r = PaginatedResultReceiver[Repository](creds, p, plc)
 
-    try
-      PaginatedJsonRequester(creds).apply[Repository](url, r)?
-    else
-      let m = "Unable to initiate get_org_repos request to " + url
-      p(req.RequestError(where message' = consume m))
-    end
-
+    LinkedJsonRequester(creds, url, r)
     p
 
 primitive RepositoryJsonConverter is req.JsonConverter[Repository]

@@ -18,8 +18,9 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 
 ## Dependencies
 
-- `github.com/ponylang/http.git` -- HTTP client
-- `github.com/ponylang/net_ssl.git` (via http) -- SSL/TLS
+- `github.com/ponylang/courier.git` -- HTTP client (actor-based)
+- `github.com/ponylang/lori.git` (via courier) -- TCP connections
+- `github.com/ponylang/ssl.git` (via courier) -- SSL/TLS
 - `github.com/ponylang/web_link.git` -- RFC 8288 Link header parsing
 - `github.com/ponylang/json-ng.git` -- JSON parsing (immutable, persistent collections)
 - `github.com/ponylang/uri.git` -- RFC 6570 URI template expansion
@@ -52,16 +53,14 @@ github_rest_api/
   user.pony                -- User model
   license.pony             -- License model
   json_nav_util.pony       -- JsonNavUtil (string_or_none for nullable JSON fields)
-  paginated_list.pony      -- PaginatedList[A] with prev/next page navigation
+  paginated_list.pony      -- PaginatedList[A] with prev/next page navigation, LinkedJsonRequester, LinkedResultReceiver
   _extract_pagination_links.pony -- Extracts prev/next URLs from Link headers (via web_link)
   request/                 -- HTTP request infrastructure (temporary home, intended to be extracted to its own library)
-    http.pony              -- Credentials, ResultReceiver, RequestFactory
-    http_get.pony          -- JsonRequester (GET with JSON response)
-    http_post.pony         -- HTTPPost (POST with JSON response)
-    http_patch.pony        -- HTTPPatch (PATCH with JSON response, expects 200)
-    http_delete.pony       -- HTTPDelete (DELETE, expects 204)
-    http_put.pony          -- HTTPPut (PUT with no body, expects 204)
-    http_check.pony        -- HTTPCheck (GET returning Bool: 204=true, 404=false)
+    credentials.pony       -- Credentials (lori.TCPConnectAuth + token), ResultReceiver
+    _ssl.pony              -- SSLContextFactory (shared SSL context creation)
+    json_requester.pony    -- JsonRequester actor (GET/POST/PATCH with JSON response)
+    no_content_requester.pony -- NoContentRequester actor (DELETE/PUT expecting 204)
+    check_requester.pony   -- CheckRequester actor (GET returning Bool: 204=true, 404=false)
     request_error.pony     -- RequestError (status, response_body, message)
     json.pony              -- JsonConverter interface, JsonTypeString utility
     query_params.pony      -- QueryParams (URL query string builder with percent-encoding)
@@ -78,7 +77,7 @@ All API operations return `Promise[(T | RequestError)]`. The flow is:
 1. Operation primitive (e.g., `GetRepository`) creates a `Promise`
 2. Creates a `ResultReceiver[T]` actor with the promise and a `JsonConverter[T]`
 3. Builds URL using `ponylang/uri` RFC 6570 template expansion for path parameters
-4. Issues HTTP request via `JsonRequester` / `HTTPPost` / `HTTPPatch` / `HTTPDelete` / `HTTPPut` / `HTTPCheck`
+4. Creates a short-lived request actor (`JsonRequester` / `NoContentRequester` / `CheckRequester` / `LinkedJsonRequester`) that owns an `HTTPClientConnection` from `ponylang/courier`
 5. On success, JSON is parsed and converted to model via `JsonConverter`
 6. Promise is fulfilled with either the model or a `RequestError`
 
@@ -102,7 +101,7 @@ Models have methods that chain to further API calls:
 
 ### Auth
 
-`Credentials` holds a `TCPConnectAuth` and an optional token string. `RequestFactory` sets `User-Agent`, `Accept: application/vnd.github.v3+json`, and `Authorization: token <token>` headers.
+`Credentials` holds a `lori.TCPConnectAuth` and an optional token string. Each request actor sets `User-Agent`, `Accept: application/vnd.github.v3+json`, and `Authorization: Bearer <token>` headers.
 
 ## Conventions
 
@@ -115,7 +114,7 @@ Models have methods that chain to further API calls:
 
 ## Known TODOs in Code
 
-1. Potential HTTP GET duplication with paginated variant (paginated_list.pony)
+None currently tracked.
 
 ## GitHub REST API Coverage Comparison
 
