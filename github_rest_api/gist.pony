@@ -181,15 +181,7 @@ primitive GetGist
     let p = Promise[GistOrError]
     let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_gist request to " + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    req.JsonRequester.get(creds, url, r)
     p
 
 primitive CreateGist
@@ -231,16 +223,7 @@ primitive CreateGist
     end
     let json = obj.string()
 
-    try
-      req.HTTPPost(creds.auth)(url,
-        consume json,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to create gist at " + url))
-    end
-
+    req.JsonRequester.post(creds, url, consume json, r)
     p
 
 primitive UpdateGist
@@ -297,16 +280,7 @@ primitive UpdateGist
     end
     let json = obj.string()
 
-    try
-      req.HTTPPatch(creds.auth)(url,
-        consume json,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to update gist at " + url))
-    end
-
+    req.JsonRequester.patch(creds, url, consume json, r)
     p
 
 primitive DeleteGist
@@ -333,15 +307,7 @@ primitive DeleteGist
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
-    try
-      req.HTTPDelete(creds.auth)(url,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to delete gist at " + url))
-    end
-
+    req.NoContentRequester.delete(creds, url, r)
     p
 
 primitive GetUserGists
@@ -437,16 +403,7 @@ primitive ForkGist
     let p = Promise[GistOrError]
     let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
 
-    try
-      req.HTTPPost(creds.auth)(url,
-        "",
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to fork gist at " + url))
-    end
-
+    req.JsonRequester.post(creds, url, "", r)
     p
 
 primitive GetGistForks
@@ -498,15 +455,7 @@ primitive GetGistCommits
     let p = Promise[(PaginatedList[GistCommit] | req.RequestError)]
     let r = PaginatedResultReceiver[GistCommit](creds, p, plc)
 
-    try
-      PaginatedJsonRequester(creds).apply[GistCommit](url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_gist_commits request to " + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    LinkedJsonRequester(creds, url, r)
     p
 
 primitive StarGist
@@ -534,15 +483,7 @@ primitive StarGist
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
-    try
-      req.HTTPPut(creds.auth)(url,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to star gist at " + url))
-    end
-
+    req.NoContentRequester.put(creds, url, r)
     p
 
 primitive UnstarGist
@@ -570,15 +511,7 @@ primitive UnstarGist
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
-    try
-      req.HTTPDelete(creds.auth)(url,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to unstar gist at " + url))
-    end
-
+    req.NoContentRequester.delete(creds, url, r)
     p
 
 primitive CheckGistStar
@@ -607,15 +540,7 @@ primitive CheckGistStar
     let p = Promise[req.BoolOrError]
     let r = req.BoolResultReceiver(p)
 
-    try
-      req.HTTPCheck(creds.auth)(url,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to check gist star at " + url))
-    end
-
+    req.CheckRequester(creds, url, r)
     p
 
 primitive _GetPaginatedGists
@@ -632,15 +557,7 @@ primitive _GetPaginatedGists
     let p = Promise[(PaginatedList[Gist] | req.RequestError)]
     let r = PaginatedResultReceiver[Gist](creds, p, plc)
 
-    try
-      PaginatedJsonRequester(creds).apply[Gist](url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_gists request to " + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    LinkedJsonRequester(creds, url, r)
     p
 
 primitive GistJsonConverter is req.JsonConverter[Gist]

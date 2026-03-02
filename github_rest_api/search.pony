@@ -1,6 +1,4 @@
-use "http"
 use "json"
-use "ssl/net"
 use "promises"
 use req = "request"
 
@@ -17,17 +15,12 @@ primitive SearchIssues
     let sc = PaginatedSearchJsonConverter[Issue](creds, IssueJsonConverter)
     let r = SearchResultReceiver[Issue](creds, p, sc)
 
-    try
-      let eq = URLEncode.encode(query, URLPartQuery)?
-      let url = recover val
-        "https://api.github.com/search/issues?q=" + eq
-      end
-
-      SearchJsonRequester(creds).apply[Issue](url, r)?
-    else
-      let m = "Unable to initiate issue search request for '" + query + "'"
-      p(req.RequestError(where message' = consume m))
+    let url = recover val
+      "https://api.github.com/search/issues"
+        + req.QueryParams(recover val [("q", query)] end)
     end
+
+    LinkedJsonRequester(creds, url, r)
 
     p
 
@@ -89,13 +82,7 @@ class val SearchResults[A: Any val]
   =>
     let p = Promise[(SearchResults[A] | req.RequestError)]
     let r = SearchResultReceiver[A](_creds, p, _converter)
-
-    try
-      SearchJsonRequester(_creds).apply[A](link, r)?
-    else
-      let m = "Unable to get " + link
-      p(req.RequestError(where message' = consume m))
-    end
+    LinkedJsonRequester(_creds, link, r)
     p
 
 class val PaginatedSearchJsonConverter[A: Any val]
@@ -163,118 +150,3 @@ actor SearchResultReceiver[A: Any val]
 
   be failure(status: U16, response_body: String, message: String) =>
     _p(req.RequestError(status, response_body, message))
-
-class SearchJsonRequester
-  """
-  Issues an HTTP GET request and delivers the JSON response along with Link
-  headers to a SearchResultReceiver for search endpoints.
-  """
-  let _creds: req.Credentials
-  let _sslctx: (SSLContext | None)
-
-  new create(creds: req.Credentials) =>
-    _creds = creds
-
-    _sslctx = try
-      recover val
-        SSLContext.>set_client_verify(true).>set_authority(None)?
-      end
-    else
-      None
-    end
-
-  fun ref apply[A: Any val](url: String,
-    receiver: SearchResultReceiver[A]) ?
-  =>
-    let valid_url = URL.valid(url)?
-    let r = req.RequestFactory("GET", valid_url, _creds.token)
-
-    let handler_factory =
-      SearchJsonRequesterHandlerFactory[A](_creds, receiver)
-    let client = HTTPClient(_creds.auth, handler_factory, _sslctx)
-    client(consume r)?
-
-class SearchJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
-  """
-  Creates SearchJsonRequesterHandler instances for each HTTP session.
-  """
-  let _creds: req.Credentials
-  let _receiver: SearchResultReceiver[A]
-
-  new val create(creds: req.Credentials,
-    receiver: SearchResultReceiver[A])
-  =>
-    _creds = creds
-    _receiver = receiver
-
-  fun apply(session: HTTPSession tag): HTTPHandler ref^ =>
-    let requester = SearchJsonRequester(_creds)
-    SearchJsonRequesterHandler[A](requester, _receiver)
-
-class SearchJsonRequesterHandler[A: Any val] is HTTPHandler
-  """
-  Handles the HTTP response for a search request, assembling the response body
-  and extracting Link headers before delivering results to the receiver.
-  """
-  let _requester: SearchJsonRequester
-  let _receiver: SearchResultReceiver[A]
-  var _payload_body: Array[U8] iso = recover Array[U8] end
-  var _status: U16 = 0
-  var _link_header: String = ""
-
-  new create(requester: SearchJsonRequester,
-    receiver: SearchResultReceiver[A])
-  =>
-    _requester = requester
-    _receiver = receiver
-
-  fun ref apply(payload: Payload val) =>
-    _status = payload.status
-    try
-      _link_header = payload("link")?
-    end
-
-    if (_status == 301) or (_status == 307) then
-      try
-        // Redirect.
-        // Let's start a new request to the redirect location
-        _requester[A](payload("Location")?, _receiver)?
-        return
-      end
-    end
-
-    try
-      for bs in payload.body()?.values() do
-        _payload_body.append(bs)
-      end
-    end
-
-    if payload.transfer_mode is OneshotTransfer then
-      finished()
-    end
-
-  fun ref chunk(data: ByteSeq) =>
-    _payload_body.append(data)
-
-  fun ref failed(reason: HTTPFailureReason) =>
-    let msg = match \exhaustive\ reason
-    | AuthFailed => "Authorization failure"
-    | ConnectFailed => "Unable to connect"
-    | ConnectionClosed => "Connection was prematurely closed"
-    end
-
-    _receiver.failure(_status, "", consume msg)
-
-  fun ref finished() =>
-    let x = _payload_body = recover Array[U8] end
-    let y: String iso = String.from_iso_array(consume x)
-
-    if _status == 200 then
-      match \exhaustive\ JsonParser.parse(consume y)
-      | let json: JsonValue => _receiver.success(JsonNav(json), _link_header)
-      | let _: JsonParseError => _receiver.failure(_status, "",
-        "Failed to parse response")
-      end
-    elseif (_status != 301) and (_status != 307) then
-      _receiver.failure(_status, consume y, "")
-    end

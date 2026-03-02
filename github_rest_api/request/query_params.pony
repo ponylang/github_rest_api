@@ -6,8 +6,8 @@ primitive QueryParams
 
   Both keys and values are encoded: only unreserved characters (A-Z, a-z,
   0-9, `-`, `.`, `_`, `~`) pass through; everything else becomes `%XX`.
-  This includes characters like `&` and `=` that the http library's
-  `URLEncode` with `URLPartQuery` would leave unencoded.
+  This includes characters like `&` and `=` that some URL encoding
+  implementations would leave unencoded in query position.
 
   ```pony
   let params = recover val

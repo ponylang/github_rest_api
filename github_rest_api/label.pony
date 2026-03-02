@@ -79,17 +79,7 @@ primitive CreateLabel
     | let d: String => obj = obj.update("description", d)
     end
     let json = obj.string()
-
-    try
-      req.HTTPPost(creds.auth)(url,
-        consume json,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to create label on " + url))
-    end
-
+    req.JsonRequester.post(creds, url, consume json, r)
     p
 
 primitive DeleteLabel
@@ -123,15 +113,7 @@ primitive DeleteLabel
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
-    try
-      req.HTTPDelete(creds.auth)(url,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to delete label on " + url))
-    end
-
+    req.NoContentRequester.delete(creds, url, r)
     p
 
 primitive LabelJsonConverter is req.JsonConverter[Label]

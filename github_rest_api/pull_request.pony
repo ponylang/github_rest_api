@@ -1,5 +1,4 @@
 use "json"
-use "net"
 use "promises"
 use req = "request"
 use ut = "uri/template"
@@ -82,15 +81,7 @@ primitive GetPullRequest
       p,
       PullRequestJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_pull_request request to" + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    req.JsonRequester.get(creds, url, r)
     p
 
 primitive PullRequestJsonConverter is req.JsonConverter[PullRequest]
