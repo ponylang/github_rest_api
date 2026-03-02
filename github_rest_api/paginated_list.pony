@@ -1,18 +1,18 @@
-use "http"
+use courier = "courier"
 use "json"
-use "ssl/net"
+use lori = "lori"
 use "promises"
+use ssl = "ssl/net"
 use req = "request"
 
-// TODO: There's potentially a ton of duplication with HTTP get here
-// it exists so I don't have to warp the JsonConverter API
-// but there might be other ways to address. Perhaps
-// something like grabbing link headers and and passing along
-// as part of standard json requester and having the results receiver
-// match on 2 different "converter" interfaces for "takes headers" and "no
-// headers" and call accordingly.
-// so there's JsonConverter and PaginatingJsonConverter
-// and a type alias that is (JsonConverter | PagingatingJsonConverter)
+interface tag LinkedResultReceiver
+  """
+  Receives the result of an HTTP GET request that returns JSON along with a
+  Link header. Used by both paginated list and search result requesters.
+  """
+  be success(json: JsonNav, link_header: String)
+  be failure(status: U16, response_body: String, message: String)
+
 class val PaginatedList[A: Any val]
   """
   A page of results from a paginated GitHub API endpoint. Use `prev_page()`
@@ -21,8 +21,6 @@ class val PaginatedList[A: Any val]
   """
   let _creds: req.Credentials
   let _converter: PaginatedListJsonConverter[A]
-  // only for search. not present otherwise
-  //let _total_results: USize
   let _prev_link: (String | None)
   let _next_link: (String | None)
 
@@ -65,15 +63,9 @@ class val PaginatedList[A: Any val]
   fun _retrieve_link(link: String):
     Promise[(PaginatedList[A] | req.RequestError)]
   =>
-    let  p = Promise[(PaginatedList[A] | req.RequestError)]
+    let p = Promise[(PaginatedList[A] | req.RequestError)]
     let r = PaginatedResultReceiver[A](_creds, p, _converter)
-
-    try
-      PaginatedJsonRequester(_creds).apply[A](link, r)?
-    else
-      let m = "Unable to get " + link
-      p(req.RequestError(where message' = consume m))
-    end
+    LinkedJsonRequester(_creds, link, r)
     p
 
 class val PaginatedListJsonConverter[A: Any val]
@@ -139,118 +131,119 @@ actor PaginatedResultReceiver[A: Any val]
   be failure(status: U16, response_body: String, message: String) =>
     _p(req.RequestError(status, response_body, message))
 
-// TODO: Could this be more generic?
-class PaginatedJsonRequester
+actor LinkedJsonRequester is courier.HTTPClientConnectionActor
   """
-  Issues an HTTP GET request and delivers the JSON response along with Link
-  headers to a PaginatedResultReceiver for paginated endpoints.
+  Issues an HTTP GET request and delivers the JSON response along with the
+  Link header to a LinkedResultReceiver. Used by both paginated list and search
+  result endpoints. Follows 301/307 redirects automatically.
   """
+  var _http: courier.HTTPClientConnection = courier.HTTPClientConnection.none()
+  var _collector: courier.ResponseCollector = courier.ResponseCollector
   let _creds: req.Credentials
-  let _sslctx: (SSLContext | None)
-
-  new create(creds: req.Credentials) =>
-    _creds = creds
-
-    _sslctx = try
-      recover val
-        SSLContext.>set_client_verify(true).>set_authority(None)?
-      end
-    else
-      None
-    end
-
-  fun ref apply[A: Any val](url: String,
-    receiver: PaginatedResultReceiver[A]) ?
-  =>
-    let valid_url = URL.valid(url)?
-    let r = req.RequestFactory("GET", valid_url, _creds.token)
-
-    let handler_factory =
-      PaginatedJsonRequesterHandlerFactory[A](_creds, receiver)
-    let client = HTTPClient(_creds.auth, handler_factory, _sslctx)
-    client(consume r)?
-
-class PaginatedJsonRequesterHandlerFactory[A: Any val] is HandlerFactory
-  """
-  Creates PaginatedJsonRequesterHandler instances for each HTTP session.
-  """
-  let _creds: req.Credentials
-  let _receiver: PaginatedResultReceiver[A]
-
-  new val create(creds: req.Credentials,
-    receiver: PaginatedResultReceiver[A])
-  =>
-    _creds = creds
-    _receiver = receiver
-
-  fun apply(session: HTTPSession tag): HTTPHandler ref^ =>
-    let requester = PaginatedJsonRequester(_creds)
-    PaginatedJsonRequesterHandler[A](requester, _receiver)
-
-class PaginatedJsonRequesterHandler[A: Any val] is HTTPHandler
-  """
-  Handles the HTTP response for a paginated request, assembling the response
-  body and extracting Link headers before delivering results to the receiver.
-  """
-  let _requester: PaginatedJsonRequester
-  let _receiver: PaginatedResultReceiver[A]
-  var _payload_body: Array[U8] iso = recover Array[U8] end
+  let _receiver: LinkedResultReceiver
+  var _request_path: String = ""
+  var _redirected: Bool = false
   var _status: U16 = 0
   var _link_header: String = ""
 
-  new create(requester: PaginatedJsonRequester,
-    receiver: PaginatedResultReceiver[A])
+  new create(creds: req.Credentials,
+    url: String,
+    receiver: LinkedResultReceiver)
   =>
-    _requester = requester
+    """
+    Issues an HTTP GET request expecting a 200 response with JSON body and
+    Link header for pagination.
+    """
+    _creds = creds
     _receiver = receiver
+    _connect(url)
 
-  fun ref apply(payload: Payload val) =>
-    _status = payload.status
-    try
-      _link_header = payload("link")?
+  fun ref _connect(url: String) =>
+    match courier.URL.parse(url)
+    | let parsed: courier.ParsedURL =>
+      _request_path = parsed.request_path()
+      let config = courier.ClientConnectionConfig
+      match req.SSLContextFactory()
+      | let ctx: ssl.SSLContext val =>
+        _http = courier.HTTPClientConnection.ssl(
+          _creds.auth, ctx, parsed.host, parsed.port, this, config)
+      | None =>
+        _fail("Unable to create SSL context")
+      end
+    | let _: courier.URLParseError =>
+      _fail("Unable to parse URL: " + url)
+    end
+
+  fun ref _http_client_connection(): courier.HTTPClientConnection =>
+    _http
+
+  fun ref on_connected() =>
+    let hdrs = recover trn courier.Headers end
+    hdrs.set("User-Agent", "Pony GitHub Rest API Client")
+    hdrs.set("Accept", "application/vnd.github.v3+json")
+    match _creds.token
+    | let t: String =>
+      (let n, let v) = courier.BearerAuth(t)
+      hdrs.set(n, v)
+    end
+    let request = courier.HTTPRequest(
+      courier.GET,
+      _request_path,
+      consume hdrs)
+    _http.send_request(request)
+
+  fun ref on_response(response: courier.Response val) =>
+    _status = response.status
+    _link_header = match response.headers.get("link")
+    | let h: String => h
+    | None => ""
     end
 
     if (_status == 301) or (_status == 307) then
-      try
-        // Redirect.
-        // Let's start a new request to the redirect location
-        _requester[A](payload("Location")?, _receiver)?
+      match response.headers.get("location")
+      | let loc: String =>
+        _redirected = true
+        _http.close()
+        LinkedJsonRequester(_creds, loc, _receiver)
         return
       end
     end
 
+    _collector = courier.ResponseCollector
+    _collector.set_response(response)
+
+  fun ref on_body_chunk(data: Array[U8] val) =>
+    _collector.add_chunk(data)
+
+  fun ref on_response_complete() =>
+    if _redirected then return end
     try
-      for bs in payload.body()?.values() do
-        _payload_body.append(bs)
+      let response = _collector.build()?
+      if _status == 200 then
+        match \exhaustive\ courier.ResponseJSON(response)
+        | let json: JsonValue =>
+          _receiver.success(JsonNav(json), _link_header)
+        | let _: JsonParseError =>
+          _receiver.failure(_status, "", "Failed to parse response")
+        end
+      else
+        let body_str = String.from_array(response.body)
+        _receiver.failure(_status, consume body_str, "")
       end
+    else
+      _receiver.failure(0, "", "Failed to build response")
     end
 
-    if payload.transfer_mode is OneshotTransfer then
-      finished()
-    end
-
-  fun ref chunk(data: ByteSeq) =>
-    _payload_body.append(data)
-
-  fun ref failed(reason: HTTPFailureReason) =>
+  fun ref on_connection_failure(reason: courier.ConnectionFailureReason) =>
     let msg = match \exhaustive\ reason
-    | AuthFailed => "Authorization failure"
-    | ConnectFailed => "Unable to connect"
-    | ConnectionClosed => "Connection was prematurely closed"
+    | courier.ConnectionFailedDNS => "DNS resolution failed"
+    | courier.ConnectionFailedTCP => "Unable to connect"
+    | courier.ConnectionFailedSSL => "SSL handshake failed"
     end
+    _receiver.failure(0, "", consume msg)
 
-    _receiver.failure(_status, "", consume msg)
+  fun ref on_parse_error(err: courier.ParseError) =>
+    _receiver.failure(0, "", "HTTP parse error")
 
-  fun ref finished() =>
-    let x = _payload_body = recover Array[U8] end
-    let y: String iso = String.from_iso_array(consume x)
-
-    if _status == 200 then
-      match \exhaustive\ JsonParser.parse(consume y)
-      | let json: JsonValue => _receiver.success(JsonNav(json), _link_header)
-      | let _: JsonParseError => _receiver.failure(_status, "",
-        "Failed to parse response")
-      end
-    elseif (_status != 301) and (_status != 307) then
-      _receiver.failure(_status, consume y, "")
-    end
+  be _fail(message: String) =>
+    _receiver.failure(0, "", message)

@@ -159,15 +159,7 @@ primitive GetIssue
     let p = Promise[IssueOrError]
     let receiver = req.ResultReceiver[Issue](creds, p, IssueJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, receiver)?
-    else
-      let m = recover val
-        "Unable to initiate get_issue request to" + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    req.JsonRequester.get(creds, url, receiver)
     p
 
 primitive GetRepositoryIssues
@@ -224,13 +216,7 @@ primitive GetRepositoryIssues
     let p = Promise[(PaginatedList[Issue] | req.RequestError)]
     let r = PaginatedResultReceiver[Issue](creds, p, plc)
 
-    try
-      PaginatedJsonRequester(creds).apply[Issue](url, r)?
-    else
-      let m = "Unable to initiate get_repository_issues request to " + url
-      p(req.RequestError(where message' = consume m))
-    end
-
+    LinkedJsonRequester(creds, url, r)
     p
 
 

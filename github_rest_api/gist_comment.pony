@@ -81,15 +81,7 @@ primitive GetGistComment
       p,
       GistCommentJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_gist_comment request to " + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    req.JsonRequester.get(creds, url, r)
     p
 
 primitive GetGistComments
@@ -121,15 +113,7 @@ primitive GetGistComments
     let p = Promise[(PaginatedList[GistComment] | req.RequestError)]
     let r = PaginatedResultReceiver[GistComment](creds, p, plc)
 
-    try
-      PaginatedJsonRequester(creds).apply[GistComment](url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_gist_comments request to " + url
-      end
-      p(req.RequestError(where message' = m))
-    end
-
+    LinkedJsonRequester(creds, url, r)
     p
 
 primitive CreateGistComment
@@ -162,17 +146,7 @@ primitive CreateGistComment
       GistCommentJsonConverter)
 
     let json = JsonObject.update("body", body).string()
-
-    try
-      req.HTTPPost(creds.auth)(url,
-        consume json,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to create gist comment on " + url))
-    end
-
+    req.JsonRequester.post(creds, url, consume json, r)
     p
 
 primitive UpdateGistComment
@@ -207,17 +181,7 @@ primitive UpdateGistComment
       GistCommentJsonConverter)
 
     let json = JsonObject.update("body", body).string()
-
-    try
-      req.HTTPPatch(creds.auth)(url,
-        consume json,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to update gist comment on " + url))
-    end
-
+    req.JsonRequester.patch(creds, url, consume json, r)
     p
 
 primitive DeleteGistComment
@@ -247,15 +211,7 @@ primitive DeleteGistComment
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
-    try
-      req.HTTPDelete(creds.auth)(url,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to delete gist comment on " + url))
-    end
-
+    req.NoContentRequester.delete(creds, url, r)
     p
 
 primitive GistCommentJsonConverter is req.JsonConverter[GistComment]
