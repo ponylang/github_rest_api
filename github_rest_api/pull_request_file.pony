@@ -1,5 +1,4 @@
 use "json"
-use "net"
 use "promises"
 use req = "request"
 use ut = "uri/template"
@@ -49,16 +48,7 @@ primitive GetPullRequestFiles
       p,
       PullRequestFilesJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_files request to" + url
-      end
-
-      p(req.RequestError(where message' = m))
-    end
-
+    req.JsonRequester.get(creds, url, r)
     p
 
 primitive PullRequestFilesJsonConverter is

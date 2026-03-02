@@ -1,4 +1,3 @@
-use "net"
 use "promises"
 use req = "request"
 

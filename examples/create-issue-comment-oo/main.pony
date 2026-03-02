@@ -1,7 +1,7 @@
 use "../../github_rest_api"
 use "../../github_rest_api/request"
 use "cli"
-use "net"
+use lori = "lori"
 use "promises"
 
 actor Main
@@ -39,7 +39,7 @@ actor Main
       let token = cmd.option("token").string()
 
       // ----- Create issue comment
-      let auth = TCPConnectAuth(env.root)
+      let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
       GitHub(creds).get_repo(owner, repo)

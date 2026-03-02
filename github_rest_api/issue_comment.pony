@@ -1,5 +1,4 @@
 use "json"
-use "net"
 use "promises"
 use req = "request"
 use ut = "uri/template"
@@ -60,17 +59,7 @@ primitive CreateIssueComment
       IssueCommentJsonConverter)
 
     let json = JsonObject.update("body", comment).string()
-
-    try
-      req.HTTPPost(creds.auth)(url,
-        consume json,
-        r,
-        creds.token)?
-    else
-      p(req.RequestError(
-        where message' = "Unable to create issue comment on " + url))
-    end
-
+    req.JsonRequester.post(creds, url, consume json, r)
     p
 
 primitive GetIssueComments
@@ -98,16 +87,7 @@ primitive GetIssueComments
       p,
       IssueCommentsJsonConverter)
 
-    try
-      req.JsonRequester(creds)(url, r)?
-    else
-      let m = recover val
-        "Unable to initiate get_comments request to" + url
-      end
-
-      p(req.RequestError(where message' = m))
-    end
-
+    req.JsonRequester.get(creds, url, r)
     p
 
 primitive IssueCommentsURL

@@ -33,7 +33,6 @@ end
 gist.update_gist(updates)
 ```
 
-This also adds three new HTTP infrastructure classes: `HTTPPatch` (PATCH with JSON response), `HTTPPut` (PUT expecting 204), and `HTTPCheck` (GET returning Bool based on status code 204/404).
 
 ## Add query parameters to GetRepositoryIssues
 
