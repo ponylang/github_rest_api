@@ -77,6 +77,8 @@ actor \nodoc\ Main is TestList
     test(_TestLinkedWithLink)
     test(_TestLinkedNoLink)
     test(_TestLinkedFailure)
+    test(_TestBearerTokenSent)
+    test(_TestNoTokenNoAuthHeader)
     req.QueryParamsTests.make().tests(test)
 
 class \nodoc\ _TestExtractPaginationLinksNoLinks is UnitTest

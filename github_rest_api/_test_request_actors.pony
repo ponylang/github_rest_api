@@ -547,6 +547,67 @@ class \nodoc\ _TestLinkedFailure is UnitTest
       } val)
     h.dispose_when_done(listener)
 
+class \nodoc\ _TestBearerTokenSent is UnitTest
+  fun name(): String => "request-actors/bearer-token-sent"
+
+  fun ref apply(h: TestHelper) ? =>
+    h.long_test(5_000_000_000)
+    let sslctx = _TestSSLContext(h)?
+    let host = _TestHost()
+    let port: String = "48113"
+    let url = _TestUrl(host, port, "/auth-check")
+    let creds = req.Credentials(
+      lori.TCPConnectAuth(h.env.root)
+      where token' = "ghp_test_token_12345", ssl_ctx' = sslctx)
+    let receiver = _TestJsonSuccessReceiver(h, "result", "ok")
+    let responder: _Responder =
+      {(request: String): String =>
+        let body =
+          if request.contains("authorization: Bearer ghp_test_token_12345")
+          then """{"result":"ok"}"""
+          else """{"result":"missing-auth"}"""
+          end
+        "HTTP/1.1 200 OK\r\n"
+          + "Content-Length: " + body.size().string() + "\r\n"
+          + "\r\n"
+          + body
+      } val
+    let listener = _MockHTTPListener(h, port, sslctx, responder,
+      {()(creds, url, receiver) =>
+        req.JsonRequester.get(creds, url, receiver)
+      } val)
+    h.dispose_when_done(listener)
+
+class \nodoc\ _TestNoTokenNoAuthHeader is UnitTest
+  fun name(): String => "request-actors/no-token-no-auth-header"
+
+  fun ref apply(h: TestHelper) ? =>
+    h.long_test(5_000_000_000)
+    let sslctx = _TestSSLContext(h)?
+    let host = _TestHost()
+    let port: String = "48114"
+    let url = _TestUrl(host, port, "/no-auth-check")
+    let creds = req.Credentials(
+      lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
+    let receiver = _TestJsonSuccessReceiver(h, "result", "ok")
+    let responder: _Responder =
+      {(request: String): String =>
+        let body =
+          if request.contains("authorization:")
+          then """{"result":"unexpected-auth"}"""
+          else """{"result":"ok"}"""
+          end
+        "HTTP/1.1 200 OK\r\n"
+          + "Content-Length: " + body.size().string() + "\r\n"
+          + "\r\n"
+          + body
+      } val
+    let listener = _MockHTTPListener(h, port, sslctx, responder,
+      {()(creds, url, receiver) =>
+        req.JsonRequester.get(creds, url, receiver)
+      } val)
+    h.dispose_when_done(listener)
+
 // --- URL helper ---
 
 primitive \nodoc\ _TestUrl
