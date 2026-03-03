@@ -56,6 +56,7 @@ github_rest_api/
   paginated_list.pony      -- PaginatedList[A] with prev/next page navigation, LinkedJsonRequester, LinkedResultReceiver
   _extract_pagination_links.pony -- Extracts prev/next URLs from Link headers (via web_link)
   _test_json_converters.pony -- Property-based tests for JSON converter primitives
+  _test_result_receivers.pony -- Async tests for result receiver actors
   request/                 -- HTTP request infrastructure (temporary home, intended to be extracted to its own library)
     credentials.pony       -- Credentials (lori.TCPConnectAuth + token), ResultReceiver
     _ssl.pony              -- SSLContextFactory (shared SSL context creation)
@@ -110,7 +111,7 @@ Models have methods that chain to further API calls:
 - JSON converters are primitives implementing `JsonConverter[T]` interface
 - Type aliases for result unions: `RepositoryOrError`, `IssueOrError`, etc.
 - `\nodoc\` annotation on test classes
-- Tests cover infrastructure (Link header parsing + query params) and JSON converter primitives, not API operations
+- Tests cover infrastructure (Link header parsing + query params), JSON converter primitives, and result receiver actors, not API operations
 - Keep CLAUDE.md in sync when adding or changing features — update the source layout, OO convenience API, pagination section, and coverage table as part of the PR that introduces the change
 
 ## Known TODOs in Code
