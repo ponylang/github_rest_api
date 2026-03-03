@@ -1071,6 +1071,150 @@ class \nodoc\ _TestIssueJsonConverterPreservesValues is UnitTest
         end
       })?
 
+primitive \nodoc\ _TestLicenseJson
+  """
+  Builds a valid License JSON object for testing converters that
+  nest a License.
+  """
+  fun apply(b: String val): JsonObject =>
+    JsonObject
+      .update("node_id", "licnid_" + b)
+      .update("name", "licname_" + b)
+      .update("key", "lickey_" + b)
+      .update("spdx_id", "licspdx_" + b)
+      .update("url", "licurl_" + b)
+
+primitive \nodoc\ _TestGistFileJson
+  """
+  Builds a fully-populated GistFile JSON object for testing
+  converters that nest a GistFile. Includes all optional fields
+  (content, encoding, truncated).
+  """
+  fun apply(b: String val): JsonObject =>
+    JsonObject
+      .update("filename", "gfn_" + b)
+      .update("type", "gftype_" + b)
+      .update("language", "gflang_" + b)
+      .update("raw_url", "gfraw_" + b)
+      .update("size", I64(512))
+      .update("content", "gfcontent_" + b)
+      .update("encoding", "utf-8")
+      .update("truncated", false)
+
+primitive \nodoc\ _TestRepositoryJson
+  """
+  Builds a complete valid Repository JSON object for testing
+  RepositoryJsonConverter. Includes all required and optional
+  fields with non-null values.
+  """
+  fun apply(b: String val): JsonObject =>
+    JsonObject
+      .update("id", I64(1))
+      .update("node_id", "rnid_" + b)
+      .update("name", "rname_" + b)
+      .update("full_name", "rfull_" + b)
+      .update("description", "rdesc_" + b)
+      .update("owner", _TestUserJson(b))
+      .update("private", false)
+      .update("fork", false)
+      .update("created_at", "rca_" + b)
+      .update("pushed_at", "rpa_" + b)
+      .update("updated_at", "rua_" + b)
+      .update("homepage", "rhome_" + b)
+      .update("default_branch", "rdb_" + b)
+      .update("organization", _TestUserJson(b))
+      .update("size", I64(100))
+      .update("forks", I64(5))
+      .update("forks_count", I64(5))
+      .update("network_count", I64(10))
+      .update("open_issues", I64(3))
+      .update("open_issues_count", I64(3))
+      .update("stargazers_count", I64(50))
+      .update("subscribers_count", I64(20))
+      .update("watchers", I64(50))
+      .update("watchers_count", I64(50))
+      .update("language", "rlang_" + b)
+      .update("license", _TestLicenseJson(b))
+      .update("archived", false)
+      .update("disabled", false)
+      .update("has_downloads", true)
+      .update("has_issues", true)
+      .update("has_pages", false)
+      .update("has_projects", true)
+      .update("has_wiki", true)
+      .update("url", "rurl_" + b)
+      .update("html_url", "rhurl_" + b)
+      .update("archive_url", "rarchive_" + b)
+      .update("assignees_url", "rassignees_" + b)
+      .update("blobs_url", "rblobs_" + b)
+      .update("branches_url", "rbranches_" + b)
+      .update("comments_url", "rcomments_" + b)
+      .update("commits_url", "rcommits_" + b)
+      .update("compare_url", "rcompare_" + b)
+      .update("contents_url", "rcontents_" + b)
+      .update("contributors_url", "rcontribs_" + b)
+      .update("deployments_url", "rdeploys_" + b)
+      .update("downloads_url", "rdownloads_" + b)
+      .update("events_url", "revents_" + b)
+      .update("forks_url", "rforks_" + b)
+      .update("git_commits_url", "rgcommits_" + b)
+      .update("git_refs_url", "rgrefs_" + b)
+      .update("git_tags_url", "rgtags_" + b)
+      .update("issue_comment_url", "ricomment_" + b)
+      .update("issue_events_url", "rievents_" + b)
+      .update("issues_url", "rissues_" + b)
+      .update("keys_url", "rkeys_" + b)
+      .update("labels_url", "rlabels_" + b)
+      .update("languages_url", "rlangs_" + b)
+      .update("merges_url", "rmerges_" + b)
+      .update("milestones_url", "rmilestones_" + b)
+      .update("notifications_url", "rnotifs_" + b)
+      .update("pulls_url", "rpulls_" + b)
+      .update("releases_url", "rreleases_" + b)
+      .update("stargazers_url", "rstargazers_" + b)
+      .update("statuses_url", "rstatuses_" + b)
+      .update("subscribers_url", "rsubs_" + b)
+      .update("subscription_url",
+        "rsubscription_" + b)
+      .update("tags_url", "rtags_" + b)
+      .update("trees_url", "rtrees_" + b)
+      .update("clone_url", "rclone_" + b)
+      .update("git_url", "rgit_" + b)
+      .update("mirror_url", "rmirror_" + b)
+      .update("ssh_url", "rssh_" + b)
+      .update("svn_url", "rsvn_" + b)
+
+primitive \nodoc\ _TestGistJson
+  """
+  Builds a complete valid Gist JSON object for testing
+  GistJsonConverter. Sets comments_enabled to false (not the
+  default) so preserves-values can verify the explicit value and
+  absent-optional can verify the default.
+  """
+  fun apply(b: String val): JsonObject =>
+    JsonObject
+      .update("id", "gid_" + b)
+      .update("node_id", "gnid_" + b)
+      .update("description", "gdesc_" + b)
+      .update("public", true)
+      .update("owner", _TestUserJson(b))
+      .update("user", _TestUserJson(b))
+      .update("files",
+        JsonObject.update(
+          "file1_" + b, _TestGistFileJson(b)))
+      .update("comments", I64(5))
+      .update("comments_enabled", false)
+      .update("truncated", false)
+      .update("created_at", "gca_" + b)
+      .update("updated_at", "gua_" + b)
+      .update("url", "gurl_" + b)
+      .update("html_url", "ghurl_" + b)
+      .update("forks_url", "gforksurl_" + b)
+      .update("commits_url", "gcommitsurl_" + b)
+      .update("comments_url", "gcommentsurl_" + b)
+      .update("git_pull_url", "gpullurl_" + b)
+      .update("git_push_url", "gpushurl_" + b)
+
 class \nodoc\ _TestIssueJsonConverterMissingField is UnitTest
   fun name(): String =>
     "issue-json-converter/missing-field"
@@ -1172,4 +1316,731 @@ class \nodoc\ _TestIssueJsonConverterAbsentPullRequest is UnitTest
         else
           h.fail("converter raised an error")
         end
+      })?
+
+class \nodoc\ _TestRepoJsonConverterPreservesValues
+  is UnitTest
+  fun name(): String =>
+    "repo-json-converter/preserves-values"
+
+  fun ref apply(h: TestHelper) ? =>
+    PonyCheck.for_all2[String, USize](
+      recover val Generators.ascii_printable(1, 20) end,
+      recover val Generators.usize(0, 15) end, h)(
+      {(base, mask, h) =>
+        let auth = lori.TCPConnectAuth(h.env.root)
+        let creds = req.Credentials(auth)
+        let b: String val = base.clone()
+        var obj = _TestRepositoryJson(b)
+        if (mask and 1) != 0 then
+          obj = obj.update("description", None)
+        end
+        if (mask and 2) != 0 then
+          obj = obj.update("homepage", None)
+        end
+        if (mask and 4) != 0 then
+          obj = obj.update("language", None)
+        end
+        if (mask and 8) != 0 then
+          obj = obj.update("mirror_url", None)
+        end
+        let json = JsonNav(obj)
+        try
+          let repo =
+            RepositoryJsonConverter(json, creds)?
+          h.assert_eq[I64](I64(1), repo.id)
+          h.assert_eq[String]("rnid_" + b,
+            repo.node_id)
+          h.assert_eq[String]("rname_" + b,
+            repo.name)
+          h.assert_eq[String]("rfull_" + b,
+            repo.full_name)
+          if (mask and 1) != 0 then
+            match repo.description
+            | None => None
+            | let _: String =>
+              h.fail(
+                "description should be None")
+            end
+          else
+            match repo.description
+            | let s: String =>
+              h.assert_eq[String](
+                "rdesc_" + b, s)
+            | None =>
+              h.fail(
+                "description should be String")
+            end
+          end
+          h.assert_eq[String]("login_" + b,
+            repo.owner.login)
+          h.assert_false(repo.private,
+            "private should be false")
+          h.assert_false(repo.fork,
+            "fork should be false")
+          h.assert_eq[String]("rca_" + b,
+            repo.created_at)
+          h.assert_eq[String]("rpa_" + b,
+            repo.pushed_at)
+          h.assert_eq[String]("rua_" + b,
+            repo.updated_at)
+          if (mask and 2) != 0 then
+            match repo.homepage
+            | None => None
+            | let _: String =>
+              h.fail("homepage should be None")
+            end
+          else
+            match repo.homepage
+            | let s: String =>
+              h.assert_eq[String](
+                "rhome_" + b, s)
+            | None =>
+              h.fail(
+                "homepage should be String")
+            end
+          end
+          h.assert_eq[String]("rdb_" + b,
+            repo.default_branch)
+          match repo.organization
+          | let u: User =>
+            h.assert_eq[String]("login_" + b,
+              u.login)
+          | None =>
+            h.fail(
+              "organization should be present")
+          end
+          h.assert_eq[I64](I64(100), repo.size)
+          h.assert_eq[I64](I64(5), repo.forks)
+          h.assert_eq[I64](I64(5),
+            repo.forks_count)
+          match repo.network_count
+          | let n: I64 =>
+            h.assert_eq[I64](I64(10), n)
+          | None =>
+            h.fail(
+              "network_count should be present")
+          end
+          h.assert_eq[I64](I64(3),
+            repo.open_issues)
+          h.assert_eq[I64](I64(3),
+            repo.open_issues_count)
+          h.assert_eq[I64](I64(50),
+            repo.stargazers_count)
+          match repo.subscribers_count
+          | let n: I64 =>
+            h.assert_eq[I64](I64(20), n)
+          | None =>
+            h.fail(
+              "subscribers_count should be "
+                + "present")
+          end
+          h.assert_eq[I64](I64(50),
+            repo.watchers)
+          h.assert_eq[I64](I64(50),
+            repo.watchers_count)
+          if (mask and 4) != 0 then
+            match repo.language
+            | None => None
+            | let _: String =>
+              h.fail("language should be None")
+            end
+          else
+            match repo.language
+            | let s: String =>
+              h.assert_eq[String](
+                "rlang_" + b, s)
+            | None =>
+              h.fail(
+                "language should be String")
+            end
+          end
+          match repo.license
+          | let l: License =>
+            h.assert_eq[String](
+              "lickey_" + b, l.key)
+          | None =>
+            h.fail("license should be present")
+          end
+          h.assert_false(repo.archived,
+            "archived should be false")
+          h.assert_false(repo.disabled,
+            "disabled should be false")
+          h.assert_true(repo.has_downloads,
+            "has_downloads should be true")
+          h.assert_true(repo.has_issues,
+            "has_issues should be true")
+          h.assert_false(repo.has_pages,
+            "has_pages should be false")
+          h.assert_true(repo.has_projects,
+            "has_projects should be true")
+          h.assert_true(repo.has_wiki,
+            "has_wiki should be true")
+          h.assert_eq[String]("rurl_" + b,
+            repo.url)
+          h.assert_eq[String]("rhurl_" + b,
+            repo.html_url)
+          h.assert_eq[String](
+            "rarchive_" + b,
+            repo.archive_url)
+          h.assert_eq[String](
+            "rassignees_" + b,
+            repo.assignees_url)
+          h.assert_eq[String](
+            "rblobs_" + b, repo.blobs_url)
+          h.assert_eq[String](
+            "rbranches_" + b,
+            repo.branches_url)
+          h.assert_eq[String](
+            "rcomments_" + b,
+            repo.comments_url)
+          h.assert_eq[String](
+            "rcommits_" + b,
+            repo.commits_url)
+          h.assert_eq[String](
+            "rcompare_" + b,
+            repo.compare_url)
+          h.assert_eq[String](
+            "rcontents_" + b,
+            repo.contents_url)
+          h.assert_eq[String](
+            "rcontribs_" + b,
+            repo.contributors_url)
+          h.assert_eq[String](
+            "rdeploys_" + b,
+            repo.deployments_url)
+          h.assert_eq[String](
+            "rdownloads_" + b,
+            repo.downloads_url)
+          h.assert_eq[String](
+            "revents_" + b,
+            repo.events_url)
+          h.assert_eq[String](
+            "rforks_" + b, repo.forks_url)
+          h.assert_eq[String](
+            "rgcommits_" + b,
+            repo.git_commits_url)
+          h.assert_eq[String](
+            "rgrefs_" + b,
+            repo.git_refs_url)
+          h.assert_eq[String](
+            "rgtags_" + b,
+            repo.git_tags_url)
+          h.assert_eq[String](
+            "ricomment_" + b,
+            repo.issue_comment_url)
+          h.assert_eq[String](
+            "rievents_" + b,
+            repo.issue_events_url)
+          h.assert_eq[String](
+            "rissues_" + b, repo.issues_url)
+          h.assert_eq[String](
+            "rkeys_" + b, repo.keys_url)
+          h.assert_eq[String](
+            "rlabels_" + b, repo.labels_url)
+          h.assert_eq[String](
+            "rlangs_" + b,
+            repo.languages_url)
+          h.assert_eq[String](
+            "rmerges_" + b, repo.merges_url)
+          h.assert_eq[String](
+            "rmilestones_" + b,
+            repo.milestones_url)
+          h.assert_eq[String](
+            "rnotifs_" + b,
+            repo.notifications_url)
+          h.assert_eq[String](
+            "rpulls_" + b, repo.pulls_url)
+          h.assert_eq[String](
+            "rreleases_" + b,
+            repo.releases_url)
+          h.assert_eq[String](
+            "rstargazers_" + b,
+            repo.stargazers_url)
+          h.assert_eq[String](
+            "rstatuses_" + b,
+            repo.statuses_url)
+          h.assert_eq[String](
+            "rsubs_" + b,
+            repo.subscribers_url)
+          h.assert_eq[String](
+            "rsubscription_" + b,
+            repo.subscription_url)
+          h.assert_eq[String](
+            "rtags_" + b, repo.tags_url)
+          h.assert_eq[String](
+            "rtrees_" + b, repo.trees_url)
+          h.assert_eq[String](
+            "rclone_" + b, repo.clone_url)
+          h.assert_eq[String](
+            "rgit_" + b, repo.git_url)
+          if (mask and 8) != 0 then
+            match repo.mirror_url
+            | None => None
+            | let _: String =>
+              h.fail(
+                "mirror_url should be None")
+            end
+          else
+            match repo.mirror_url
+            | let s: String =>
+              h.assert_eq[String](
+                "rmirror_" + b, s)
+            | None =>
+              h.fail(
+                "mirror_url should be String")
+            end
+          end
+          h.assert_eq[String](
+            "rssh_" + b, repo.ssh_url)
+          h.assert_eq[String](
+            "rsvn_" + b, repo.svn_url)
+        else
+          h.fail("converter raised an error")
+        end
+      })?
+
+class \nodoc\ _TestRepoJsonConverterMissingField
+  is UnitTest
+  fun name(): String =>
+    "repo-json-converter/missing-field"
+
+  fun _required_fields(): Array[String] val =>
+    recover val
+      [ "id"; "node_id"; "name"; "full_name"
+        "description"; "owner"
+        "private"; "fork"
+        "created_at"; "pushed_at"
+        "updated_at"; "homepage"
+        "default_branch"
+        "size"; "forks"; "forks_count"
+        "open_issues"; "open_issues_count"
+        "stargazers_count"
+        "watchers"; "watchers_count"
+        "language"
+        "archived"; "disabled"
+        "has_downloads"; "has_issues"
+        "has_pages"; "has_projects"
+        "has_wiki"
+        "url"; "html_url"
+        "archive_url"; "assignees_url"
+        "blobs_url"; "branches_url"
+        "comments_url"; "commits_url"
+        "compare_url"; "contents_url"
+        "contributors_url"
+        "deployments_url"
+        "downloads_url"; "events_url"
+        "forks_url"; "git_commits_url"
+        "git_refs_url"; "git_tags_url"
+        "issue_comment_url"
+        "issue_events_url"
+        "issues_url"; "keys_url"
+        "labels_url"; "languages_url"
+        "merges_url"; "milestones_url"
+        "notifications_url"; "pulls_url"
+        "releases_url"; "stargazers_url"
+        "statuses_url"; "subscribers_url"
+        "subscription_url"; "tags_url"
+        "trees_url"
+        "clone_url"; "git_url"
+        "mirror_url"; "ssh_url"; "svn_url" ]
+    end
+
+  fun ref apply(h: TestHelper) ? =>
+    let required = _required_fields()
+    PonyCheck.for_all2[String, USize](
+      recover val
+        Generators.ascii_printable(1, 20)
+      end,
+      recover val
+        Generators.usize(0, 68)
+      end, h)(
+      {(base, skip_idx, h)(required) =>
+        let auth = lori.TCPConnectAuth(h.env.root)
+        let creds = req.Credentials(auth)
+        let b: String val = base.clone()
+        try
+          let obj = _TestRepositoryJson(b)
+            .remove(required(skip_idx)?)
+          let json = JsonNav(obj)
+          RepositoryJsonConverter(json, creds)?
+          h.fail(
+            "converter should have raised for "
+              + "missing field at index "
+              + skip_idx.string())
+        end
+      })?
+
+class \nodoc\ _TestRepoJsonConverterAbsentOptionalFields
+  is UnitTest
+  fun name(): String =>
+    "repo-json-converter/absent-optional-fields"
+
+  fun ref apply(h: TestHelper) ? =>
+    PonyCheck.for_all[String](
+      recover val
+        Generators.ascii_printable(1, 20)
+      end, h)(
+      {(base, h) =>
+        let auth = lori.TCPConnectAuth(h.env.root)
+        let creds = req.Credentials(auth)
+        let b: String val = base.clone()
+        let obj = _TestRepositoryJson(b)
+          .remove("organization")
+          .remove("license")
+          .remove("network_count")
+          .remove("subscribers_count")
+        let json = JsonNav(obj)
+        try
+          let repo =
+            RepositoryJsonConverter(json, creds)?
+          match repo.organization
+          | None => None
+          | let _: User =>
+            h.fail(
+              "organization should be None")
+          end
+          match repo.license
+          | None => None
+          | let _: License =>
+            h.fail("license should be None")
+          end
+          match repo.network_count
+          | None => None
+          | let _: I64 =>
+            h.fail(
+              "network_count should be None")
+          end
+          match repo.subscribers_count
+          | None => None
+          | let _: I64 =>
+            h.fail(
+              "subscribers_count should be "
+                + "None")
+          end
+          h.assert_eq[String]("rname_" + b,
+            repo.name)
+          h.assert_eq[I64](I64(1), repo.id)
+          h.assert_eq[String]("rurl_" + b,
+            repo.url)
+        else
+          h.fail("converter raised an error")
+        end
+      })?
+
+class \nodoc\ _TestGistJsonConverterPreservesValues
+  is UnitTest
+  fun name(): String =>
+    "gist-json-converter/preserves-values"
+
+  fun ref apply(h: TestHelper) ? =>
+    PonyCheck.for_all2[String, Bool](
+      recover val
+        Generators.ascii_printable(1, 20)
+      end,
+      recover val Generators.bool() end, h)(
+      {(base, desc_is_null, h) =>
+        let auth = lori.TCPConnectAuth(h.env.root)
+        let creds = req.Credentials(auth)
+        let b: String val = base.clone()
+        var obj = _TestGistJson(b)
+        if desc_is_null then
+          obj = obj.update("description", None)
+        end
+        let json = JsonNav(obj)
+        try
+          let gist =
+            GistJsonConverter(json, creds)?
+          h.assert_eq[String]("gid_" + b,
+            gist.id)
+          h.assert_eq[String]("gnid_" + b,
+            gist.node_id)
+          if desc_is_null then
+            match gist.description
+            | None => None
+            | let _: String =>
+              h.fail(
+                "description should be None")
+            end
+          else
+            match gist.description
+            | let s: String =>
+              h.assert_eq[String](
+                "gdesc_" + b, s)
+            | None =>
+              h.fail(
+                "description should be String")
+            end
+          end
+          h.assert_true(gist.public,
+            "public should be true")
+          h.assert_eq[USize](1,
+            gist.files.size())
+          try
+            h.assert_eq[String](
+              "file1_" + b,
+              gist.files(0)?._1)
+            h.assert_eq[String](
+              "gfn_" + b,
+              gist.files(0)?._2.filename)
+          else
+            h.fail(
+              "files array access raised error")
+          end
+          h.assert_eq[I64](I64(5),
+            gist.comments)
+          h.assert_false(
+            gist.comments_enabled,
+            "comments_enabled should be false")
+          h.assert_false(gist.truncated,
+            "truncated should be false")
+          h.assert_eq[String]("gca_" + b,
+            gist.created_at)
+          h.assert_eq[String]("gua_" + b,
+            gist.updated_at)
+          h.assert_eq[String]("gurl_" + b,
+            gist.url)
+          h.assert_eq[String]("ghurl_" + b,
+            gist.html_url)
+          h.assert_eq[String](
+            "gforksurl_" + b,
+            gist.forks_url)
+          h.assert_eq[String](
+            "gcommitsurl_" + b,
+            gist.commits_url)
+          h.assert_eq[String](
+            "gcommentsurl_" + b,
+            gist.comments_url)
+          h.assert_eq[String](
+            "gpullurl_" + b,
+            gist.git_pull_url)
+          h.assert_eq[String](
+            "gpushurl_" + b,
+            gist.git_push_url)
+          match gist.owner
+          | let u: User =>
+            h.assert_eq[String]("login_" + b,
+              u.login)
+          | None =>
+            h.fail("owner should be present")
+          end
+          match gist.user
+          | let u: User =>
+            h.assert_eq[String]("login_" + b,
+              u.login)
+          | None =>
+            h.fail("user should be present")
+          end
+        else
+          h.fail("converter raised an error")
+        end
+      })?
+
+class \nodoc\ _TestGistJsonConverterMissingField
+  is UnitTest
+  fun name(): String =>
+    "gist-json-converter/missing-field"
+
+  fun _required_fields(): Array[String] val =>
+    recover val
+      [ "id"; "node_id"; "description"
+        "public"; "files"; "comments"
+        "truncated"
+        "created_at"; "updated_at"
+        "url"; "html_url"; "forks_url"
+        "commits_url"; "comments_url"
+        "git_pull_url"; "git_push_url" ]
+    end
+
+  fun ref apply(h: TestHelper) ? =>
+    let required = _required_fields()
+    PonyCheck.for_all2[String, USize](
+      recover val
+        Generators.ascii_printable(1, 20)
+      end,
+      recover val
+        Generators.usize(0, 15)
+      end, h)(
+      {(base, skip_idx, h)(required) =>
+        let auth = lori.TCPConnectAuth(h.env.root)
+        let creds = req.Credentials(auth)
+        let b: String val = base.clone()
+        try
+          let obj = _TestGistJson(b)
+            .remove(required(skip_idx)?)
+          let json = JsonNav(obj)
+          GistJsonConverter(json, creds)?
+          h.fail(
+            "converter should have raised for "
+              + "missing field at index "
+              + skip_idx.string())
+        end
+      })?
+
+class \nodoc\ _TestGistJsonConverterAbsentOptionalFields
+  is UnitTest
+  fun name(): String =>
+    "gist-json-converter/absent-optional-fields"
+
+  fun ref apply(h: TestHelper) ? =>
+    PonyCheck.for_all[String](
+      recover val
+        Generators.ascii_printable(1, 20)
+      end, h)(
+      {(base, h) =>
+        let auth = lori.TCPConnectAuth(h.env.root)
+        let creds = req.Credentials(auth)
+        let b: String val = base.clone()
+        let obj = _TestGistJson(b)
+          .remove("owner")
+          .remove("user")
+          .remove("comments_enabled")
+        let json = JsonNav(obj)
+        try
+          let gist =
+            GistJsonConverter(json, creds)?
+          match gist.owner
+          | None => None
+          | let _: User =>
+            h.fail("owner should be None")
+          end
+          match gist.user
+          | None => None
+          | let _: User =>
+            h.fail("user should be None")
+          end
+          h.assert_true(
+            gist.comments_enabled,
+            "comments_enabled should default "
+              + "to true")
+          h.assert_eq[String]("gid_" + b,
+            gist.id)
+          h.assert_eq[String]("gurl_" + b,
+            gist.url)
+        else
+          h.fail("converter raised an error")
+        end
+      })?
+
+class \nodoc\ _TestStringOrNoneReturnsString
+  is UnitTest
+  fun name(): String =>
+    "string-or-none/returns-string"
+
+  fun ref apply(h: TestHelper) ? =>
+    PonyCheck.for_all[String](
+      recover val
+        Generators.ascii_printable(1, 20)
+      end, h)(
+      {(base, h) =>
+        let b: String val = base.clone()
+        let obj = JsonObject.update("key", b)
+        let json = JsonNav(obj)
+        try
+          match JsonNavUtil.string_or_none(
+            json("key"))?
+          | let s: String =>
+            h.assert_eq[String](b, s)
+          | None =>
+            h.fail(
+              "should return String, not None")
+          end
+        else
+          h.fail(
+            "string_or_none raised an error")
+        end
+      })?
+
+class \nodoc\ _TestStringOrNoneReturnsNone
+  is UnitTest
+  fun name(): String =>
+    "string-or-none/returns-none"
+
+  fun ref apply(h: TestHelper) ? =>
+    let obj = JsonObject.update("key", None)
+    let json = JsonNav(obj)
+    match JsonNavUtil.string_or_none(
+      json("key"))?
+    | None => None
+    | let _: String =>
+      h.fail(
+        "should return None for null value")
+    end
+
+class \nodoc\ _TestStringOrNoneRaisesOnInvalid
+  is UnitTest
+  fun name(): String =>
+    "string-or-none/raises-on-invalid"
+
+  fun ref apply(h: TestHelper) ? =>
+    PonyCheck.for_all[I64](
+      recover val Generators.i64() end, h)(
+      {(value, h) =>
+        let obj =
+          JsonObject.update("key", value)
+        let json = JsonNav(obj)
+        try
+          JsonNavUtil.string_or_none(
+            json("key"))?
+          h.fail(
+            "should raise for I64 value "
+              + value.string())
+        end
+      })?
+    // Missing key should also raise
+    let empty = JsonObject
+    let json = JsonNav(empty)
+    try
+      JsonNavUtil.string_or_none(
+        json("missing"))?
+      h.fail("should raise for missing key")
+    end
+
+class \nodoc\ _TestJsonTypeStringAllArms is UnitTest
+  fun name(): String =>
+    "json-type-string/all-arms"
+
+  fun ref apply(h: TestHelper) =>
+    let obj = JsonObject.update("a", "b")
+    let arr = JsonArray.push("x")
+    let nav = JsonNav(
+      JsonObject
+        .update("obj", obj)
+        .update("arr", arr)
+        .update("str", "hello")
+        .update("i64", I64(42))
+        .update("f64", F64(3.14))
+        .update("bool", true)
+        .update("null", None))
+    h.assert_eq[String](obj.string(),
+      req.JsonTypeString(nav("obj")))
+    h.assert_eq[String](arr.string(),
+      req.JsonTypeString(nav("arr")))
+    h.assert_eq[String]("hello",
+      req.JsonTypeString(nav("str")))
+    h.assert_eq[String](I64(42).string(),
+      req.JsonTypeString(nav("i64")))
+    h.assert_eq[String](F64(3.14).string(),
+      req.JsonTypeString(nav("f64")))
+    h.assert_eq[String]("true",
+      req.JsonTypeString(nav("bool")))
+    h.assert_eq[String]("null",
+      req.JsonTypeString(nav("null")))
+    h.assert_eq[String]("JsonNotFound",
+      req.JsonTypeString(nav("missing")))
+
+class \nodoc\ _TestJsonTypeStringI64Property
+  is UnitTest
+  fun name(): String =>
+    "json-type-string/i64-property"
+
+  fun ref apply(h: TestHelper) ? =>
+    PonyCheck.for_all[I64](
+      recover val Generators.i64() end, h)(
+      {(value, h) =>
+        let obj =
+          JsonObject.update("k", value)
+        let json = JsonNav(obj)
+        h.assert_eq[String](value.string(),
+          req.JsonTypeString(json("k")))
       })?
