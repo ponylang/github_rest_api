@@ -60,6 +60,7 @@ github_rest_api/
   _test_result_receivers.pony -- Async tests for result receiver actors
   _test_mock_http_server.pony -- Mock HTTPS server infrastructure for request actor tests
   _test_request_actors.pony -- Integration tests for all four request actor types
+  _test_search_and_pagination.pony -- Converter unit tests + mock HTTP pagination behavior tests
   request/                 -- HTTP request infrastructure (temporary home, intended to be extracted to its own library)
     credentials.pony       -- Credentials (lori.TCPConnectAuth + token + optional ssl_ctx), ResultReceiver
     _ssl.pony              -- SSLContextFactory (shared SSL context creation, fallback when Credentials.ssl_ctx is None)
