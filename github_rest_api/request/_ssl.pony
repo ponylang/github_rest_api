@@ -5,6 +5,9 @@ primitive SSLContextFactory
   Creates an SSL context for HTTPS client connections. Attempts to load the
   system CA store for certificate verification. If no CA store is available,
   falls back to an unverified context.
+
+  This is the default SSL context used by request actors when
+  `Credentials.ssl_ctx` is None.
   """
   fun apply(): ssl.SSLContext val =>
     try

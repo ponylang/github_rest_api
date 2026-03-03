@@ -1,18 +1,28 @@
 use "json"
 use lori = "lori"
 use "promises"
+use ssl = "ssl/net"
 
 class val Credentials
   """
   Holds authentication context for GitHub API requests: a TCP connection
-  authority and an optional personal access token.
+  authority, an optional personal access token, and an optional SSL context.
+
+  When `ssl_ctx` is provided, request actors use it instead of the default
+  `SSLContextFactory`. This allows callers to supply a custom SSL context
+  (e.g., one configured for self-signed certificates in tests).
   """
   let auth: lori.TCPConnectAuth
   let token: (String | None)
+  let ssl_ctx: (ssl.SSLContext val | None)
 
-  new val create(auth': lori.TCPConnectAuth, token': (String | None) = None) =>
+  new val create(auth': lori.TCPConnectAuth,
+    token': (String | None) = None,
+    ssl_ctx': (ssl.SSLContext val | None) = None)
+  =>
     auth = auth'
     token = token'
+    ssl_ctx = ssl_ctx'
 
 actor ResultReceiver[A: Any val]
   """

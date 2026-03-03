@@ -1,5 +1,6 @@
 use courier = "courier"
 use "json"
+use ssl = "ssl/net"
 
 interface tag JsonRequesterResultReceiver
   """
@@ -76,9 +77,13 @@ actor JsonRequester is courier.HTTPClientConnectionActor
     match courier.URL.parse(url)
     | let parsed: courier.ParsedURL =>
       _request_path = parsed.request_path()
+      let ctx = match _creds.ssl_ctx
+      | let c: ssl.SSLContext val => c
+      | None => SSLContextFactory()
+      end
       let config = courier.ClientConnectionConfig
       _http = courier.HTTPClientConnection.ssl(
-        _creds.auth, SSLContextFactory(), parsed.host, parsed.port,
+        _creds.auth, ctx, parsed.host, parsed.port,
         this, config)
     | let _: courier.URLParseError =>
       _fail("Unable to parse URL: " + url)
