@@ -32,6 +32,13 @@ actor \nodoc\ Main is TestList
     test(_TestGistFileJsonConverterPreservesValues)
     test(_TestGistFileJsonConverterMissingField)
     test(_TestGistFileJsonConverterAbsentOptionalFields)
+    test(_TestGitCommitJsonConverterPreservesValues)
+    test(_TestGitCommitJsonConverterMissingField)
+    test(_TestCommitJsonConverterPreservesValues)
+    test(_TestCommitJsonConverterMissingField)
+    test(_TestIssueJsonConverterPreservesValues)
+    test(_TestIssueJsonConverterMissingField)
+    test(_TestIssueJsonConverterAbsentPullRequest)
     req.QueryParamsTests.make().tests(test)
 
 class \nodoc\ _TestExtractPaginationLinksNoLinks is UnitTest
