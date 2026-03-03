@@ -28,6 +28,7 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 ## Source Layout
 
 ```
+assets/                    -- Test certificates (self-signed cert.pem + key.pem from lori)
 github_rest_api/
   github.pony              -- GitHub class (entry point, has get_repo, get_org_repos, gist operations)
   repository.pony          -- Repository model + GetRepository, GetRepositoryLabels
@@ -57,9 +58,11 @@ github_rest_api/
   _extract_pagination_links.pony -- Extracts prev/next URLs from Link headers (via web_link)
   _test_json_converters.pony -- Property-based tests for JSON converter primitives
   _test_result_receivers.pony -- Async tests for result receiver actors
+  _test_mock_http_server.pony -- Mock HTTPS server infrastructure for request actor tests
+  _test_request_actors.pony -- Integration tests for all four request actor types
   request/                 -- HTTP request infrastructure (temporary home, intended to be extracted to its own library)
-    credentials.pony       -- Credentials (lori.TCPConnectAuth + token), ResultReceiver
-    _ssl.pony              -- SSLContextFactory (shared SSL context creation)
+    credentials.pony       -- Credentials (lori.TCPConnectAuth + token + optional ssl_ctx), ResultReceiver
+    _ssl.pony              -- SSLContextFactory (shared SSL context creation, fallback when Credentials.ssl_ctx is None)
     json_requester.pony    -- JsonRequester actor (GET/POST/PATCH with JSON response)
     no_content_requester.pony -- NoContentRequester actor (DELETE/PUT expecting 204)
     check_requester.pony   -- CheckRequester actor (GET returning Bool: 204=true, 404=false)
@@ -103,7 +106,7 @@ Models have methods that chain to further API calls:
 
 ### Auth
 
-`Credentials` holds a `lori.TCPConnectAuth` and an optional token string. Each request actor sets `User-Agent`, `Accept: application/vnd.github.v3+json`, and `Authorization: Bearer <token>` headers.
+`Credentials` holds a `lori.TCPConnectAuth`, an optional token string, and an optional `SSLContext val`. When `ssl_ctx` is provided, request actors use it instead of the default `SSLContextFactory`. Each request actor sets `User-Agent`, `Accept: application/vnd.github.v3+json`, and `Authorization: Bearer <token>` headers.
 
 ## Conventions
 
@@ -111,7 +114,7 @@ Models have methods that chain to further API calls:
 - JSON converters are primitives implementing `JsonConverter[T]` interface
 - Type aliases for result unions: `RepositoryOrError`, `IssueOrError`, etc.
 - `\nodoc\` annotation on test classes
-- Tests cover infrastructure (Link header parsing + query params), JSON converter primitives, and result receiver actors, not API operations
+- Tests cover infrastructure (Link header parsing + query params), JSON converter primitives, result receiver actors, and request actors (via mock HTTPS server)
 - Keep CLAUDE.md in sync when adding or changing features — update the source layout, OO convenience API, pagination section, and coverage table as part of the PR that introduces the change
 
 ## Known TODOs in Code

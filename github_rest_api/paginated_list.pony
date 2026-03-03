@@ -3,6 +3,7 @@ use "json"
 use lori = "lori"
 use "promises"
 use req = "request"
+use ssl = "ssl/net"
 
 interface tag LinkedResultReceiver
   """
@@ -161,9 +162,13 @@ actor LinkedJsonRequester is courier.HTTPClientConnectionActor
     match courier.URL.parse(url)
     | let parsed: courier.ParsedURL =>
       _request_path = parsed.request_path()
+      let ctx = match _creds.ssl_ctx
+      | let c: ssl.SSLContext val => c
+      | None => req.SSLContextFactory()
+      end
       let config = courier.ClientConnectionConfig
       _http = courier.HTTPClientConnection.ssl(
-        _creds.auth, req.SSLContextFactory(), parsed.host, parsed.port,
+        _creds.auth, ctx, parsed.host, parsed.port,
         this, config)
     | let _: courier.URLParseError =>
       _fail("Unable to parse URL: " + url)
