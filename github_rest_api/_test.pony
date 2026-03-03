@@ -39,6 +39,17 @@ actor \nodoc\ Main is TestList
     test(_TestIssueJsonConverterPreservesValues)
     test(_TestIssueJsonConverterMissingField)
     test(_TestIssueJsonConverterAbsentPullRequest)
+    test(_TestRepoJsonConverterPreservesValues)
+    test(_TestRepoJsonConverterMissingField)
+    test(_TestRepoJsonConverterAbsentOptionalFields)
+    test(_TestGistJsonConverterPreservesValues)
+    test(_TestGistJsonConverterMissingField)
+    test(_TestGistJsonConverterAbsentOptionalFields)
+    test(_TestStringOrNoneReturnsString)
+    test(_TestStringOrNoneReturnsNone)
+    test(_TestStringOrNoneRaisesOnInvalid)
+    test(_TestJsonTypeStringAllArms)
+    test(_TestJsonTypeStringI64Property)
     req.QueryParamsTests.make().tests(test)
 
 class \nodoc\ _TestExtractPaginationLinksNoLinks is UnitTest
