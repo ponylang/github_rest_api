@@ -45,7 +45,7 @@ EXAMPLES_BINARIES := $(addprefix $(BUILD_DIR)/,$(EXAMPLES))
 mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 PARALLEL := $(shell n=$$(nproc); echo $$(( n < 4 ? n : 4 )))
 
-test: unit-tests build-examples
+test: unit-tests examples
 
 unit-tests: $(tests_binary)
 	$^ --exclude=integration --sequential
@@ -53,7 +53,7 @@ unit-tests: $(tests_binary)
 $(tests_binary): $(SOURCE_FILES) | $(BUILD_DIR) fetch
 	$(PONYC) -o $(BUILD_DIR) $(SRC_DIR)
 
-build-examples: | fetch
+examples: | fetch
 	@$(MAKE) -j$(PARALLEL) _build_examples GET_DEPENDENCIES_WITH=true
 
 fetch:
@@ -83,4 +83,4 @@ all: test
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-.PHONY: all build-examples _build_examples clean fetch TAGS test
+.PHONY: all examples _build_examples clean fetch TAGS test
