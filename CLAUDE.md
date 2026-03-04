@@ -7,7 +7,7 @@ A Pony library for interacting with the GitHub REST API. Provides typed models, 
 ```
 make ssl=3.0.x              # build + run unit tests + build examples
 make unit-tests ssl=3.0.x   # unit tests only
-make build-examples ssl=3.0.x  # build examples only
+make examples ssl=3.0.x  # build examples only
 make clean                  # clean build artifacts + corral deps
 make config=debug ssl=3.0.x # debug build
 ```
