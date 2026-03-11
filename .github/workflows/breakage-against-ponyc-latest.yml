@@ -14,7 +14,7 @@ jobs:
     container:
       image: ghcr.io/ponylang/shared-docker-ci-standard-builder-with-openssl-3.6.0:nightly
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v6.0.2
       - name: Test
         run: make test config=debug ssl=3.0.x
       - name: Send alert on failure
