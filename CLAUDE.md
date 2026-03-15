@@ -23,7 +23,6 @@ Uses `corral` for dependency management. `make` automatically runs `corral fetch
 - `github.com/ponylang/lori.git` (via courier) -- TCP connections
 - `github.com/ponylang/ssl.git` (via courier) -- SSL/TLS
 - `github.com/ponylang/web_link.git` -- RFC 8288 Link header parsing
-- `github.com/ponylang/json-ng.git` -- JSON parsing (immutable, persistent collections)
 - `github.com/ponylang/uri.git` -- RFC 6570 URI template expansion
 
 ## Source Layout
