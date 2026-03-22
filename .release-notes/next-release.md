@@ -69,3 +69,19 @@ let creds = Credentials(auth, token)
 
 Authorization headers now use `Bearer` format (`Authorization: Bearer <token>`) instead of the legacy `token` format. GitHub accepts both.
 
+## Fix programs hanging on shutdown when the remote peer didn't cleanly close connections
+
+Closing an HTTP connection could hang indefinitely on POSIX when the remote peer's FIN notification was missed in a narrow timing window. The connection would get stuck in CLOSE_WAIT, preventing the Pony runtime from exiting. This is now handled correctly and connections close promptly.
+
+## Fix HTTPS connections staying open longer than expected when idle
+
+Idle timeouts didn't fire reliably on HTTPS connections, meaning connections could stay open well past their intended lifetime. Idle timeouts now work correctly for both plain and SSL connections.
+
+## Fix internal resource leak when a connection was closed during establishment
+
+Closing a connection while it was still being established (during TCP or TLS handshake) could leak internal resources. Early close is now handled cleanly.
+
+## Fix SSL certificate validation accepting certificates with empty name entries
+
+X.509 hostname verification could incorrectly accept certificates with empty name entries. Certificates must now have non-empty name fields to pass validation.
+
