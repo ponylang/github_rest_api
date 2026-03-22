@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Fixed
 
+- Fix programs hanging on shutdown when the remote peer didn't cleanly close connections ([PR #112](https://github.com/ponylang/github_rest_api/pull/NNN))
+- Fix HTTPS connections staying open longer than expected when idle ([PR #112](https://github.com/ponylang/github_rest_api/pull/NNN))
+- Fix internal resource leak when a connection was closed during establishment ([PR #112](https://github.com/ponylang/github_rest_api/pull/NNN))
+- Fix SSL certificate validation accepting certificates with empty name entries ([PR #112](https://github.com/ponylang/github_rest_api/pull/NNN))
 
 ### Added
 

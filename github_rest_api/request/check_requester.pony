@@ -117,6 +117,7 @@ actor CheckRequester is courier.HTTPClientConnectionActor
     | courier.ConnectionFailedDNS => "DNS resolution failed"
     | courier.ConnectionFailedTCP => "Unable to connect"
     | courier.ConnectionFailedSSL => "SSL handshake failed"
+    | courier.ConnectionFailedTimeout => "Connection timed out"
     end
     _receiver.failure(0, "", consume msg)
 
