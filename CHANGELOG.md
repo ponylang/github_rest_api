@@ -2,18 +2,12 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
-## [unreleased] - unreleased
+## [0.3.2] - 2026-04-07
 
 ### Fixed
 
 - Fix crash when closing a connection during setup ([PR #114](https://github.com/ponylang/github_rest_api/pull/114))
 - Fix connection stall after large request with backpressure ([PR #117](https://github.com/ponylang/github_rest_api/pull/117))
-
-### Added
-
-
-### Changed
-
 
 ## [0.3.1] - 2026-03-22
 
