@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 
 - Fix crash when closing a connection during setup ([PR #114](https://github.com/ponylang/github_rest_api/pull/114))
+- Fix connection stall after large request with backpressure ([PR #117](https://github.com/ponylang/github_rest_api/pull/117))
 
 ### Added
 
