@@ -160,6 +160,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
     | courier.ConnectionFailedTCP => "Unable to connect"
     | courier.ConnectionFailedSSL => "SSL handshake failed"
     | courier.ConnectionFailedTimeout => "Connection timed out"
+    | courier.ConnectionFailedTimerError => "Connect timer failed"
     end
     _receiver.failure(0, "", consume msg)
 
