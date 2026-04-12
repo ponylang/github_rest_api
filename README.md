@@ -13,7 +13,7 @@ Additional API surface and functionality will be added as needed. If you need fu
 
 * Requires ponyc 0.63.1 or later
 * Install [corral](https://github.com/ponylang/corral)
-* `corral add github.com/ponylang/github_rest_api.git --version 0.3.2`
+* `corral add github.com/ponylang/github_rest_api.git --version 0.4.0`
 * `corral fetch` to fetch your dependencies
 * `use "github_rest_api"` to include this package
 * `corral run -- ponyc` to compile your application
