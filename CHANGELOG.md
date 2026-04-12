@@ -6,12 +6,14 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Fixed
 
+- Fix potential connection hang when timer event subscription fails ([PR #118](https://github.com/ponylang/github_rest_api/pull/118))
 
 ### Added
 
 
 ### Changed
 
+- Require ponyc 0.63.1 or later ([PR #118](https://github.com/ponylang/github_rest_api/pull/118))
 
 ## [0.3.2] - 2026-04-07
 
