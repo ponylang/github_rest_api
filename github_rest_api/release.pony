@@ -129,7 +129,7 @@ primitive CreateRelease
       obj = obj.update("target_commitish", tc)
     end
     obj = obj.update("draft", draft).update("prerelease", prerelease)
-    let json = obj.string()
+    let json = obj.print()
     req.JsonRequester.post(creds, url, consume json, r)
     p
 
