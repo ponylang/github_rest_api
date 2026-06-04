@@ -145,7 +145,7 @@ primitive CreateGistComment
       p,
       GistCommentJsonConverter)
 
-    let json = JsonObject.update("body", body).string()
+    let json = JsonObject.update("body", body).print()
     req.JsonRequester.post(creds, url, consume json, r)
     p
 
@@ -180,7 +180,7 @@ primitive UpdateGistComment
       p,
       GistCommentJsonConverter)
 
-    let json = JsonObject.update("body", body).string()
+    let json = JsonObject.update("body", body).print()
     req.JsonRequester.patch(creds, url, consume json, r)
     p
 

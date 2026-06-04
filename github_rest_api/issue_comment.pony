@@ -58,7 +58,7 @@ primitive CreateIssueComment
       p,
       IssueCommentJsonConverter)
 
-    let json = JsonObject.update("body", comment).string()
+    let json = JsonObject.update("body", comment).print()
     req.JsonRequester.post(creds, url, consume json, r)
     p
 

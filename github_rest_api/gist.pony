@@ -221,7 +221,7 @@ primitive CreateGist
     match description
     | let d: String => obj = obj.update("description", d)
     end
-    let json = obj.string()
+    let json = obj.print()
 
     req.JsonRequester.post(creds, url, consume json, r)
     p
@@ -278,7 +278,7 @@ primitive UpdateGist
     match description
     | let d: String => obj = obj.update("description", d)
     end
-    let json = obj.string()
+    let json = obj.print()
 
     req.JsonRequester.patch(creds, url, consume json, r)
     p

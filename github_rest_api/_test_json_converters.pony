@@ -2012,9 +2012,9 @@ class \nodoc\ _TestJsonTypeStringAllArms is UnitTest
         .update("f64", F64(3.14))
         .update("bool", true)
         .update("null", None))
-    h.assert_eq[String](obj.string(),
+    h.assert_eq[String](obj.print(),
       req.JsonTypeString(nav("obj")))
-    h.assert_eq[String](arr.string(),
+    h.assert_eq[String](arr.print(),
       req.JsonTypeString(nav("arr")))
     h.assert_eq[String]("hello",
       req.JsonTypeString(nav("str")))
