@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 
 - Fix compilation against ponyc 0.65.0 ([PR #129](https://github.com/ponylang/github_rest_api/pull/129))
+- Fix response never arriving after sending a large request ([PR #130](https://github.com/ponylang/github_rest_api/pull/130))
 
 ### Added
 
