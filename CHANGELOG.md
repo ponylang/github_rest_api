@@ -2,18 +2,12 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
-## [unreleased] - unreleased
+## [0.6.0] - 2026-06-27
 
 ### Fixed
 
 - Fix compilation against ponyc 0.65.0 ([PR #129](https://github.com/ponylang/github_rest_api/pull/129))
 - Fix response never arriving after sending a large request ([PR #130](https://github.com/ponylang/github_rest_api/pull/130))
-
-### Added
-
-
-### Changed
-
 
 ## [0.5.0] - 2026-05-29
 
