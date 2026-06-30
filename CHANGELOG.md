@@ -6,11 +6,14 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Fixed
 
+- Fix connections closed mid-transfer by the idle timeout ([PR #132](https://github.com/ponylang/github_rest_api/pull/132))
 
 ### Added
 
 
 ### Changed
+
+- Drop support for Windows 10 ([PR #132](https://github.com/ponylang/github_rest_api/pull/132))
 
 
 ## [0.6.0] - 2026-06-27
