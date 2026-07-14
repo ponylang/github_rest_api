@@ -49,7 +49,7 @@ PARALLEL := $(shell n=$$(nproc); echo $$(( n < 4 ? n : 4 )))
 test: unit-tests examples
 
 unit-tests: $(tests_binary)
-	$^ --exclude=integration --sequential
+	$^ --exclude=integration --sequential --shuffle
 
 test-one: $(tests_binary)
 	$^ --only="$(t)"
