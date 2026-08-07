@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
-## [unreleased] - unreleased
+## [0.8.0] - 2026-08-07
 
 ### Fixed
 
@@ -13,14 +13,10 @@ All notable changes to this project will be documented in this file. This projec
 - Fix a macOS bug where setting up a connection could close an unrelated file descriptor ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
 - Fix TLS connections not sending close_notify on graceful close ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
 
-### Added
-
-
 ### Changed
 
 - Drop support for OpenSSL 0.9.x ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
 - Require ponyc 0.67.0 or later ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
-
 
 ## [0.7.0] - 2026-06-30
 
