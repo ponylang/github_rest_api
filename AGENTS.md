@@ -39,7 +39,7 @@ make config=debug ssl=3.0.x          # debug build
 make clean                           # clean build artifacts + corral deps
 ```
 
-`ssl=` is required on every build and test target, set to your installed TLS library: `3.0.x`, `1.1.x`, or `0.9.0`. `make` runs `corral fetch` before compiling.
+`ssl=` is required on every build and test target, set to your installed TLS library: `3.0.x` or `1.1.x`. `make` runs `corral fetch` before compiling.
 
 ## Architecture
 

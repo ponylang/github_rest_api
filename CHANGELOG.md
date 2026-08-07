@@ -6,11 +6,20 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Fixed
 
+- Fix a request hanging when its connection closed ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
+- Fix a connection stalling under sustained write backpressure ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
+- Fix a hang when writing to a socket under load ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
+- Fix TLS bugs that could misreport handshake failures, drop data, or close the wrong connection ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
+- Fix a macOS bug where setting up a connection could close an unrelated file descriptor ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
+- Fix TLS connections not sending close_notify on graceful close ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
 
 ### Added
 
 
 ### Changed
+
+- Drop support for OpenSSL 0.9.x ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
+- Require ponyc 0.67.0 or later ([PR #137](https://github.com/ponylang/github_rest_api/pull/137))
 
 
 ## [0.7.0] - 2026-06-30
