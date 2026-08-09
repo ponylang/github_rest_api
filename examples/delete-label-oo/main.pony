@@ -9,7 +9,8 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("delete-label-oo",
+        CommandSpec.leaf(
+          "delete-label-oo",
           "Deletes an existing label",
           [
             OptionSpec.string(
@@ -21,13 +22,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -50,15 +52,21 @@ actor Main
     end
 
 primitive RemoveLabel
+  """
+  Removes a label from the repository.
+  """
   fun apply(label: String, r: RepositoryOrError): Promise[DeletedOrError] =>
     match \exhaustive\ r
     | let repo: Repository =>
       repo.delete_label(label)
     | let e: RequestError =>
-      Promise[DeletedOrError].>apply(e)
+      Promise[DeletedOrError] .> apply(e)
     end
 
 primitive PrintResult
+  """
+  Prints the operation result to the given output stream.
+  """
   fun apply(out: OutStream, label: String, d: DeletedOrError) =>
     match \exhaustive\ d
     | Deleted =>

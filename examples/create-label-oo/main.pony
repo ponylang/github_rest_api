@@ -9,7 +9,8 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("create-label-oo",
+        CommandSpec.leaf(
+          "create-label-oo",
           "Create a new label",
           [
             OptionSpec.string(
@@ -23,13 +24,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -54,6 +56,9 @@ actor Main
     end
 
 primitive MakeLabel
+  """
+  Creates a label on the repository.
+  """
   fun apply(name: String,
     color: String,
     description: String,
@@ -63,10 +68,13 @@ primitive MakeLabel
     | let repo: Repository =>
       repo.create_label(name, color, description)
     | let e: RequestError =>
-      Promise[LabelOrError].>apply(e)
+      Promise[LabelOrError] .> apply(e)
     end
 
 primitive PrintLabel
+  """
+  Prints label results to the given output stream.
+  """
   fun apply(out: OutStream, l: LabelOrError) =>
     match \exhaustive\ l
     | let label: Label =>

@@ -9,11 +9,12 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("create-release-oo",
+        CommandSpec.leaf(
+          "create-release-oo",
           "Create a release",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
             OptionSpec.string("tag", "Tag for release")
             OptionSpec.string("name", "Release name")
             OptionSpec.string("body", "Release notes")
@@ -21,13 +22,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -52,6 +54,9 @@ actor Main
     end
 
 primitive MakeRelease
+  """
+  Creates a release on the repository.
+  """
   fun apply(tag_name: String,
     name: String,
     body: String,
@@ -61,10 +66,13 @@ primitive MakeRelease
     | let repo: Repository =>
       repo.create_release(tag_name, name, body)
     | let e: RequestError =>
-      Promise[ReleaseOrError].>apply(e)
+      Promise[ReleaseOrError] .> apply(e)
     end
 
 primitive PrintRelease
+  """
+  Prints release results to the given output stream.
+  """
   fun apply(out: OutStream, r: ReleaseOrError) =>
     match \exhaustive\ r
     | let release: Release =>

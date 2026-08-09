@@ -9,20 +9,22 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("list-gists",
+        CommandSpec.leaf(
+          "list-gists",
           "List the authenticated user's gists",
           [
             OptionSpec.string("token", "GitHub personal access token")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -41,14 +43,18 @@ actor Main
     end
 
 primitive PrintGists
+  """
+  Prints a list of gists to the given output stream.
+  """
   fun apply(out: OutStream,
     r: (PaginatedList[Gist] | RequestError))
   =>
     match \exhaustive\ r
     | let list: PaginatedList[Gist] =>
       for gist in list.results.values() do
-        let desc = match gist.description
-        | let d: String => d
+        let desc =
+          match gist.description
+          | let d: String => d
         else "(no description)"
         end
         out.print(gist.id + " - " + desc)

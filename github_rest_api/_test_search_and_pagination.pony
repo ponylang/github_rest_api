@@ -13,7 +13,8 @@ class \nodoc\ _TestSearchConverterExtractsLinks is UnitTest
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedSearchJsonConverter[String](
+    let converter =
+      PaginatedSearchJSONConverter[String](
       creds, _TestStringConverter)
     let items_arr = JsonArray
       .push(JsonObject.update("value", "a"))
@@ -22,7 +23,8 @@ class \nodoc\ _TestSearchConverterExtractsLinks is UnitTest
       .update("total_count", I64(10))
       .update("incomplete_results", true)
       .update("items", items_arr)
-    let link = recover val
+    let link =
+      recover val
       "<https://example.com/prev>; rel=\"prev\", "
         + "<https://example.com/next>; rel=\"next\""
     end
@@ -33,9 +35,11 @@ class \nodoc\ _TestSearchConverterExtractsLinks is UnitTest
       h.assert_eq[USize](2, sr.items.size())
       h.assert_eq[String]("a", sr.items(0)?)
       h.assert_eq[String]("b", sr.items(1)?)
-      h.assert_true(sr.next_page() isnt None,
+      h.assert_true(
+        sr.next_page() isnt None,
         "next_page should not be None")
-      h.assert_true(sr.prev_page() isnt None,
+      h.assert_true(
+        sr.prev_page() isnt None,
         "prev_page should not be None")
       h.complete(true)
     else
@@ -49,7 +53,8 @@ class \nodoc\ _TestSearchConverterNoLinks is UnitTest
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedSearchJsonConverter[String](
+    let converter =
+      PaginatedSearchJSONConverter[String](
       creds, _TestStringConverter)
     let items_arr = JsonArray
       .push(JsonObject.update("value", "x"))
@@ -61,9 +66,11 @@ class \nodoc\ _TestSearchConverterNoLinks is UnitTest
       let sr = converter(JsonNav(envelope), "", creds)?
       h.assert_eq[USize](1, sr.items.size())
       h.assert_eq[String]("x", sr.items(0)?)
-      h.assert_true(sr.next_page() is None,
+      h.assert_true(
+        sr.next_page() is None,
         "next_page should be None")
-      h.assert_true(sr.prev_page() is None,
+      h.assert_true(
+        sr.prev_page() is None,
         "prev_page should be None")
       h.complete(true)
     else
@@ -77,12 +84,14 @@ class \nodoc\ _TestListConverterExtractsLinks is UnitTest
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedListJsonConverter[String](
+    let converter =
+      PaginatedListJSONConverter[String](
       creds, _TestStringConverter)
     let arr = JsonArray
       .push(JsonObject.update("value", "p"))
       .push(JsonObject.update("value", "q"))
-    let link = recover val
+    let link =
+      recover val
       "<https://example.com/prev>; rel=\"prev\", "
         + "<https://example.com/next>; rel=\"next\""
     end
@@ -91,9 +100,11 @@ class \nodoc\ _TestListConverterExtractsLinks is UnitTest
       h.assert_eq[USize](2, pl.results.size())
       h.assert_eq[String]("p", pl.results(0)?)
       h.assert_eq[String]("q", pl.results(1)?)
-      h.assert_true(pl.next_page() isnt None,
+      h.assert_true(
+        pl.next_page() isnt None,
         "next_page should not be None")
-      h.assert_true(pl.prev_page() isnt None,
+      h.assert_true(
+        pl.prev_page() isnt None,
         "prev_page should not be None")
       h.complete(true)
     else
@@ -107,7 +118,8 @@ class \nodoc\ _TestListConverterNoLinks is UnitTest
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedListJsonConverter[String](
+    let converter =
+      PaginatedListJSONConverter[String](
       creds, _TestStringConverter)
     let arr = JsonArray
       .push(JsonObject.update("value", "z"))
@@ -115,9 +127,11 @@ class \nodoc\ _TestListConverterNoLinks is UnitTest
       let pl = converter(JsonNav(arr), "", creds)?
       h.assert_eq[USize](1, pl.results.size())
       h.assert_eq[String]("z", pl.results(0)?)
-      h.assert_true(pl.next_page() is None,
+      h.assert_true(
+        pl.next_page() is None,
         "next_page should be None")
-      h.assert_true(pl.prev_page() is None,
+      h.assert_true(
+        pl.prev_page() is None,
         "prev_page should be None")
       h.complete(true)
     else
@@ -126,7 +140,6 @@ class \nodoc\ _TestListConverterNoLinks is UnitTest
     end
 
 // --- Mock HTTP tests: pagination behavior ---
-
 class \nodoc\ _TestSearchNextPageFollowsLink is UnitTest
   fun name(): String => "search-pagination/search/next-page-follows-link"
 
@@ -135,17 +148,19 @@ class \nodoc\ _TestSearchNextPageFollowsLink is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48115"
-    let page1_url = _TestUrl(host, port, "/page1")
-    let creds = req.Credentials(
+    let page1_url = _TestURL(host, port, "/page1")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let converter = PaginatedSearchJsonConverter[String](
+    let converter =
+      PaginatedSearchJSONConverter[String](
       creds, _TestStringConverter)
 
     let p = Promise[(SearchResults[String] | req.RequestError)]
     p.next[None](
       {(result: (SearchResults[String] | req.RequestError))(h, creds,
         converter) =>
-        match result
+        match \exhaustive\ result
         | let sr: SearchResults[String] =>
           try
             h.assert_eq[USize](1, sr.items.size())
@@ -156,16 +171,17 @@ class \nodoc\ _TestSearchNextPageFollowsLink is UnitTest
             h.complete(false)
             return
           end
-          match sr.next_page()
+          match \exhaustive\ sr.next_page()
           | let p2: Promise[(SearchResults[String] | req.RequestError)] =>
             p2.next[None](
               {(result2: (SearchResults[String] | req.RequestError))(h) =>
-                match result2
+                match \exhaustive\ result2
                 | let sr2: SearchResults[String] =>
                   try
                     h.assert_eq[USize](1, sr2.items.size())
                     h.assert_eq[String]("b", sr2.items(0)?)
-                    h.assert_true(sr2.next_page() is None,
+                    h.assert_true(
+                      sr2.next_page() is None,
                       "page 2 next_page should be None")
                     h.complete(true)
                   else
@@ -187,19 +203,21 @@ class \nodoc\ _TestSearchNextPageFollowsLink is UnitTest
         end
       })
 
-    let page2_link = _TestUrl(host, port, "/page2")
+    let page2_link = _TestURL(host, port, "/page2")
     let responder: _Responder =
       {(request: String)(page2_link): String =>
         if request.contains("GET /page2") then
           let body =
-            """{"total_count":3,"incomplete_results":false,"items":[{"value":"b"}]}"""
+            """{"total_count":3,"incomplete_results":false,"""
+            + """"items":[{"value":"b"}]}"""
           "HTTP/1.1 200 OK\r\n"
             + "Content-Length: " + body.size().string() + "\r\n"
             + "\r\n"
             + body
         else
           let body =
-            """{"total_count":3,"incomplete_results":false,"items":[{"value":"a"}]}"""
+            """{"total_count":3,"incomplete_results":false,"""
+            + """"items":[{"value":"a"}]}"""
           "HTTP/1.1 200 OK\r\n"
             + "Content-Length: " + body.size().string() + "\r\n"
             + "Link: <" + page2_link + ">; rel=\"next\"\r\n"
@@ -209,9 +227,14 @@ class \nodoc\ _TestSearchNextPageFollowsLink is UnitTest
       } val
 
     let receiver = SearchResultReceiver[String](creds, p, converter)
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, page1_url, receiver) =>
-        LinkedJsonRequester(creds, page1_url, receiver)
+        LinkedJSONRequester(creds, page1_url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -223,17 +246,19 @@ class \nodoc\ _TestSearchPrevPageFollowsLink is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48116"
-    let page2_url = _TestUrl(host, port, "/page2")
-    let creds = req.Credentials(
+    let page2_url = _TestURL(host, port, "/page2")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let converter = PaginatedSearchJsonConverter[String](
+    let converter =
+      PaginatedSearchJSONConverter[String](
       creds, _TestStringConverter)
 
     let p = Promise[(SearchResults[String] | req.RequestError)]
     p.next[None](
       {(result: (SearchResults[String] | req.RequestError))(h, creds,
         converter) =>
-        match result
+        match \exhaustive\ result
         | let sr: SearchResults[String] =>
           try
             h.assert_eq[USize](1, sr.items.size())
@@ -243,16 +268,17 @@ class \nodoc\ _TestSearchPrevPageFollowsLink is UnitTest
             h.complete(false)
             return
           end
-          match sr.prev_page()
+          match \exhaustive\ sr.prev_page()
           | let p1: Promise[(SearchResults[String] | req.RequestError)] =>
             p1.next[None](
               {(result2: (SearchResults[String] | req.RequestError))(h) =>
-                match result2
+                match \exhaustive\ result2
                 | let sr2: SearchResults[String] =>
                   try
                     h.assert_eq[USize](1, sr2.items.size())
                     h.assert_eq[String]("a", sr2.items(0)?)
-                    h.assert_true(sr2.prev_page() is None,
+                    h.assert_true(
+                      sr2.prev_page() is None,
                       "page 1 prev_page should be None")
                     h.complete(true)
                   else
@@ -274,19 +300,21 @@ class \nodoc\ _TestSearchPrevPageFollowsLink is UnitTest
         end
       })
 
-    let page1_link = _TestUrl(host, port, "/page1")
+    let page1_link = _TestURL(host, port, "/page1")
     let responder: _Responder =
       {(request: String)(page1_link): String =>
         if request.contains("GET /page1") then
           let body =
-            """{"total_count":3,"incomplete_results":false,"items":[{"value":"a"}]}"""
+            """{"total_count":3,"incomplete_results":false,"""
+            + """"items":[{"value":"a"}]}"""
           "HTTP/1.1 200 OK\r\n"
             + "Content-Length: " + body.size().string() + "\r\n"
             + "\r\n"
             + body
         else
           let body =
-            """{"total_count":3,"incomplete_results":false,"items":[{"value":"b"}]}"""
+            """{"total_count":3,"incomplete_results":false,"""
+            + """"items":[{"value":"b"}]}"""
           "HTTP/1.1 200 OK\r\n"
             + "Content-Length: " + body.size().string() + "\r\n"
             + "Link: <" + page1_link + ">; rel=\"prev\"\r\n"
@@ -296,9 +324,14 @@ class \nodoc\ _TestSearchPrevPageFollowsLink is UnitTest
       } val
 
     let receiver = SearchResultReceiver[String](creds, p, converter)
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, page2_url, receiver) =>
-        LinkedJsonRequester(creds, page2_url, receiver)
+        LinkedJSONRequester(creds, page2_url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -310,17 +343,19 @@ class \nodoc\ _TestListNextPageFollowsLink is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48117"
-    let page1_url = _TestUrl(host, port, "/page1")
-    let creds = req.Credentials(
+    let page1_url = _TestURL(host, port, "/page1")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let converter = PaginatedListJsonConverter[String](
+    let converter =
+      PaginatedListJSONConverter[String](
       creds, _TestStringConverter)
 
     let p = Promise[(PaginatedList[String] | req.RequestError)]
     p.next[None](
       {(result: (PaginatedList[String] | req.RequestError))(h, creds,
         converter) =>
-        match result
+        match \exhaustive\ result
         | let pl: PaginatedList[String] =>
           try
             h.assert_eq[USize](1, pl.results.size())
@@ -330,16 +365,17 @@ class \nodoc\ _TestListNextPageFollowsLink is UnitTest
             h.complete(false)
             return
           end
-          match pl.next_page()
+          match \exhaustive\ pl.next_page()
           | let p2: Promise[(PaginatedList[String] | req.RequestError)] =>
             p2.next[None](
               {(result2: (PaginatedList[String] | req.RequestError))(h) =>
-                match result2
+                match \exhaustive\ result2
                 | let pl2: PaginatedList[String] =>
                   try
                     h.assert_eq[USize](1, pl2.results.size())
                     h.assert_eq[String]("y", pl2.results(0)?)
-                    h.assert_true(pl2.next_page() is None,
+                    h.assert_true(
+                      pl2.next_page() is None,
                       "page 2 next_page should be None")
                     h.complete(true)
                   else
@@ -361,7 +397,7 @@ class \nodoc\ _TestListNextPageFollowsLink is UnitTest
         end
       })
 
-    let page2_link = _TestUrl(host, port, "/page2")
+    let page2_link = _TestURL(host, port, "/page2")
     let responder: _Responder =
       {(request: String)(page2_link): String =>
         if request.contains("GET /page2") then
@@ -381,9 +417,14 @@ class \nodoc\ _TestListNextPageFollowsLink is UnitTest
       } val
 
     let receiver = PaginatedResultReceiver[String](creds, p, converter)
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, page1_url, receiver) =>
-        LinkedJsonRequester(creds, page1_url, receiver)
+        LinkedJSONRequester(creds, page1_url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -395,17 +436,19 @@ class \nodoc\ _TestListPrevPageFollowsLink is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48118"
-    let page2_url = _TestUrl(host, port, "/page2")
-    let creds = req.Credentials(
+    let page2_url = _TestURL(host, port, "/page2")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let converter = PaginatedListJsonConverter[String](
+    let converter =
+      PaginatedListJSONConverter[String](
       creds, _TestStringConverter)
 
     let p = Promise[(PaginatedList[String] | req.RequestError)]
     p.next[None](
       {(result: (PaginatedList[String] | req.RequestError))(h, creds,
         converter) =>
-        match result
+        match \exhaustive\ result
         | let pl: PaginatedList[String] =>
           try
             h.assert_eq[USize](1, pl.results.size())
@@ -415,16 +458,17 @@ class \nodoc\ _TestListPrevPageFollowsLink is UnitTest
             h.complete(false)
             return
           end
-          match pl.prev_page()
+          match \exhaustive\ pl.prev_page()
           | let p1: Promise[(PaginatedList[String] | req.RequestError)] =>
             p1.next[None](
               {(result2: (PaginatedList[String] | req.RequestError))(h) =>
-                match result2
+                match \exhaustive\ result2
                 | let pl2: PaginatedList[String] =>
                   try
                     h.assert_eq[USize](1, pl2.results.size())
                     h.assert_eq[String]("x", pl2.results(0)?)
-                    h.assert_true(pl2.prev_page() is None,
+                    h.assert_true(
+                      pl2.prev_page() is None,
                       "page 1 prev_page should be None")
                     h.complete(true)
                   else
@@ -446,7 +490,7 @@ class \nodoc\ _TestListPrevPageFollowsLink is UnitTest
         end
       })
 
-    let page1_link = _TestUrl(host, port, "/page1")
+    let page1_link = _TestURL(host, port, "/page1")
     let responder: _Responder =
       {(request: String)(page1_link): String =>
         if request.contains("GET /page1") then
@@ -466,8 +510,13 @@ class \nodoc\ _TestListPrevPageFollowsLink is UnitTest
       } val
 
     let receiver = PaginatedResultReceiver[String](creds, p, converter)
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, page2_url, receiver) =>
-        LinkedJsonRequester(creds, page2_url, receiver)
+        LinkedJSONRequester(creds, page2_url, receiver)
       } val)
     h.dispose_when_done(listener)

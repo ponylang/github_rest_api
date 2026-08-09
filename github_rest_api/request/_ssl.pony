@@ -13,11 +13,11 @@ primitive SSLContextFactory
     try
       recover val
         ssl.SSLContext
-          .>set_client_verify(true)
-          .>set_authority(None)?
+          .> set_client_verify(true)
+          .> set_authority(None)?
       end
     else
       recover val
-        ssl.SSLContext.>set_client_verify(false)
+        ssl.SSLContext .> set_client_verify(false)
       end
     end

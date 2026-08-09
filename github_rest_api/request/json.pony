@@ -1,10 +1,21 @@
 use "json"
 
-interface val JsonConverter[A: Any #share]
+interface val JSONConverter[A: Any #share]
+  """
+  Converts a JsonNav value into a model type, using the supplied Credentials
+  for any nested requests.
+  """
   fun apply(json: JsonNav, creds: Credentials): A ?
+    """
+    Parse `json` into an `A`, raising an error when a required field is
+    missing or has the wrong type.
+    """
 
-primitive JsonTypeString
-  """Convert a JsonNav's value to its JSON string representation for error messages."""
+primitive JSONTypeString
+  """
+  Converts a JsonNav's value to its JSON string representation for error
+  messages.
+  """
   fun apply(json: JsonNav): String =>
     match \exhaustive\ json.json()
     | let o: JsonObject => o.print()

@@ -1,6 +1,6 @@
 use "json"
 
-primitive JsonNavUtil
+primitive JSONNavUtil
   """
   Utility for extracting optional string fields from JSON.
 

@@ -8,7 +8,8 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("create-label",
+        CommandSpec.leaf(
+          "create-label",
           "Create a new label",
           [
             OptionSpec.string(
@@ -22,13 +23,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -52,6 +54,9 @@ actor Main
     end
 
 primitive PrintLabel
+  """
+  Prints label results to the given output stream.
+  """
   fun apply(out: OutStream, l: LabelOrError) =>
     match \exhaustive\ l
     | let label: Label =>

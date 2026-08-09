@@ -41,7 +41,8 @@ class \nodoc\ _TestQueryParamsMultiple is UnitTest
   fun name(): String => "request/query-params/multiple"
 
   fun ref apply(h: TestHelper) =>
-    let params = recover val
+    let params =
+      recover val
       [("state", "open"); ("labels", "bug")]
     end
     h.assert_eq[String]("?state=open&labels=bug", QueryParams(params))
@@ -96,7 +97,8 @@ class \nodoc\ _TestQueryParamsStructureProperty is UnitTest
     PonyCheck.for_all[USize](
       recover val Generators.usize(1, 10) end, h)(
       {(n, h) =>
-        let params = recover val
+        let params =
+          recover val
           let p = Array[(String, String)]
           for i in Range(0, n) do
             p.push(("k" + i.string(), "v" + i.string()))

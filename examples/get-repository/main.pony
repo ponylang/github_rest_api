@@ -8,24 +8,27 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-repository",
+        CommandSpec.leaf(
+          "get-repository",
           "Get information about a repository",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
-            OptionSpec.string("token",
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -46,6 +49,9 @@ actor Main
     end
 
 primitive PrintRepository
+  """
+  Prints repository details to the given output stream.
+  """
   fun apply(out: OutStream, c: RepositoryOrError) =>
     match \exhaustive\ c
     | let repo: Repository =>

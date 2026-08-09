@@ -27,18 +27,22 @@ class val License
     spdx_id = spdx_id'
     url = url'
 
-primitive LicenseJsonConverter is req.JsonConverter[License]
+primitive LicenseJSONConverter is req.JSONConverter[License]
   """
   Converts a JSON object into a License.
   """
   fun apply(json: JsonNav, creds: req.Credentials): License ? =>
+    """
+    Parse a JSON object into a License.
+    """
     let node_id = json("node_id").as_string()?
     let name = json("name").as_string()?
     let key = json("key").as_string()?
     let spdx_id = json("spdx_id").as_string()?
     let url = json("url").as_string()?
 
-    License(creds,
+    License(
+      creds,
       node_id,
       name,
       key,

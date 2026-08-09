@@ -9,25 +9,28 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-commit-oo",
+        CommandSpec.leaf(
+          "get-commit-oo",
           "Get a commit",
           [
-            OptionSpec.string("owner", "Owner of the repository the commit is in")
-            OptionSpec.string("repo", "Name of the repository the commit is in")
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
             OptionSpec.string("sha", "Sha of the commit to retrieve")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -50,15 +53,21 @@ actor Main
     end
 
 primitive RetrieveCommit
+  """
+  Retrieves a commit from the repository.
+  """
   fun apply(sha: String, r: RepositoryOrError): Promise[CommitOrError] =>
     match \exhaustive\ r
     | let repo: Repository =>
       repo.get_commit(sha)
     | let e: RequestError =>
-      Promise[CommitOrError].>apply(e)
+      Promise[CommitOrError] .> apply(e)
     end
 
 primitive PrintCommit
+  """
+  Prints commit details to the given output stream.
+  """
   fun apply(out: OutStream, c: CommitOrError) =>
     match \exhaustive\ c
     | let commit: Commit =>

@@ -9,7 +9,8 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("standard-pony-labels",
+        CommandSpec.leaf(
+          "standard-pony-labels",
           "Deletes all labels in a repo and creates the standard ponylang ones",
           [
             OptionSpec.string(
@@ -20,13 +21,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -47,6 +49,9 @@ actor Main
     end
 
 primitive RemoveLabels
+  """
+  Removes existing labels from the repository.
+  """
   fun apply(out: OutStream,
     owner: String,
     repo: String,
@@ -65,7 +70,8 @@ primitive RemoveLabels
 
           out.print("Deleting " + label.name + " label")
           DeleteLabel(owner, repo, label.name, creds)
-            .next[None](NotifyLabelDeleted~apply(out,
+            .next[None](NotifyLabelDeleted~apply(
+              out,
               owner,
               repo,
               creds,
@@ -86,6 +92,9 @@ primitive RemoveLabels
     end
 
 primitive NotifyLabelDeleted
+  """
+  Handles a label deletion notification.
+  """
   fun apply(out: OutStream,
     owner: String,
     repo: String,
@@ -108,25 +117,43 @@ primitive NotifyLabelDeleted
     end
 
 primitive CreatePonyLabels
+  """
+  Creates the standard set of Pony project labels.
+  """
   fun apply(out: OutStream,
     owner: String,
     repo: String,
     creds: Credentials)
   =>
-    let standard_pony_labels: Array[(String, String, String)] val = [
+    let standard_pony_labels: Array[(String, String, String)] val =
+      [
       ("bug", "f7c6c7", "Something isn't working")
-      ("changelog - added", "ffaa55", "Automatically add \"Added\" CHANGELOG entry on merge")
-      ("changelog - changed", "ff7755", "Automatically add \"Changed\" CHANGELOG entry on merge")
-      ("changelog - fixed", "77aa55", "Automatically add \"Fixed\" CHANGELOG entry on merge")
-      ("do not merge", "d93f0b", "This PR should not be merged at this time")
-      ("documentation", "0075ca", "Improvements or additions to documentation")
-      ("enhancement", "a2eeef", "New feature or request")
-      ("good first issue", "7057ff", "Good for newcomers")
-      ("help wanted", "008672", "Extra attention is needed")
-      ("needs discussion", "ffffdd", "Needs to be discussed further")
-      ("needs investigation", "D3D3D3", "This needs to be looked into before it's \"ready for work\"")
-      ("triggers release", "006b75", "Major issue that when fixed, results in an \"emergency\" release")
-      ("discuss during sync", "CC1F71", "Should be discussed during an upcoming sync")
+      ("changelog - added", "ffaa55",
+        "Automatically add \"Added\" CHANGELOG entry on merge")
+      ("changelog - changed", "ff7755",
+        "Automatically add \"Changed\" CHANGELOG entry on merge")
+      ("changelog - fixed", "77aa55",
+        "Automatically add \"Fixed\" CHANGELOG entry on merge")
+      ("do not merge", "d93f0b",
+        "This PR should not be merged at this time")
+      ("documentation", "0075ca",
+        "Improvements or additions to documentation")
+      ("enhancement", "a2eeef",
+        "New feature or request")
+      ("good first issue", "7057ff",
+        "Good for newcomers")
+      ("help wanted", "008672",
+        "Extra attention is needed")
+      ("needs discussion", "ffffdd",
+        "Needs to be discussed further")
+      ("needs investigation", "D3D3D3",
+        "This needs to be looked into before "
+        + "it's \"ready for work\"")
+      ("triggers release", "006b75",
+        "Major issue that when fixed, results "
+        + "in an \"emergency\" release")
+      ("discuss during sync", "CC1F71",
+        "Should be discussed during an upcoming sync")
     ]
 
     for label in standard_pony_labels.values() do
@@ -135,6 +162,9 @@ primitive CreatePonyLabels
     end
 
 primitive NotifyLabelCreated
+  """
+  Handles a label creation notification.
+  """
   fun apply(out: OutStream, label: String, l: LabelOrError) =>
     match \exhaustive\ l
     | let l': Label =>

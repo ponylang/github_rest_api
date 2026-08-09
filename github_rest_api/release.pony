@@ -11,7 +11,6 @@ class val Release
   draft/prerelease status, and associated assets.
   """
   let _creds: req.Credentials
-
   let id: I64
   let node_id: String
   let author: User
@@ -21,11 +20,9 @@ class val Release
   let body: String
   let draft: Bool
   let prerelease: Bool
-
   let created_at: String
   let published_at: String
   let assets: Array[Asset] val
-
   let url: String
   let assets_url: String
   let upload_url: String
@@ -91,10 +88,11 @@ primitive CreateRelease
       "https://api.github.com/repos{/owner}{/repo}/releases")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
+        .> set("owner", owner)
+        .> set("repo", repo)
       let u: String val = tpl.expand(vars)
-      by_url(u,
+      by_url(
+        u,
         tag_name,
         name,
         body,
@@ -103,7 +101,8 @@ primitive CreateRelease
         draft,
         prerelease)
     | let e: ut.URITemplateParseError =>
-      Promise[ReleaseOrError].>apply(req.RequestError(where message' = e.message))
+      Promise[ReleaseOrError]
+        .> apply(req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
@@ -115,10 +114,15 @@ primitive CreateRelease
     draft: Bool = false,
     prerelease: Bool = false): Promise[ReleaseOrError]
   =>
+    """
+    Creates a release by posting to the given API URL.
+    """
     let p = Promise[ReleaseOrError]
-    let r = req.ResultReceiver[Release](creds,
-      p,
-      ReleaseJsonConverter)
+    let r =
+      req.ResultReceiver[Release](
+        creds,
+        p,
+        ReleaseJSONConverter)
 
     var obj = JsonObject
       .update("tag_name", tag_name)
@@ -130,17 +134,20 @@ primitive CreateRelease
     end
     obj = obj.update("draft", draft).update("prerelease", prerelease)
     let json = obj.print()
-    req.JsonRequester.post(creds, url, consume json, r)
+    req.JSONRequester.post(creds, url, consume json, r)
     p
 
-primitive ReleaseJsonConverter is req.JsonConverter[Release]
+primitive ReleaseJSONConverter is req.JSONConverter[Release]
   """
   Converts a JSON object from the releases API into a Release.
   """
   fun apply(json: JsonNav, creds: req.Credentials): Release ? =>
+    """
+    Parse a JSON object into a Release.
+    """
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
-    let author = UserJsonConverter(json("author"), creds)?
+    let author = UserJSONConverter(json("author"), creds)?
     let tag_name = json("tag_name").as_string()?
     let target_commitish = json("target_commitish").as_string()?
     let name = json("name").as_string()?
@@ -152,7 +159,7 @@ primitive ReleaseJsonConverter is req.JsonConverter[Release]
 
     let assets = recover trn Array[Asset] end
     for i in json("assets").as_array()?.values() do
-      let a = AssetJsonConverter(JsonNav(i), creds)?
+      let a = AssetJSONConverter(JsonNav(i), creds)?
       assets.push(a)
     end
 
@@ -163,7 +170,8 @@ primitive ReleaseJsonConverter is req.JsonConverter[Release]
     let tarball_url = json("tarball_url").as_string()?
     let zipball_url = json("zipball_url").as_string()?
 
-    Release(creds,
+    Release(
+      creds,
       id,
       node_id,
       author,

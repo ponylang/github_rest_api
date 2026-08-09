@@ -11,7 +11,6 @@ class val PullRequest
   changed in this pull request.
   """
   let _creds: req.Credentials
-
   let number: I64
   let title: String
   let body: (String | None)
@@ -65,48 +64,59 @@ primitive GetPullRequest
       "https://api.github.com/repos{/owner}{/repo}/pulls{/number}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
-        .>set("number", number.string())
+        .> set("owner", owner)
+        .> set("repo", repo)
+        .> set("number", number.string())
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[PullRequestOrError].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[PullRequestOrError]
+        .> apply(req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: req.Credentials): Promise[PullRequestOrError] =>
+  fun by_url(url: String,
+    creds: req.Credentials): Promise[PullRequestOrError]
+  =>
+    """
+    Fetches a pull request by its full API URL.
+    """
     let p = Promise[PullRequestOrError]
-    let r = req.ResultReceiver[PullRequest](creds,
-      p,
-      PullRequestJsonConverter)
+    let r =
+      req.ResultReceiver[PullRequest](
+        creds,
+        p,
+        PullRequestJSONConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
-primitive PullRequestJsonConverter is req.JsonConverter[PullRequest]
+primitive PullRequestJSONConverter is req.JSONConverter[PullRequest]
   """
   Converts a JSON object from the pulls API into a PullRequest.
   """
   fun apply(json: JsonNav, creds: req.Credentials): PullRequest ? =>
+    """
+    Parse a JSON object into a PullRequest.
+    """
     let number = json("number").as_i64()?
     let title = json("title").as_string()?
-    let body = JsonNavUtil.string_or_none(json("body"))?
+    let body = JSONNavUtil.string_or_none(json("body"))?
     let state = json("state").as_string()?
 
     let labels = recover trn Array[Label] end
     for i in json("labels").as_array()?.values() do
-      let l = LabelJsonConverter(JsonNav(i), creds)?
+      let l = LabelJSONConverter(JsonNav(i), creds)?
       labels.push(l)
     end
 
-    let base = PullRequestBaseJsonConverter(json("base"), creds)?
+    let base = PullRequestBaseJSONConverter(json("base"), creds)?
 
     let url = json("url").as_string()?
     let html_url = json("html_url").as_string()?
     let comments_url = json("comments_url").as_string()?
 
-    PullRequest(creds,
+    PullRequest(
+      creds,
       number,
       title,
       body,

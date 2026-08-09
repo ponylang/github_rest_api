@@ -11,7 +11,16 @@ interface tag LinkedResultReceiver
   Link header. Used by both paginated list and search result requesters.
   """
   be success(json: JsonNav, link_header: String)
+    """
+    Called when the request succeeds with a parsed JSON response and the raw
+    Link header value.
+    """
+
   be failure(status: U16, response_body: String, message: String)
+    """
+    Called when the request fails with an unexpected status code or connection
+    error.
+    """
 
 class val PaginatedList[A: Any val]
   """
@@ -20,20 +29,19 @@ class val PaginatedList[A: Any val]
   adjacent page, or None if no such page exists.
   """
   let _creds: req.Credentials
-  let _converter: PaginatedListJsonConverter[A]
+  let _converter: PaginatedListJSONConverter[A]
   let _prev_link: (String | None)
   let _next_link: (String | None)
-
   let results: Array[A] val
 
   new val _from_array(creds: req.Credentials,
-    converter: req.JsonConverter[A],
+    converter: req.JSONConverter[A],
     results': Array[A] val,
     prev_link: (String | None) = None,
     next_link: (String | None) = None)
   =>
     _creds = creds
-    _converter = PaginatedListJsonConverter[A](_creds, converter)
+    _converter = PaginatedListJSONConverter[A](_creds, converter)
     results = results'
     _prev_link = prev_link
     _next_link = next_link
@@ -65,19 +73,19 @@ class val PaginatedList[A: Any val]
   =>
     let p = Promise[(PaginatedList[A] | req.RequestError)]
     let r = PaginatedResultReceiver[A](_creds, p, _converter)
-    LinkedJsonRequester(_creds, link, r)
+    LinkedJSONRequester(_creds, link, r)
     p
 
-class val PaginatedListJsonConverter[A: Any val]
+class val PaginatedListJSONConverter[A: Any val]
   """
   Converts a JSON array response with Link header pagination into a
   PaginatedList. Delegates individual item conversion to the wrapped
-  JsonConverter.
+  JSONConverter.
   """
   let _creds: req.Credentials
-  let _converter: req.JsonConverter[A]
+  let _converter: req.JSONConverter[A]
 
-  new val create(creds: req.Credentials, converter: req.JsonConverter[A]) =>
+  new val create(creds: req.Credentials, converter: req.JSONConverter[A]) =>
     _creds = creds
     _converter = converter
 
@@ -85,6 +93,9 @@ class val PaginatedListJsonConverter[A: Any val]
     link_header: String,
     creds: req.Credentials): PaginatedList[A] ?
   =>
+    """
+    Parse a JSON array response into a PaginatedList.
+    """
     let entries = recover trn Array[A] end
 
     for i in json.as_array()?.values() do
@@ -94,7 +105,8 @@ class val PaginatedListJsonConverter[A: Any val]
 
     (let prev, let next) = _ExtractPaginationLinks(link_header)
 
-    PaginatedList[A]._from_array(_creds,
+    PaginatedList[A]._from_array(
+      _creds,
       _converter,
       consume entries,
       prev,
@@ -107,11 +119,11 @@ actor PaginatedResultReceiver[A: Any val]
   """
   let _creds: req.Credentials
   let _p: Promise[(PaginatedList[A] | req.RequestError)]
-  let _converter: PaginatedListJsonConverter[A]
+  let _converter: PaginatedListJSONConverter[A]
 
   new create(creds: req.Credentials,
     p: Promise[(PaginatedList[A] | req.RequestError)],
-    c: PaginatedListJsonConverter[A])
+    c: PaginatedListJSONConverter[A])
   =>
     _creds = creds
     _p = p
@@ -121,9 +133,10 @@ actor PaginatedResultReceiver[A: Any val]
     try
       _p(_converter(json, link_header, _creds)?)
     else
-      let m = recover val
-        "Unable to convert json for " + req.JsonTypeString(json)
-      end
+      let m =
+        recover val
+          "Unable to convert json for " + req.JSONTypeString(json)
+        end
 
       _p(req.RequestError(where message' = m))
     end
@@ -131,7 +144,7 @@ actor PaginatedResultReceiver[A: Any val]
   be failure(status: U16, response_body: String, message: String) =>
     _p(req.RequestError(status, response_body, message))
 
-actor LinkedJsonRequester is courier.HTTPClientConnectionActor
+actor LinkedJSONRequester is courier.HTTPClientConnectionActor
   """
   Issues an HTTP GET request and delivers the JSON response along with the
   Link header to a LinkedResultReceiver. Used by both paginated list and search
@@ -159,17 +172,23 @@ actor LinkedJsonRequester is courier.HTTPClientConnectionActor
     _connect(url)
 
   fun ref _connect(url: String) =>
-    match courier.URL.parse(url)
+    match \exhaustive\ courier.URL.parse(url)
     | let parsed: courier.ParsedURL =>
       _request_path = parsed.request_path()
-      let ctx = match _creds.ssl_ctx
-      | let c: ssl.SSLContext val => c
-      | None => req.SSLContextFactory()
-      end
+      let ctx =
+        match \exhaustive\ _creds.ssl_ctx
+        | let c: ssl.SSLContext val => c
+        | None => req.SSLContextFactory()
+        end
       let config = courier.ClientConnectionConfig
-      _http = courier.HTTPClientConnection.ssl(
-        _creds.auth, ctx, parsed.host, parsed.port,
-        this, config)
+      _http =
+        courier.HTTPClientConnection.ssl(
+          _creds.auth,
+          ctx,
+          parsed.host,
+          parsed.port,
+          this,
+          config)
     | let _: courier.URLParseError =>
       _fail("Unable to parse URL: " + url)
     end
@@ -177,7 +196,12 @@ actor LinkedJsonRequester is courier.HTTPClientConnectionActor
   fun ref _http_client_connection(): courier.HTTPClientConnection =>
     _http
 
-  fun ref on_connected() =>
+  fun ref on_connected()
+  =>
+    """
+    Builds and sends the HTTP GET request with appropriate headers once the
+    connection is established.
+    """
     let hdrs = recover trn courier.Headers end
     hdrs.set("User-Agent", "Pony GitHub Rest API Client")
     hdrs.set("Accept", "application/vnd.github.v3+json")
@@ -186,25 +210,32 @@ actor LinkedJsonRequester is courier.HTTPClientConnectionActor
       (let n, let v) = courier.BearerAuth(t)
       hdrs.set(n, v)
     end
-    let request = courier.HTTPRequest(
-      courier.GET,
-      _request_path,
-      consume hdrs)
+    let request =
+      courier.HTTPRequest(
+        courier.GET,
+        _request_path,
+        consume hdrs)
     _http.send_request(request)
 
-  fun ref on_response(response: courier.Response val) =>
+  fun ref on_response(response: courier.Response val)
+  =>
+    """
+    Handles the HTTP response. Extracts the Link header for pagination and
+    follows 301/307 redirects.
+    """
     _status = response.status
-    _link_header = match response.headers.get("link")
-    | let h: String => h
-    | None => ""
-    end
+    _link_header =
+      match \exhaustive\ response.headers.get("link")
+      | let h: String => h
+      | None => ""
+      end
 
     if (_status == 301) or (_status == 307) then
       match response.headers.get("location")
       | let loc: String =>
         _redirected = true
         _http.close()
-        LinkedJsonRequester(_creds, loc, _receiver)
+        LinkedJSONRequester(_creds, loc, _receiver)
         return
       end
     end
@@ -236,13 +267,14 @@ actor LinkedJsonRequester is courier.HTTPClientConnectionActor
     end
 
   fun ref on_connection_failure(reason: courier.ConnectionFailureReason) =>
-    let msg = match \exhaustive\ reason
-    | courier.ConnectionFailedDNS => "DNS resolution failed"
-    | courier.ConnectionFailedTCP => "Unable to connect"
-    | courier.ConnectionFailedSSL => "SSL handshake failed"
-    | courier.ConnectionFailedTimeout => "Connection timed out"
-    | courier.ConnectionFailedTimerError => "Connect timer failed"
-    end
+    let msg =
+      match \exhaustive\ reason
+      | courier.ConnectionFailedDNS => "DNS resolution failed"
+      | courier.ConnectionFailedTCP => "Unable to connect"
+      | courier.ConnectionFailedSSL => "SSL handshake failed"
+      | courier.ConnectionFailedTimeout => "Connection timed out"
+      | courier.ConnectionFailedTimerError => "Connect timer failed"
+      end
     _receiver.failure(0, "", consume msg)
 
   fun ref on_parse_error(err: courier.ParseError) =>

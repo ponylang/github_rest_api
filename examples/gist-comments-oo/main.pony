@@ -9,23 +9,26 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("gist-comments-oo",
+        CommandSpec.leaf(
+          "gist-comments-oo",
           "List comments on a gist",
           [
             OptionSpec.string("gist-id", "ID of the gist")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -47,6 +50,9 @@ actor Main
     end
 
 primitive RetrieveComments
+  """
+  Retrieves comments from the resource.
+  """
   fun apply(g: GistOrError)
     : Promise[(PaginatedList[GistComment] | RequestError)]
   =>
@@ -54,10 +60,13 @@ primitive RetrieveComments
     | let gist: Gist =>
       gist.get_comments()
     | let e: RequestError =>
-      Promise[(PaginatedList[GistComment] | RequestError)].>apply(e)
+      Promise[(PaginatedList[GistComment] | RequestError)] .> apply(e)
     end
 
 primitive PrintComments
+  """
+  Prints comments to the given output stream.
+  """
   fun apply(out: OutStream,
     r: (PaginatedList[GistComment] | RequestError))
   =>

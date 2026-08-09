@@ -37,24 +37,28 @@ class val GistFile
     encoding = encoding'
     truncated = truncated'
 
-primitive GistFileJsonConverter is req.JsonConverter[GistFile]
+primitive GistFileJSONConverter is req.JSONConverter[GistFile]
   """
   Converts a JSON object representing a single gist file into a GistFile.
   Optional fields that may be absent in list responses are extracted with
   try/else None.
   """
   fun apply(json: JsonNav, creds: req.Credentials): GistFile ? =>
+    """
+    Parse a JSON object into a GistFile.
+    """
     let filename = json("filename").as_string()?
     let content_type = json("type").as_string()?
-    let language = JsonNavUtil.string_or_none(json("language"))?
+    let language = JSONNavUtil.string_or_none(json("language"))?
     let raw_url = json("raw_url").as_string()?
     let size = json("size").as_i64()?
-    let content = try JsonNavUtil.string_or_none(json("content"))? else None end
+    let content = try JSONNavUtil.string_or_none(json("content"))? else None end
     let encoding =
-      try JsonNavUtil.string_or_none(json("encoding"))? else None end
+      try JSONNavUtil.string_or_none(json("encoding"))? else None end
     let truncated = try json("truncated").as_bool()? else None end
 
-    GistFile(filename,
+    GistFile(
+      filename,
       content_type,
       language,
       raw_url,

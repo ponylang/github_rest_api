@@ -45,21 +45,26 @@ primitive CreateIssueComment
     | let u': String =>
       by_url(u', comment, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[IssueCommentOrError].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[IssueCommentOrError]
+        .> apply(req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     comment: String,
     creds: req.Credentials): Promise[IssueCommentOrError]
   =>
+    """
+    Creates a comment by posting to the given API URL.
+    """
     let p = Promise[IssueCommentOrError]
-    let r = req.ResultReceiver[IssueComment](creds,
-      p,
-      IssueCommentJsonConverter)
+    let r =
+      req.ResultReceiver[IssueComment](
+        creds,
+        p,
+        IssueCommentJSONConverter)
 
     let json = JsonObject.update("body", comment).print()
-    req.JsonRequester.post(creds, url, consume json, r)
+    req.JSONRequester.post(creds, url, consume json, r)
     p
 
 primitive GetIssueComments
@@ -77,17 +82,24 @@ primitive GetIssueComments
     | let u': String =>
       by_url(u', creds)
     | let e: ut.URITemplateParseError =>
-      Promise[IssueCommentsOrError].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[IssueCommentsOrError]
+        .> apply(req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: req.Credentials): Promise[IssueCommentsOrError] =>
+  fun by_url(url: String,
+    creds: req.Credentials): Promise[IssueCommentsOrError]
+  =>
+    """
+    Fetches issue comments by their full API URL.
+    """
     let p = Promise[IssueCommentsOrError]
-    let r = req.ResultReceiver[IssueComments](creds,
-      p,
-      IssueCommentsJsonConverter)
+    let r =
+      req.ResultReceiver[IssueComments](
+        creds,
+        p,
+        IssueCommentsJSONConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
 primitive IssueCommentsURL
@@ -102,21 +114,24 @@ primitive IssueCommentsURL
       "https://api.github.com/repos{/owner}{/repo}/issues{/number}/comments")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
-        .>set("number", number.string())
+        .> set("owner", owner)
+        .> set("repo", repo)
+        .> set("number", number.string())
       tpl.expand(vars)
     | let e: ut.URITemplateParseError =>
       e
     end
 
-primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
+primitive IssueCommentJSONConverter is req.JSONConverter[IssueComment]
   """
   Converts a JSON object into an IssueComment.
   """
   fun apply(json: JsonNav,
     creds: req.Credentials): IssueComment ?
   =>
+    """
+    Parse a JSON object into an IssueComment.
+    """
     let body = json("body").as_string()?
     let url = json("url").as_string()?
     let html_url = json("html_url").as_string()?
@@ -124,17 +139,22 @@ primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
 
     IssueComment(creds, body, url, html_url, issue_url)
 
-primitive IssueCommentsJsonConverter is req.JsonConverter[Array[IssueComment] val]
+primitive IssueCommentsJSONConverter is
+  req.JSONConverter[Array[IssueComment] val]
   """
-  Converts a JSON array of issue comment objects into an Array of IssueComment.
+  Converts a JSON array of issue comment objects into an Array of
+  IssueComment.
   """
   fun apply(json: JsonNav,
     creds: req.Credentials): Array[IssueComment] val ?
   =>
+    """
+    Parse a JSON array into an Array of IssueComment.
+    """
     let comments = recover trn Array[IssueComment] end
 
     for i in json.as_array()?.values() do
-      let comment = IssueCommentJsonConverter(JsonNav(i), creds)?
+      let comment = IssueCommentJSONConverter(JsonNav(i), creds)?
       comments.push(comment)
     end
 

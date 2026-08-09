@@ -9,7 +9,14 @@ interface tag DeleteResultReceiver
   a gist.
   """
   be success()
+    """
+    Called when the request succeeds with a 204 No Content response.
+    """
+
   be failure(status: U16, response_body: String, message: String)
+    """
+    Called when the request fails with an unexpected status code.
+    """
 
 type DeletedOrError is (Deleted | RequestError)
 
@@ -74,17 +81,23 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
     _connect(url)
 
   fun ref _connect(url: String) =>
-    match courier.URL.parse(url)
+    match \exhaustive\ courier.URL.parse(url)
     | let parsed: courier.ParsedURL =>
       _request_path = parsed.request_path()
-      let ctx = match _creds.ssl_ctx
-      | let c: ssl.SSLContext val => c
-      | None => SSLContextFactory()
-      end
+      let ctx =
+        match \exhaustive\ _creds.ssl_ctx
+        | let c: ssl.SSLContext val => c
+        | None => SSLContextFactory()
+        end
       let config = courier.ClientConnectionConfig
-      _http = courier.HTTPClientConnection.ssl(
-        _creds.auth, ctx, parsed.host, parsed.port,
-        this, config)
+      _http =
+        courier.HTTPClientConnection.ssl(
+          _creds.auth,
+          ctx,
+          parsed.host,
+          parsed.port,
+          this,
+          config)
     | let _: courier.URLParseError =>
       _fail("Unable to parse URL: " + url)
     end
@@ -92,7 +105,12 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
   fun ref _http_client_connection(): courier.HTTPClientConnection =>
     _http
 
-  fun ref on_connected() =>
+  fun ref on_connected()
+  =>
+    """
+    Builds and sends the HTTP request with appropriate headers once the
+    connection is established.
+    """
     let hdrs = recover trn courier.Headers end
     hdrs.set("User-Agent", "Pony GitHub Rest API Client")
     hdrs.set("Accept", "application/vnd.github.v3+json")
@@ -102,10 +120,11 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
       hdrs.set(n, v)
     end
     hdrs.set("Content-Length", "0")
-    let request = courier.HTTPRequest(
-      _method,
-      _request_path,
-      consume hdrs)
+    let request =
+      courier.HTTPRequest(
+        _method,
+        _request_path,
+        consume hdrs)
     _http.send_request(request)
 
   fun ref on_response(response: courier.Response val) =>
@@ -131,13 +150,14 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
     end
 
   fun ref on_connection_failure(reason: courier.ConnectionFailureReason) =>
-    let msg = match \exhaustive\ reason
-    | courier.ConnectionFailedDNS => "DNS resolution failed"
-    | courier.ConnectionFailedTCP => "Unable to connect"
-    | courier.ConnectionFailedSSL => "SSL handshake failed"
-    | courier.ConnectionFailedTimeout => "Connection timed out"
-    | courier.ConnectionFailedTimerError => "Connect timer failed"
-    end
+    let msg =
+      match \exhaustive\ reason
+      | courier.ConnectionFailedDNS => "DNS resolution failed"
+      | courier.ConnectionFailedTCP => "Unable to connect"
+      | courier.ConnectionFailedSSL => "SSL handshake failed"
+      | courier.ConnectionFailedTimeout => "Connection timed out"
+      | courier.ConnectionFailedTimerError => "Connect timer failed"
+      end
     _receiver.failure(0, "", consume msg)
 
   fun ref on_parse_error(err: courier.ParseError) =>

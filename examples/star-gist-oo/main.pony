@@ -9,7 +9,8 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("star-gist-oo",
+        CommandSpec.leaf(
+          "star-gist-oo",
           "Star a gist and then check if it is starred",
           [
             OptionSpec.string("gist-id", "ID of the gist to star")
@@ -17,13 +18,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -45,27 +47,36 @@ actor Main
     end
 
 primitive StarIt
+  """
+  Stars a gist.
+  """
   fun apply(g: GistOrError): Promise[DeletedOrError] =>
     match \exhaustive\ g
     | let gist: Gist =>
       gist.star()
     | let e: RequestError =>
-      Promise[DeletedOrError].>apply(e)
+      Promise[DeletedOrError] .> apply(e)
     end
 
 primitive CheckIt
+  """
+  Checks the star status of a gist.
+  """
   fun apply(d: DeletedOrError): Promise[BoolOrError] =>
     match \exhaustive\ d
     | Deleted =>
       // Star succeeded. We can't call is_starred() here because we don't
       // have the Gist reference in this chain step. In real code, keep the
       // Gist accessible or use the functional API (see star-gist example).
-      Promise[BoolOrError].>apply(true)
+      Promise[BoolOrError] .> apply(true)
     | let e: RequestError =>
-      Promise[BoolOrError].>apply(e)
+      Promise[BoolOrError] .> apply(e)
     end
 
 primitive PrintResult
+  """
+  Prints the operation result to the given output stream.
+  """
   fun apply(out: OutStream, r: BoolOrError) =>
     match \exhaustive\ r
     | let starred: Bool =>

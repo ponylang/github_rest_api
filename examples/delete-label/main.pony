@@ -8,7 +8,8 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("delete-label",
+        CommandSpec.leaf(
+          "delete-label",
           "Deletes an existing label",
           [
             OptionSpec.string(
@@ -20,13 +21,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -48,6 +50,9 @@ actor Main
     end
 
 primitive PrintResult
+  """
+  Prints the operation result to the given output stream.
+  """
   fun apply(out: OutStream, label: String, d: DeletedOrError) =>
     match \exhaustive\ d
     | Deleted =>

@@ -1,0 +1,3 @@
+"""
+Example program: delete-label.
+"""

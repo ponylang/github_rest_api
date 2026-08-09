@@ -8,23 +8,26 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-gist-oo",
+        CommandSpec.leaf(
+          "get-gist-oo",
           "Get information about a gist",
           [
             OptionSpec.string("gist-id", "ID of the gist to fetch")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -44,6 +47,9 @@ actor Main
     end
 
 primitive PrintGist
+  """
+  Prints gist details to the given output stream.
+  """
   fun apply(out: OutStream, g: GistOrError) =>
     match \exhaustive\ g
     | let gist: Gist =>

@@ -6,7 +6,7 @@ use ssl = "ssl/net"
 
 // --- Test receiver actors ---
 
-actor \nodoc\ _TestJsonSuccessReceiver is req.JsonRequesterResultReceiver
+actor \nodoc\ _TestJSONSuccessReceiver is req.JSONRequesterResultReceiver
   let _h: TestHelper
   let _expected_key: String
   let _expected_value: String
@@ -35,7 +35,7 @@ actor \nodoc\ _TestJsonSuccessReceiver is req.JsonRequesterResultReceiver
         + " body=" + response_body + " msg=" + message)
     _h.complete(false)
 
-actor \nodoc\ _TestJsonFailureReceiver is req.JsonRequesterResultReceiver
+actor \nodoc\ _TestJSONFailureReceiver is req.JSONRequesterResultReceiver
   let _h: TestHelper
   let _expected_status: U16
   let _expected_body: String
@@ -195,8 +195,7 @@ actor \nodoc\ _TestLinkedFailureReceiver is LinkedResultReceiver
     _h.complete(true)
 
 // --- Test classes ---
-
-class \nodoc\ _TestJsonRequesterGetSuccess is UnitTest
+class \nodoc\ _TestJSONRequesterGetSuccess is UnitTest
   fun name(): String => "request-actors/json-requester/get-success"
 
   fun ref apply(h: TestHelper) ? =>
@@ -204,10 +203,11 @@ class \nodoc\ _TestJsonRequesterGetSuccess is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48100"
-    let url = _TestUrl(host, port, "/test")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/test")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let receiver = _TestJsonSuccessReceiver(h, "greeting", "hello")
+    let receiver = _TestJSONSuccessReceiver(h, "greeting", "hello")
     let responder: _Responder =
       {(request: String): String =>
         let body = """{"greeting":"hello"}"""
@@ -216,13 +216,18 @@ class \nodoc\ _TestJsonRequesterGetSuccess is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
-class \nodoc\ _TestJsonRequesterGetFailure is UnitTest
+class \nodoc\ _TestJSONRequesterGetFailure is UnitTest
   fun name(): String => "request-actors/json-requester/get-failure"
 
   fun ref apply(h: TestHelper) ? =>
@@ -230,10 +235,11 @@ class \nodoc\ _TestJsonRequesterGetFailure is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48101"
-    let url = _TestUrl(host, port, "/missing")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/missing")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let receiver = _TestJsonFailureReceiver(h, 404, "not found here", "")
+    let receiver = _TestJSONFailureReceiver(h, 404, "not found here", "")
     let responder: _Responder =
       {(request: String): String =>
         let body = "not found here"
@@ -242,13 +248,18 @@ class \nodoc\ _TestJsonRequesterGetFailure is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
-class \nodoc\ _TestJsonRequesterPostSuccess is UnitTest
+class \nodoc\ _TestJSONRequesterPostSuccess is UnitTest
   fun name(): String => "request-actors/json-requester/post-success"
 
   fun ref apply(h: TestHelper) ? =>
@@ -256,10 +267,11 @@ class \nodoc\ _TestJsonRequesterPostSuccess is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48102"
-    let url = _TestUrl(host, port, "/create")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/create")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let receiver = _TestJsonSuccessReceiver(h, "id", "42")
+    let receiver = _TestJSONSuccessReceiver(h, "id", "42")
     let responder: _Responder =
       {(request: String): String =>
         let body = """{"id":"42"}"""
@@ -268,13 +280,18 @@ class \nodoc\ _TestJsonRequesterPostSuccess is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.post(creds, url, "{}", receiver)
+        req.JSONRequester.post(creds, url, "{}", receiver)
       } val)
     h.dispose_when_done(listener)
 
-class \nodoc\ _TestJsonRequesterGetRedirect is UnitTest
+class \nodoc\ _TestJSONRequesterGetRedirect is UnitTest
   fun name(): String => "request-actors/json-requester/get-redirect"
 
   fun ref apply(h: TestHelper) ? =>
@@ -282,11 +299,12 @@ class \nodoc\ _TestJsonRequesterGetRedirect is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48103"
-    let url = _TestUrl(host, port, "/original")
-    let redirect_target = _TestUrl(host, port, "/redirected")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/original")
+    let redirect_target = _TestURL(host, port, "/redirected")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let receiver = _TestJsonSuccessReceiver(h, "status", "redirected")
+    let receiver = _TestJSONSuccessReceiver(h, "status", "redirected")
     let responder: _Responder =
       {(request: String)(redirect_target): String =>
         if request.contains("GET /redirected") then
@@ -302,13 +320,18 @@ class \nodoc\ _TestJsonRequesterGetRedirect is UnitTest
             + "\r\n"
         end
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
-class \nodoc\ _TestJsonRequesterGetParseError is UnitTest
+class \nodoc\ _TestJSONRequesterGetParseError is UnitTest
   fun name(): String =>
     "request-actors/json-requester/get-parse-error"
 
@@ -317,10 +340,12 @@ class \nodoc\ _TestJsonRequesterGetParseError is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48104"
-    let url = _TestUrl(host, port, "/bad-json")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/bad-json")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let receiver = _TestJsonFailureReceiver(
+    let receiver =
+      _TestJSONFailureReceiver(
       h, 200, "", "Failed to parse response")
     let responder: _Responder =
       {(request: String): String =>
@@ -330,9 +355,14 @@ class \nodoc\ _TestJsonRequesterGetParseError is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -345,8 +375,9 @@ class \nodoc\ _TestNoContentDeleteSuccess is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48105"
-    let url = _TestUrl(host, port, "/delete-me")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/delete-me")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let receiver = _TestDeleteSuccessReceiver(h)
     let responder: _Responder =
@@ -355,7 +386,12 @@ class \nodoc\ _TestNoContentDeleteSuccess is UnitTest
           + "Content-Length: 0\r\n"
           + "\r\n"
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
         req.NoContentRequester.delete(creds, url, receiver)
       } val)
@@ -370,8 +406,9 @@ class \nodoc\ _TestNoContentDeleteFailure is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48106"
-    let url = _TestUrl(host, port, "/no-access")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/no-access")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let receiver = _TestDeleteFailureReceiver(h, 403, "forbidden")
     let responder: _Responder =
@@ -382,7 +419,12 @@ class \nodoc\ _TestNoContentDeleteFailure is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
         req.NoContentRequester.delete(creds, url, receiver)
       } val)
@@ -396,8 +438,9 @@ class \nodoc\ _TestCheckRequester204 is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48107"
-    let url = _TestUrl(host, port, "/starred")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/starred")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let receiver = _TestCheckSuccessReceiver(h, true)
     let responder: _Responder =
@@ -406,7 +449,12 @@ class \nodoc\ _TestCheckRequester204 is UnitTest
           + "Content-Length: 0\r\n"
           + "\r\n"
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
         req.CheckRequester(creds, url, receiver)
       } val)
@@ -420,8 +468,9 @@ class \nodoc\ _TestCheckRequester404 is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48108"
-    let url = _TestUrl(host, port, "/not-starred")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/not-starred")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let receiver = _TestCheckSuccessReceiver(h, false)
     let responder: _Responder =
@@ -430,7 +479,12 @@ class \nodoc\ _TestCheckRequester404 is UnitTest
           + "Content-Length: 0\r\n"
           + "\r\n"
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
         req.CheckRequester(creds, url, receiver)
       } val)
@@ -444,8 +498,9 @@ class \nodoc\ _TestCheckRequesterOther is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48109"
-    let url = _TestUrl(host, port, "/broken")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/broken")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let receiver = _TestCheckFailureReceiver(h, 500, "server error")
     let responder: _Responder =
@@ -456,7 +511,12 @@ class \nodoc\ _TestCheckRequesterOther is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
         req.CheckRequester(creds, url, receiver)
       } val)
@@ -471,12 +531,14 @@ class \nodoc\ _TestLinkedWithLink is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48110"
-    let url = _TestUrl(host, port, "/list")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/list")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let link_value =
       "<https://api.github.com/repos?page=2>; rel=\"next\""
-    let receiver = _TestLinkedSuccessReceiver(
+    let receiver =
+      _TestLinkedSuccessReceiver(
       h, "item", "one", link_value)
     let responder: _Responder =
       {(request: String)(link_value): String =>
@@ -487,9 +549,14 @@ class \nodoc\ _TestLinkedWithLink is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        LinkedJsonRequester(creds, url, receiver)
+        LinkedJSONRequester(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -502,8 +569,9 @@ class \nodoc\ _TestLinkedNoLink is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48111"
-    let url = _TestUrl(host, port, "/list")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/list")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let receiver = _TestLinkedSuccessReceiver(h, "item", "two", "")
     let responder: _Responder =
@@ -514,9 +582,14 @@ class \nodoc\ _TestLinkedNoLink is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        LinkedJsonRequester(creds, url, receiver)
+        LinkedJSONRequester(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -529,8 +602,9 @@ class \nodoc\ _TestLinkedFailure is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48112"
-    let url = _TestUrl(host, port, "/broken")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/broken")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
     let receiver = _TestLinkedFailureReceiver(h, 500, "internal error")
     let responder: _Responder =
@@ -541,9 +615,14 @@ class \nodoc\ _TestLinkedFailure is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        LinkedJsonRequester(creds, url, receiver)
+        LinkedJSONRequester(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -555,11 +634,12 @@ class \nodoc\ _TestBearerTokenSent is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48113"
-    let url = _TestUrl(host, port, "/auth-check")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/auth-check")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root)
       where token' = "ghp_test_token_12345", ssl_ctx' = sslctx)
-    let receiver = _TestJsonSuccessReceiver(h, "result", "ok")
+    let receiver = _TestJSONSuccessReceiver(h, "result", "ok")
     let responder: _Responder =
       {(request: String): String =>
         let body =
@@ -572,9 +652,14 @@ class \nodoc\ _TestBearerTokenSent is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -586,10 +671,11 @@ class \nodoc\ _TestNoTokenNoAuthHeader is UnitTest
     let sslctx = _TestSSLContext(h)?
     let host = _TestHost()
     let port: String = "48114"
-    let url = _TestUrl(host, port, "/no-auth-check")
-    let creds = req.Credentials(
+    let url = _TestURL(host, port, "/no-auth-check")
+    let creds =
+      req.Credentials(
       lori.TCPConnectAuth(h.env.root) where ssl_ctx' = sslctx)
-    let receiver = _TestJsonSuccessReceiver(h, "result", "ok")
+    let receiver = _TestJSONSuccessReceiver(h, "result", "ok")
     let responder: _Responder =
       {(request: String): String =>
         let body =
@@ -602,15 +688,19 @@ class \nodoc\ _TestNoTokenNoAuthHeader is UnitTest
           + "\r\n"
           + body
       } val
-    let listener = _MockHTTPListener(h, port, sslctx, responder,
+    let listener =
+      _MockHTTPListener(
+        h,
+        port,
+        sslctx,
+        responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
 // --- URL helper ---
-
-primitive \nodoc\ _TestUrl
+primitive \nodoc\ _TestURL
   fun apply(host: String, port: String, path: String): String val =>
     recover val
       "https://" + host + ":" + port + path

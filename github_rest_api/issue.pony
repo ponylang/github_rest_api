@@ -74,16 +74,13 @@ class val Issue
   issue is actually a pull request.
   """
   let _creds: req.Credentials
-
   let number: I64
   let title: String
   let user: User
   let labels: Array[Label] val
   let state: (String | None)
   let body: (String | None)
-
   let pull_request: (IssuePullRequest | None)
-
   let url: String
   let respository_url: String
   let labels_url: String
@@ -146,20 +143,24 @@ primitive GetIssue
       "https://api.github.com/repos{/owner}{/repo}/issues{/number}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
-        .>set("number", number.string())
+        .> set("owner", owner)
+        .> set("repo", repo)
+        .> set("number", number.string())
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[IssueOrError].>apply(req.RequestError(where message' = e.message))
+      Promise[IssueOrError]
+        .> apply(req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String, creds: req.Credentials): Promise[IssueOrError] =>
+    """
+    Fetches an issue by its full API URL.
+    """
     let p = Promise[IssueOrError]
-    let receiver = req.ResultReceiver[Issue](creds, p, IssueJsonConverter)
+    let receiver = req.ResultReceiver[Issue](creds, p, IssueJSONConverter)
 
-    req.JsonRequester.get(creds, url, receiver)
+    req.JSONRequester.get(creds, url, receiver)
     p
 
 primitive GetRepositoryIssues
@@ -177,54 +178,62 @@ primitive GetRepositoryIssues
     sort: IssueSort = SortByCreated,
     direction: SortDirection = SortDescending,
     since: String = "",
-    per_page: (I64 | None) = None): Promise[(PaginatedList[Issue] | req.RequestError)]
+    per_page: (I64 | None) = None):
+    Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
     match \exhaustive\ ut.URITemplateParse(
       "https://api.github.com/repos{/owner}{/repo}/issues")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
+        .> set("owner", owner)
+        .> set("repo", repo)
       let u: String val = tpl.expand(vars)
-      let params = recover val
-        let p = Array[(String, String)]
-        p.push(("state", state))
-        p.push(("sort", sort.query_value()))
-        p.push(("direction", direction.query_value()))
-        if labels.size() > 0 then
-          p.push(("labels", labels))
+      let params =
+        recover val
+          let p = Array[(String, String)]
+          p.push(("state", state))
+          p.push(("sort", sort.query_value()))
+          p.push(("direction", direction.query_value()))
+          if labels.size() > 0 then
+            p.push(("labels", labels))
+          end
+          if since.size() > 0 then
+            p.push(("since", since))
+          end
+          match per_page
+          | let n: I64 => p.push(("per_page", n.string()))
+          end
+          p
         end
-        if since.size() > 0 then
-          p.push(("since", since))
-        end
-        match per_page
-        | let n: I64 => p.push(("per_page", n.string()))
-        end
-        p
-      end
       by_url(u + req.QueryParams(params), creds)
     | let e: ut.URITemplateParseError =>
-      Promise[(PaginatedList[Issue] | req.RequestError)].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[(PaginatedList[Issue] | req.RequestError)]
+        .> apply(req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
-    creds: req.Credentials): Promise[(PaginatedList[Issue] | req.RequestError)]
+    creds: req.Credentials):
+    Promise[(PaginatedList[Issue] | req.RequestError)]
   =>
-    let ic = IssueJsonConverter
-    let plc = PaginatedListJsonConverter[Issue](creds, ic)
+    """
+    Lists issues by fetching from the given API URL.
+    """
+    let ic = IssueJSONConverter
+    let plc = PaginatedListJSONConverter[Issue](creds, ic)
     let p = Promise[(PaginatedList[Issue] | req.RequestError)]
     let r = PaginatedResultReceiver[Issue](creds, p, plc)
 
-    LinkedJsonRequester(creds, url, r)
+    LinkedJSONRequester(creds, url, r)
     p
 
-
-primitive IssueJsonConverter is req.JsonConverter[Issue]
+primitive IssueJSONConverter is req.JSONConverter[Issue]
   """
   Converts a JSON object from the issues API into an Issue.
   """
   fun apply(json: JsonNav, creds: req.Credentials): Issue ? =>
+    """
+    Parse a JSON object into an Issue.
+    """
     let url = json("url").as_string()?
     let respository_url = json("repository_url").as_string()?
     let labels_url = json("labels_url").as_string()?
@@ -234,25 +243,27 @@ primitive IssueJsonConverter is req.JsonConverter[Issue]
 
     let number = json("number").as_i64()?
     let title = json("title").as_string()?
-    let user = UserJsonConverter(json("user"), creds)?
-    let state = JsonNavUtil.string_or_none(json("state"))?
-    let body = JsonNavUtil.string_or_none(json("body"))?
+    let user = UserJSONConverter(json("user"), creds)?
+    let state = JSONNavUtil.string_or_none(json("state"))?
+    let body = JSONNavUtil.string_or_none(json("body"))?
 
     let labels = recover trn Array[Label] end
     for i in json("labels").as_array()?.values() do
-      let l = LabelJsonConverter(JsonNav(i), creds)?
+      let l = LabelJSONConverter(JsonNav(i), creds)?
       labels.push(l)
     end
 
     let pr_json = json("pull_request")
-    let pull_request = match pr_json.json()
-    | let _: JsonValue =>
-      IssuePullRequestJsonConverter(pr_json, creds)?
-    else
-      None
-    end
+    let pull_request =
+      match pr_json.json()
+      | let _: JsonValue =>
+        IssuePullRequestJSONConverter(pr_json, creds)?
+      else
+        None
+      end
 
-    Issue(creds,
+    Issue(
+      creds,
       url,
       respository_url,
       labels_url,

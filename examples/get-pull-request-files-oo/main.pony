@@ -9,25 +9,28 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-pull-request-files-oo",
+        CommandSpec.leaf(
+          "get-pull-request-files-oo",
           "Get all files for a pull request",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
             OptionSpec.i64("pr", "Pullrequest number to get files for")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -43,32 +46,41 @@ actor Main
       let creds = Credentials(auth, token)
 
       GitHub(creds).get_repo(owner, repo)
-       .flatten_next[PullRequestOrError](RetrievePullRequest~apply(pr))
-       .flatten_next[PullRequestFilesOrError](RetrievePullReqestFiles~apply())
-       .next[None](PrintPullRequestFiles~apply(env.out))
+        .flatten_next[PullRequestOrError](RetrievePullRequest~apply(pr))
+        .flatten_next[PullRequestFilesOrError](RetrievePullReqestFiles~apply())
+        .next[None](PrintPullRequestFiles~apply(env.out))
     else
       env.out.print("Something went wrong")
     end
 
 primitive RetrievePullRequest
+  """
+  Retrieves a pull request from the repository.
+  """
   fun apply(number: I64, r: RepositoryOrError): Promise[PullRequestOrError] =>
     match \exhaustive\ r
     | let repo: Repository =>
       repo.get_pull_request(number)
     | let e: RequestError =>
-      Promise[PullRequestOrError].>apply(e)
+      Promise[PullRequestOrError] .> apply(e)
     end
 
 primitive RetrievePullReqestFiles
+  """
+  Retrieves files changed in the pull request.
+  """
   fun apply(p: PullRequestOrError): Promise[PullRequestFilesOrError] =>
     match \exhaustive\ p
     | let pr: PullRequest =>
       pr.get_files()
     | let e: RequestError =>
-      Promise[PullRequestFilesOrError].>apply(e)
+      Promise[PullRequestFilesOrError] .> apply(e)
     end
 
 primitive PrintPullRequestFiles
+  """
+  Prints pull request files to the given output stream.
+  """
   fun apply(out: OutStream, r: PullRequestFilesOrError) =>
     match \exhaustive\ r
     | let files: Array[PullRequestFile] val =>

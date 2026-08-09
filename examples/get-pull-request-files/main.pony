@@ -8,25 +8,28 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-pull-request-files",
+        CommandSpec.leaf(
+          "get-pull-request-files",
           "Get all files for a pull request",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
             OptionSpec.i64("pr", "Pullrequest number to get files for")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -48,6 +51,9 @@ actor Main
     end
 
 primitive PrintPullRequestFiles
+  """
+  Prints pull request files to the given output stream.
+  """
   fun apply(out: OutStream, r: PullRequestFilesOrError) =>
     match \exhaustive\ r
     | let files: Array[PullRequestFile] val =>

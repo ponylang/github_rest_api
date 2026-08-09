@@ -11,16 +11,20 @@ primitive SearchIssues
   fun apply(query: String,
     creds: req.Credentials): Promise[IssueSearchResultsOrError]
   =>
+    """
+    Issue a search request and return a Promise for the first page of results.
+    """
     let p = Promise[IssueSearchResultsOrError]
-    let sc = PaginatedSearchJsonConverter[Issue](creds, IssueJsonConverter)
+    let sc = PaginatedSearchJSONConverter[Issue](creds, IssueJSONConverter)
     let r = SearchResultReceiver[Issue](creds, p, sc)
 
-    let url = recover val
-      "https://api.github.com/search/issues"
-        + req.QueryParams(recover val [("q", query)] end)
-    end
+    let url =
+      recover val
+        "https://api.github.com/search/issues"
+          + req.QueryParams(recover val [("q", query)] end)
+      end
 
-    LinkedJsonRequester(creds, url, r)
+    LinkedJSONRequester(creds, url, r)
 
     p
 
@@ -31,16 +35,15 @@ class val SearchResults[A: Any val]
   `prev_page()` and `next_page()` to navigate between pages.
   """
   let _creds: req.Credentials
-  let _converter: PaginatedSearchJsonConverter[A]
+  let _converter: PaginatedSearchJSONConverter[A]
   let _prev_link: (String | None)
   let _next_link: (String | None)
-
   let total_count: I64
   let incomplete_results: Bool
   let items: Array[A] val
 
   new val _create(creds: req.Credentials,
-    converter: req.JsonConverter[A],
+    converter: req.JSONConverter[A],
     total_count': I64,
     incomplete_results': Bool,
     items': Array[A] val,
@@ -48,7 +51,7 @@ class val SearchResults[A: Any val]
     next_link: (String | None) = None)
   =>
     _creds = creds
-    _converter = PaginatedSearchJsonConverter[A](creds, converter)
+    _converter = PaginatedSearchJSONConverter[A](creds, converter)
     total_count = total_count'
     incomplete_results = incomplete_results'
     items = items'
@@ -82,18 +85,18 @@ class val SearchResults[A: Any val]
   =>
     let p = Promise[(SearchResults[A] | req.RequestError)]
     let r = SearchResultReceiver[A](_creds, p, _converter)
-    LinkedJsonRequester(_creds, link, r)
+    LinkedJSONRequester(_creds, link, r)
     p
 
-class val PaginatedSearchJsonConverter[A: Any val]
+class val PaginatedSearchJSONConverter[A: Any val]
   """
   Converts a JSON search response (with `total_count`, `incomplete_results`,
   and `items` fields) plus Link header pagination into SearchResults.
   """
   let _creds: req.Credentials
-  let _converter: req.JsonConverter[A]
+  let _converter: req.JSONConverter[A]
 
-  new val create(creds: req.Credentials, converter: req.JsonConverter[A]) =>
+  new val create(creds: req.Credentials, converter: req.JSONConverter[A]) =>
     _creds = creds
     _converter = converter
 
@@ -101,6 +104,9 @@ class val PaginatedSearchJsonConverter[A: Any val]
     link_header: String,
     creds: req.Credentials): SearchResults[A] ?
   =>
+    """
+    Parse a JSON search response into SearchResults.
+    """
     let total_count = json("total_count").as_i64()?
     let incomplete = json("incomplete_results").as_bool()?
 
@@ -112,7 +118,8 @@ class val PaginatedSearchJsonConverter[A: Any val]
 
     (let prev, let next) = _ExtractPaginationLinks(link_header)
 
-    SearchResults[A]._create(_creds,
+    SearchResults[A]._create(
+      _creds,
       _converter,
       total_count,
       incomplete,
@@ -127,11 +134,11 @@ actor SearchResultReceiver[A: Any val]
   """
   let _creds: req.Credentials
   let _p: Promise[(SearchResults[A] | req.RequestError)]
-  let _converter: PaginatedSearchJsonConverter[A]
+  let _converter: PaginatedSearchJSONConverter[A]
 
   new create(creds: req.Credentials,
     p: Promise[(SearchResults[A] | req.RequestError)],
-    c: PaginatedSearchJsonConverter[A])
+    c: PaginatedSearchJSONConverter[A])
   =>
     _creds = creds
     _p = p
@@ -141,9 +148,10 @@ actor SearchResultReceiver[A: Any val]
     try
       _p(_converter(json, link_header, _creds)?)
     else
-      let m = recover val
-        "Unable to convert json for " + req.JsonTypeString(json)
-      end
+      let m =
+        recover val
+          "Unable to convert json for " + req.JSONTypeString(json)
+        end
 
       _p(req.RequestError(where message' = m))
     end

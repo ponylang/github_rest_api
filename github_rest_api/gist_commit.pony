@@ -14,12 +14,15 @@ class val GistChangeStatus
     deletions = deletions'
     total = total'
 
-primitive GistChangeStatusJsonConverter is req.JsonConverter[GistChangeStatus]
+primitive GistChangeStatusJSONConverter is req.JSONConverter[GistChangeStatus]
   """
   Converts a JSON object representing a gist commit's change_status into a
   GistChangeStatus.
   """
   fun apply(json: JsonNav, creds: req.Credentials): GistChangeStatus ? =>
+    """
+    Parse a JSON object into a GistChangeStatus.
+    """
     let additions = json("additions").as_i64()?
     let deletions = json("deletions").as_i64()?
     let total = json("total").as_i64()?
@@ -52,19 +55,23 @@ class val GistCommit
     change_status = change_status'
     user = user'
 
-primitive GistCommitJsonConverter is req.JsonConverter[GistCommit]
+primitive GistCommitJSONConverter is req.JSONConverter[GistCommit]
   """
   Converts a JSON object from the gist commits endpoint into a GistCommit.
   """
   fun apply(json: JsonNav, creds: req.Credentials): GistCommit ? =>
+    """
+    Parse a JSON object into a GistCommit.
+    """
     let version = json("version").as_string()?
     let url = json("url").as_string()?
     let committed_at = json("committed_at").as_string()?
     let change_status =
-      GistChangeStatusJsonConverter(json("change_status"), creds)?
-    let user = try UserJsonConverter(json("user"), creds)? else None end
+      GistChangeStatusJSONConverter(json("change_status"), creds)?
+    let user = try UserJSONConverter(json("user"), creds)? else None end
 
-    GistCommit(creds,
+    GistCommit(
+      creds,
       version,
       url,
       committed_at,

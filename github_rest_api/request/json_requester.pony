@@ -2,15 +2,23 @@ use courier = "courier"
 use "json"
 use ssl = "ssl/net"
 
-interface tag JsonRequesterResultReceiver
+interface tag JSONRequesterResultReceiver
   """
   Receives the result of a JSON API request: either a parsed JSON response
   on success, or status/body/message details on failure.
   """
   be success(json: JsonNav)
-  be failure(status: U16, response_body: String, message: String)
+    """
+    Called when the request succeeds with a parsed JSON response.
+    """
 
-actor JsonRequester is courier.HTTPClientConnectionActor
+  be failure(status: U16, response_body: String, message: String)
+    """
+    Called when the request fails, with the HTTP status code, raw response
+    body, and an error message.
+    """
+
+actor JSONRequester is courier.HTTPClientConnectionActor
   """
   Issues an HTTP request that expects a JSON response. Supports GET (200),
   POST (201), and PATCH (200) methods. GET requests follow 301/307 redirects
@@ -21,7 +29,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
   var _http: courier.HTTPClientConnection = courier.HTTPClientConnection.none()
   var _collector: courier.ResponseCollector = courier.ResponseCollector
   let _creds: Credentials
-  let _receiver: JsonRequesterResultReceiver
+  let _receiver: JSONRequesterResultReceiver
   let _method: courier.Method
   let _expected_status: U16
   let _body: (String | None)
@@ -31,7 +39,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
 
   new get(creds: Credentials,
     url: String,
-    receiver: JsonRequesterResultReceiver)
+    receiver: JSONRequesterResultReceiver)
   =>
     """
     Issues an HTTP GET request expecting a 200 response with a JSON body.
@@ -46,7 +54,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
   new post(creds: Credentials,
     url: String,
     body: String,
-    receiver: JsonRequesterResultReceiver)
+    receiver: JSONRequesterResultReceiver)
   =>
     """
     Issues an HTTP POST request expecting a 201 response with a JSON body.
@@ -61,7 +69,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
   new patch(creds: Credentials,
     url: String,
     body: String,
-    receiver: JsonRequesterResultReceiver)
+    receiver: JSONRequesterResultReceiver)
   =>
     """
     Issues an HTTP PATCH request expecting a 200 response with a JSON body.
@@ -74,17 +82,23 @@ actor JsonRequester is courier.HTTPClientConnectionActor
     _connect(url)
 
   fun ref _connect(url: String) =>
-    match courier.URL.parse(url)
+    match \exhaustive\ courier.URL.parse(url)
     | let parsed: courier.ParsedURL =>
       _request_path = parsed.request_path()
-      let ctx = match _creds.ssl_ctx
-      | let c: ssl.SSLContext val => c
-      | None => SSLContextFactory()
-      end
+      let ctx =
+        match \exhaustive\ _creds.ssl_ctx
+        | let c: ssl.SSLContext val => c
+        | None => SSLContextFactory()
+        end
       let config = courier.ClientConnectionConfig
-      _http = courier.HTTPClientConnection.ssl(
-        _creds.auth, ctx, parsed.host, parsed.port,
-        this, config)
+      _http =
+        courier.HTTPClientConnection.ssl(
+          _creds.auth,
+          ctx,
+          parsed.host,
+          parsed.port,
+          this,
+          config)
     | let _: courier.URLParseError =>
       _fail("Unable to parse URL: " + url)
     end
@@ -92,7 +106,12 @@ actor JsonRequester is courier.HTTPClientConnectionActor
   fun ref _http_client_connection(): courier.HTTPClientConnection =>
     _http
 
-  fun ref on_connected() =>
+  fun ref on_connected()
+  =>
+    """
+    Builds and sends the HTTP request with appropriate headers once the
+    connection is established.
+    """
     let hdrs = recover trn courier.Headers end
     hdrs.set("User-Agent", "Pony GitHub Rest API Client")
     hdrs.set("Accept", "application/vnd.github.v3+json")
@@ -105,17 +124,23 @@ actor JsonRequester is courier.HTTPClientConnectionActor
     | let b: String =>
       hdrs.set("Content-Length", b.size().string())
     end
-    let request = courier.HTTPRequest(
-      _method,
-      _request_path,
-      consume hdrs,
-      match _body
-      | let b: String => b.array()
-      | None => None
-      end)
+    let request =
+      courier.HTTPRequest(
+        _method,
+        _request_path,
+        consume hdrs,
+        match \exhaustive\ _body
+        | let b: String => b.array()
+        | None => None
+        end)
     _http.send_request(request)
 
-  fun ref on_response(response: courier.Response val) =>
+  fun ref on_response(response: courier.Response val)
+  =>
+    """
+    Handles the HTTP response. For GET requests, follows 301/307 redirects.
+    Otherwise, begins collecting the response body.
+    """
     _status = response.status
     if (_method is courier.GET)
       and ((_status == 301) or (_status == 307))
@@ -124,7 +149,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
       | let loc: String =>
         _redirected = true
         _http.close()
-        JsonRequester.get(_creds, loc, _receiver)
+        JSONRequester.get(_creds, loc, _receiver)
         return
       end
     end
@@ -155,13 +180,14 @@ actor JsonRequester is courier.HTTPClientConnectionActor
     end
 
   fun ref on_connection_failure(reason: courier.ConnectionFailureReason) =>
-    let msg = match \exhaustive\ reason
-    | courier.ConnectionFailedDNS => "DNS resolution failed"
-    | courier.ConnectionFailedTCP => "Unable to connect"
-    | courier.ConnectionFailedSSL => "SSL handshake failed"
-    | courier.ConnectionFailedTimeout => "Connection timed out"
-    | courier.ConnectionFailedTimerError => "Connect timer failed"
-    end
+    let msg =
+      match \exhaustive\ reason
+      | courier.ConnectionFailedDNS => "DNS resolution failed"
+      | courier.ConnectionFailedTCP => "Unable to connect"
+      | courier.ConnectionFailedSSL => "SSL handshake failed"
+      | courier.ConnectionFailedTimeout => "Connection timed out"
+      | courier.ConnectionFailedTimerError => "Connect timer failed"
+      end
     _receiver.failure(0, "", consume msg)
 
   fun ref on_parse_error(err: courier.ParseError) =>

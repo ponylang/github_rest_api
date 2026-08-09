@@ -8,25 +8,28 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-issue-comments",
+        CommandSpec.leaf(
+          "get-issue-comments",
           "Get all comments for an issue",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
             OptionSpec.i64("issue", "Issue number to get comments for")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -48,6 +51,9 @@ actor Main
     end
 
 primitive PrintIssueComments
+  """
+  Prints issue comments to the given output stream.
+  """
   fun apply(out: OutStream, r: IssueCommentsOrError) =>
     match \exhaustive\ r
     | let comments: Array[IssueComment] val =>

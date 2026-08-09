@@ -9,23 +9,26 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("search-issues",
+        CommandSpec.leaf(
+          "search-issues",
           "Search issues",
           [
             OptionSpec.string("query", "Query string")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -45,6 +48,9 @@ actor Main
     end
 
 primitive PrintResults
+  """
+  Prints search results to the given output stream.
+  """
   fun apply(out: OutStream, r: IssueSearchResultsOrError) =>
     match \exhaustive\ r
     | let results: SearchResults[Issue] =>

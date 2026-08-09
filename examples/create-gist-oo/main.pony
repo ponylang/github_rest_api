@@ -8,28 +8,32 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("create-gist-oo",
+        CommandSpec.leaf(
+          "create-gist-oo",
           "Create a new gist with a single file",
           [
             OptionSpec.string("filename", "Name of the file to create")
             OptionSpec.string("content", "Content of the file")
-            OptionSpec.string("description",
+            OptionSpec.string(
+              "description",
               "Description of the gist"
               where default' = "")
-            OptionSpec.bool("public",
+            OptionSpec.bool(
+              "public",
               "Whether the gist should be public"
               where default' = false)
             OptionSpec.string("token", "GitHub personal access token")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -45,11 +49,11 @@ actor Main
       let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
-      let files = recover val
-        let f = Array[(String, String)]
-        f.push((filename, content))
-        f
-      end
+      let files =
+        recover val
+          Array[(String, String)]
+            .> push((filename, content))
+        end
 
       let desc: (String | None) =
         if description.size() > 0 then description else None end
@@ -61,6 +65,9 @@ actor Main
     end
 
 primitive PrintGist
+  """
+  Prints gist creation results to the given output stream.
+  """
   fun apply(out: OutStream, g: GistOrError) =>
     match \exhaustive\ g
     | let gist: Gist =>

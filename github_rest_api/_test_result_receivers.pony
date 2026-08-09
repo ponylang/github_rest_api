@@ -4,7 +4,7 @@ use "promises"
 use "pony_test"
 use req = "request"
 
-primitive \nodoc\ _TestStringConverter is req.JsonConverter[String]
+primitive \nodoc\ _TestStringConverter is req.JSONConverter[String]
   fun apply(json: JsonNav, creds: req.Credentials): String ? =>
     json("value").as_string()?
 
@@ -16,7 +16,7 @@ class \nodoc\ _TestDeletedResultReceiverSuccess is UnitTest
     let p = Promise[req.DeletedOrError]
     p.next[None](
       {(result: req.DeletedOrError)(h) =>
-        match result
+        match \exhaustive\ result
         | let _: req.Deleted =>
           h.complete(true)
         | let e: req.RequestError =>
@@ -35,7 +35,7 @@ class \nodoc\ _TestDeletedResultReceiverFailure is UnitTest
     let p = Promise[req.DeletedOrError]
     p.next[None](
       {(result: req.DeletedOrError)(h) =>
-        match result
+        match \exhaustive\ result
         | let _: req.Deleted =>
           h.fail("Expected RequestError, got Deleted")
           h.complete(false)
@@ -57,7 +57,7 @@ class \nodoc\ _TestBoolResultReceiverSuccessTrue is UnitTest
     let p = Promise[req.BoolOrError]
     p.next[None](
       {(result: req.BoolOrError)(h) =>
-        match result
+        match \exhaustive\ result
         | let b: Bool =>
           h.assert_true(b, "Expected true")
           h.complete(true)
@@ -77,7 +77,7 @@ class \nodoc\ _TestBoolResultReceiverSuccessFalse is UnitTest
     let p = Promise[req.BoolOrError]
     p.next[None](
       {(result: req.BoolOrError)(h) =>
-        match result
+        match \exhaustive\ result
         | let b: Bool =>
           h.assert_false(b, "Expected false")
           h.complete(true)
@@ -97,7 +97,7 @@ class \nodoc\ _TestBoolResultReceiverFailure is UnitTest
     let p = Promise[req.BoolOrError]
     p.next[None](
       {(result: req.BoolOrError)(h) =>
-        match result
+        match \exhaustive\ result
         | let _: Bool =>
           h.fail("Expected RequestError, got Bool")
           h.complete(false)
@@ -119,7 +119,7 @@ class \nodoc\ _TestResultReceiverSuccess is UnitTest
     let p = Promise[(String | req.RequestError)]
     p.next[None](
       {(result: (String | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let s: String =>
           h.assert_eq[String]("hello", s)
           h.complete(true)
@@ -130,7 +130,8 @@ class \nodoc\ _TestResultReceiverSuccess is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let receiver = req.ResultReceiver[String](
+    let receiver =
+      req.ResultReceiver[String](
       creds, p, _TestStringConverter)
     let obj = JsonObject.update("value", "hello")
     receiver.success(JsonNav(obj))
@@ -143,7 +144,7 @@ class \nodoc\ _TestResultReceiverConverterError is UnitTest
     let p = Promise[(String | req.RequestError)]
     p.next[None](
       {(result: (String | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let _: String =>
           h.fail("Expected RequestError, got String")
           h.complete(false)
@@ -156,7 +157,8 @@ class \nodoc\ _TestResultReceiverConverterError is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let receiver = req.ResultReceiver[String](
+    let receiver =
+      req.ResultReceiver[String](
       creds, p, _TestStringConverter)
     receiver.success(JsonNav(JsonObject))
 
@@ -168,7 +170,7 @@ class \nodoc\ _TestResultReceiverFailure is UnitTest
     let p = Promise[(String | req.RequestError)]
     p.next[None](
       {(result: (String | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let _: String =>
           h.fail("Expected RequestError, got String")
           h.complete(false)
@@ -180,7 +182,8 @@ class \nodoc\ _TestResultReceiverFailure is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let receiver = req.ResultReceiver[String](
+    let receiver =
+      req.ResultReceiver[String](
       creds, p, _TestStringConverter)
     receiver.failure(500, "server error", "internal")
 
@@ -192,7 +195,7 @@ class \nodoc\ _TestPaginatedResultReceiverSuccess is UnitTest
     let p = Promise[(PaginatedList[String] | req.RequestError)]
     p.next[None](
       {(result: (PaginatedList[String] | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let pl: PaginatedList[String] =>
           h.assert_eq[USize](1, pl.results.size())
           try
@@ -209,9 +212,11 @@ class \nodoc\ _TestPaginatedResultReceiverSuccess is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedListJsonConverter[String](
+    let converter =
+      PaginatedListJSONConverter[String](
       creds, _TestStringConverter)
-    let receiver = PaginatedResultReceiver[String](
+    let receiver =
+      PaginatedResultReceiver[String](
       creds, p, converter)
     let arr = JsonArray
       .push(JsonObject.update("value", "item1"))
@@ -226,7 +231,7 @@ class \nodoc\ _TestPaginatedResultReceiverConverterError is UnitTest
     let p = Promise[(PaginatedList[String] | req.RequestError)]
     p.next[None](
       {(result: (PaginatedList[String] | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let _: PaginatedList[String] =>
           h.fail("Expected RequestError, got PaginatedList")
           h.complete(false)
@@ -239,9 +244,11 @@ class \nodoc\ _TestPaginatedResultReceiverConverterError is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedListJsonConverter[String](
+    let converter =
+      PaginatedListJSONConverter[String](
       creds, _TestStringConverter)
-    let receiver = PaginatedResultReceiver[String](
+    let receiver =
+      PaginatedResultReceiver[String](
       creds, p, converter)
     receiver.success(JsonNav("not-an-array"), "")
 
@@ -253,7 +260,7 @@ class \nodoc\ _TestPaginatedResultReceiverFailure is UnitTest
     let p = Promise[(PaginatedList[String] | req.RequestError)]
     p.next[None](
       {(result: (PaginatedList[String] | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let _: PaginatedList[String] =>
           h.fail("Expected RequestError, got PaginatedList")
           h.complete(false)
@@ -265,9 +272,11 @@ class \nodoc\ _TestPaginatedResultReceiverFailure is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedListJsonConverter[String](
+    let converter =
+      PaginatedListJSONConverter[String](
       creds, _TestStringConverter)
-    let receiver = PaginatedResultReceiver[String](
+    let receiver =
+      PaginatedResultReceiver[String](
       creds, p, converter)
     receiver.failure(403, "forbidden", "auth failed")
 
@@ -279,7 +288,7 @@ class \nodoc\ _TestSearchResultReceiverSuccess is UnitTest
     let p = Promise[(SearchResults[String] | req.RequestError)]
     p.next[None](
       {(result: (SearchResults[String] | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let sr: SearchResults[String] =>
           h.assert_eq[I64](42, sr.total_count)
           h.assert_false(sr.incomplete_results)
@@ -298,9 +307,11 @@ class \nodoc\ _TestSearchResultReceiverSuccess is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedSearchJsonConverter[String](
+    let converter =
+      PaginatedSearchJSONConverter[String](
       creds, _TestStringConverter)
-    let receiver = SearchResultReceiver[String](
+    let receiver =
+      SearchResultReceiver[String](
       creds, p, converter)
     let items_arr = JsonArray
       .push(JsonObject.update("value", "result1"))
@@ -319,7 +330,7 @@ class \nodoc\ _TestSearchResultReceiverConverterError is UnitTest
     let p = Promise[(SearchResults[String] | req.RequestError)]
     p.next[None](
       {(result: (SearchResults[String] | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let _: SearchResults[String] =>
           h.fail("Expected RequestError, got SearchResults")
           h.complete(false)
@@ -332,9 +343,11 @@ class \nodoc\ _TestSearchResultReceiverConverterError is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedSearchJsonConverter[String](
+    let converter =
+      PaginatedSearchJSONConverter[String](
       creds, _TestStringConverter)
-    let receiver = SearchResultReceiver[String](
+    let receiver =
+      SearchResultReceiver[String](
       creds, p, converter)
     receiver.success(JsonNav(JsonObject), "")
 
@@ -346,7 +359,7 @@ class \nodoc\ _TestSearchResultReceiverFailure is UnitTest
     let p = Promise[(SearchResults[String] | req.RequestError)]
     p.next[None](
       {(result: (SearchResults[String] | req.RequestError))(h) =>
-        match result
+        match \exhaustive\ result
         | let _: SearchResults[String] =>
           h.fail("Expected RequestError, got SearchResults")
           h.complete(false)
@@ -358,8 +371,10 @@ class \nodoc\ _TestSearchResultReceiverFailure is UnitTest
         end
       })
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
-    let converter = PaginatedSearchJsonConverter[String](
+    let converter =
+      PaginatedSearchJSONConverter[String](
       creds, _TestStringConverter)
-    let receiver = SearchResultReceiver[String](
+    let receiver =
+      SearchResultReceiver[String](
       creds, p, converter)
     receiver.failure(401, "unauthorized", "bad token")

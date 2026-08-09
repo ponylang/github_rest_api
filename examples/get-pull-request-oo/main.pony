@@ -9,25 +9,28 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-pull-request-oo",
+        CommandSpec.leaf(
+          "get-pull-request-oo",
           "Get pull request",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
             OptionSpec.i64("pr", "Pull request number to retrieve")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -43,8 +46,8 @@ actor Main
       let creds = Credentials(auth, token)
 
       GitHub(creds).get_repo(owner, repo)
-       .flatten_next[PullRequestOrError](RetrievePullRequest~apply(pr))
-       .next[None](PrintPullRequest~apply(env.out))
+        .flatten_next[PullRequestOrError](RetrievePullRequest~apply(pr))
+        .next[None](PrintPullRequest~apply(env.out))
 
       let p = GetPullRequest(owner, repo, pr, creds)
       p.next[None](PrintPullRequest~apply(env.out))
@@ -53,15 +56,21 @@ actor Main
     end
 
 primitive RetrievePullRequest
+  """
+  Retrieves a pull request from the repository.
+  """
   fun apply(number: I64, r: RepositoryOrError): Promise[PullRequestOrError] =>
     match \exhaustive\ r
     | let repo: Repository =>
       repo.get_pull_request(number)
     | let e: RequestError =>
-      Promise[PullRequestOrError].>apply(e)
+      Promise[PullRequestOrError] .> apply(e)
     end
 
 primitive PrintPullRequest
+  """
+  Prints pull request details to the given output stream.
+  """
   fun apply(out: OutStream, p: PullRequestOrError) =>
     match \exhaustive\ p
     | let pr: PullRequest =>

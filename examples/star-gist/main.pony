@@ -9,7 +9,8 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("star-gist",
+        CommandSpec.leaf(
+          "star-gist",
           "Star a gist and then check if it is starred",
           [
             OptionSpec.string("gist-id", "ID of the gist to star")
@@ -17,13 +18,14 @@ actor Main
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -45,6 +47,9 @@ actor Main
     end
 
 primitive CheckStar
+  """
+  Checks whether a gist is starred.
+  """
   fun apply(gist_id: String,
     creds: Credentials,
     d: DeletedOrError): Promise[BoolOrError]
@@ -53,10 +58,13 @@ primitive CheckStar
     | Deleted =>
       CheckGistStar(gist_id, creds)
     | let e: RequestError =>
-      Promise[BoolOrError].>apply(e)
+      Promise[BoolOrError] .> apply(e)
     end
 
 primitive PrintResult
+  """
+  Prints the operation result to the given output stream.
+  """
   fun apply(out: OutStream, r: BoolOrError) =>
     match \exhaustive\ r
     | let starred: Bool =>

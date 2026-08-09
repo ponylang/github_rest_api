@@ -9,25 +9,28 @@ actor Main
     try
       // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-issue-oo",
+        CommandSpec.leaf(
+          "get-issue-oo",
           "Get an issue",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
+            OptionSpec.string("owner", "Repository owner")
+            OptionSpec.string("repo", "Repository name")
             OptionSpec.i64("issue", "Issue number to retrieve")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
+        | let c: Command =>
         c
-      | let ch: CommandHelp =>
+        | let ch: CommandHelp =>
         ch.print_help(env.out)
         return
-      | let se: SyntaxError =>
+        | let se: SyntaxError =>
         env.err.print(se.string())
         env.exitcode(1)
         return
@@ -43,22 +46,28 @@ actor Main
       let creds = Credentials(auth, token)
 
       GitHub(creds).get_repo(owner, repo)
-       .flatten_next[IssueOrError](RetrieveIssue~apply(issue))
-       .next[None](PrintIssue~apply(env.out))
+        .flatten_next[IssueOrError](RetrieveIssue~apply(issue))
+        .next[None](PrintIssue~apply(env.out))
     else
       env.out.print("Something went wrong")
     end
 
 primitive RetrieveIssue
+  """
+  Retrieves an issue from the repository.
+  """
   fun apply(number: I64, r: RepositoryOrError): Promise[IssueOrError] =>
     match \exhaustive\ r
     | let repo: Repository =>
       repo.get_issue(number)
     | let e: RequestError =>
-      Promise[IssueOrError].>apply(e)
+      Promise[IssueOrError] .> apply(e)
     end
 
 primitive PrintIssue
+  """
+  Prints issue details to the given output stream.
+  """
   fun apply(out: OutStream, i: IssueOrError) =>
     match \exhaustive\ i
     | let issue: Issue =>
