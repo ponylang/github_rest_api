@@ -4,6 +4,7 @@ use lori = "lori"
 use "promises"
 use req = "request"
 use ssl = "ssl/net"
+use uri = "uri"
 
 interface tag LinkedResultReceiver
   """
@@ -159,18 +160,29 @@ actor LinkedJsonRequester is courier.HTTPClientConnectionActor
     _connect(url)
 
   fun ref _connect(url: String) =>
-    match courier.URL.parse(url)
-    | let parsed: courier.ParsedURL =>
-      _request_path = parsed.request_path()
-      let ctx = match _creds.ssl_ctx
-      | let c: ssl.SSLContext val => c
-      | None => req.SSLContextFactory()
+    match uri.ParseURI(url)
+    | let parsed: uri.URI val =>
+      match parsed.authority
+      | let auth: uri.URIAuthority =>
+        _request_path = parsed.path
+        match parsed.query
+        | let q: String => _request_path = _request_path + "?" + q
+        end
+        let port = match auth.port
+        | let p: U16 => p.string()
+        | None => "443"
+        end
+        let ctx = match _creds.ssl_ctx
+        | let c: ssl.SSLContext val => c
+        | None => req.SSLContextFactory()
+        end
+        let config = courier.ClientConnectionConfig
+        _http = courier.HTTPClientConnection.ssl(
+          _creds.auth, ctx, auth.host, port, this, config)
+      else
+        _fail("Unable to parse URL: " + url)
       end
-      let config = courier.ClientConnectionConfig
-      _http = courier.HTTPClientConnection.ssl(
-        _creds.auth, ctx, parsed.host, parsed.port,
-        this, config)
-    | let _: courier.URLParseError =>
+    | let _: uri.URIParseError val =>
       _fail("Unable to parse URL: " + url)
     end
 
