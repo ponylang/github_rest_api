@@ -27,11 +27,11 @@ class val PullRequestBase
     user = user'
     repo = repo'
 
-primitive PullRequestBaseJsonConverter is req.JsonConverter[PullRequestBase]
+primitive PullRequestBaseJsonConverter is req.JSONConverter[PullRequestBase]
   """
   Converts a JSON object into a PullRequestBase.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): PullRequestBase ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): PullRequestBase ? =>
     let label = json("label").as_string()?
     let reference = json("ref").as_string()?
     let sha = json("sha").as_string()?

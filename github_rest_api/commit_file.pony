@@ -21,11 +21,11 @@ class val CommitFile
     status = status'
     filename = filename'
 
-primitive CommitFileJsonConverter is req.JsonConverter[CommitFile]
+primitive CommitFileJsonConverter is req.JSONConverter[CommitFile]
   """
   Converts a JSON object into a CommitFile.
   """
-  fun apply(json: JsonNav,
+  fun apply(json: JSONNav,
     creds: req.Credentials): CommitFile ?
   =>
     let sha = json("sha").as_string()?

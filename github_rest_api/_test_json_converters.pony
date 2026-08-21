@@ -16,10 +16,10 @@ class \nodoc\ _TestGitPersonJsonConverterPreservesValues is UnitTest
         let b: String val = base.clone()
         let name_val: String val = "name_" + b
         let email_val: String val = "email_" + b
-        let obj = JsonObject
+        let obj = JSONObject
           .update("name", name_val)
           .update("email", email_val)
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let person = GitPersonJsonConverter(json, creds)?
           h.assert_eq[String](name_val, person.name)
@@ -40,10 +40,10 @@ class \nodoc\ _TestGitPersonJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then obj = obj.update("name", "name_" + b) end
         if skip_idx != 1 then obj = obj.update("email", "email_" + b) end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           GitPersonJsonConverter(json, creds)?
           h.fail("converter should have raised for missing field at index "
@@ -66,13 +66,13 @@ class \nodoc\ _TestLicenseJsonConverterPreservesValues is UnitTest
         let key_val: String val = "key_" + b
         let spdx_id_val: String val = "spdx_id_" + b
         let url_val: String val = "url_" + b
-        let obj = JsonObject
+        let obj = JSONObject
           .update("node_id", node_id_val)
           .update("name", name_val)
           .update("key", key_val)
           .update("spdx_id", spdx_id_val)
           .update("url", url_val)
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let license = LicenseJsonConverter(json, creds)?
           h.assert_eq[String](node_id_val, license.node_id)
@@ -96,13 +96,13 @@ class \nodoc\ _TestLicenseJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then obj = obj.update("node_id", "node_id_" + b) end
         if skip_idx != 1 then obj = obj.update("name", "name_" + b) end
         if skip_idx != 2 then obj = obj.update("key", "key_" + b) end
         if skip_idx != 3 then obj = obj.update("spdx_id", "spdx_id_" + b) end
         if skip_idx != 4 then obj = obj.update("url", "url_" + b) end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           LicenseJsonConverter(json, creds)?
           h.fail("converter should have raised for missing field at index "
@@ -123,11 +123,11 @@ class \nodoc\ _TestCommitFileJsonConverterPreservesValues is UnitTest
         let sha_val: String val = "sha_" + b
         let status_val: String val = "status_" + b
         let filename_val: String val = "filename_" + b
-        let obj = JsonObject
+        let obj = JSONObject
           .update("sha", sha_val)
           .update("status", status_val)
           .update("filename", filename_val)
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let file = CommitFileJsonConverter(json, creds)?
           h.assert_eq[String](sha_val, file.sha)
@@ -149,13 +149,13 @@ class \nodoc\ _TestCommitFileJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then obj = obj.update("sha", "sha_" + b) end
         if skip_idx != 1 then obj = obj.update("status", "status_" + b) end
         if skip_idx != 2 then
           obj = obj.update("filename", "filename_" + b)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           CommitFileJsonConverter(json, creds)?
           h.fail("converter should have raised for missing field at index "
@@ -175,11 +175,11 @@ class \nodoc\ _TestGistChangeStatusJsonConverterPreservesValues is UnitTest
       {(additions, deletions, total, h) =>
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
-        let obj = JsonObject
+        let obj = JSONObject
           .update("additions", additions)
           .update("deletions", deletions)
           .update("total", total)
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let status = GistChangeStatusJsonConverter(json, creds)?
           h.assert_eq[I64](additions, status.additions)
@@ -201,11 +201,11 @@ class \nodoc\ _TestGistChangeStatusJsonConverterMissingField is UnitTest
       {(value, skip_idx, h) =>
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then obj = obj.update("additions", value) end
         if skip_idx != 1 then obj = obj.update("deletions", value) end
         if skip_idx != 2 then obj = obj.update("total", value) end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           GistChangeStatusJsonConverter(json, creds)?
           h.fail("converter should have raised for missing field at index "
@@ -217,8 +217,8 @@ primitive \nodoc\ _TestUserJson
   """
   Builds a valid User JSON object for testing converters that nest a User.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("login", "login_" + b)
       .update("id", I64(1))
       .update("node_id", "unode_" + b)
@@ -243,8 +243,8 @@ primitive \nodoc\ _TestGitPersonJson
   Builds a valid GitPerson JSON object for testing converters that nest a
   GitPerson.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("name", "name_" + b)
       .update("email", "email_" + b)
 
@@ -253,8 +253,8 @@ primitive \nodoc\ _TestCommitFileJson
   Builds a valid CommitFile JSON object for testing converters that nest a
   CommitFile.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("sha", "sha_" + b)
       .update("status", "status_" + b)
       .update("filename", "filename_" + b)
@@ -264,8 +264,8 @@ primitive \nodoc\ _TestGitCommitJson
   Builds a valid GitCommit JSON object for testing converters that nest a
   GitCommit.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("author", _TestGitPersonJson(b))
       .update("committer", _TestGitPersonJson(b))
       .update("message", "message_" + b)
@@ -275,8 +275,8 @@ primitive \nodoc\ _TestLabelJson
   """
   Builds a valid Label JSON object for testing converters that nest a Label.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("id", I64(42))
       .update("node_id", "lnid_" + b)
       .update("url", "lurl_" + b)
@@ -290,8 +290,8 @@ primitive \nodoc\ _TestIssuePullRequestJson
   Builds a valid IssuePullRequest JSON object for testing converters that
   nest an IssuePullRequest.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("url", "prurl_" + b)
       .update("html_url", "prhtml_" + b)
       .update("diff_url", "prdiff_" + b)
@@ -315,7 +315,7 @@ class \nodoc\ _TestLabelJsonConverterPreservesValues is UnitTest
         let name_val: String val = "name_" + b
         let color_val: String val = "color_" + b
         let desc_val: String val = "desc_" + b
-        var obj = JsonObject
+        var obj = JSONObject
           .update("id", id_val)
           .update("node_id", node_id_val)
           .update("url", url_val)
@@ -327,7 +327,7 @@ class \nodoc\ _TestLabelJsonConverterPreservesValues is UnitTest
         else
           obj = obj.update("description", desc_val)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let lbl = LabelJsonConverter(json, creds)?
           h.assert_eq[I64](id_val, lbl.id)
@@ -366,7 +366,7 @@ class \nodoc\ _TestLabelJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then obj = obj.update("id", I64(42)) end
         if skip_idx != 1 then
           obj = obj.update("node_id", "nid_" + b)
@@ -384,7 +384,7 @@ class \nodoc\ _TestLabelJsonConverterMissingField is UnitTest
         if skip_idx != 6 then
           obj = obj.update("description", "desc_" + b)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           LabelJsonConverter(json, creds)?
           h.fail(
@@ -410,7 +410,7 @@ class \nodoc\ _TestIssuePRJsonConverterPreservesValues is UnitTest
         let diff_url_val: String val = "diff_" + b
         let patch_url_val: String val = "patch_" + b
         let merged_val: String val = "merged_" + b
-        var obj = JsonObject
+        var obj = JSONObject
           .update("url", url_val)
           .update("html_url", html_url_val)
           .update("diff_url", diff_url_val)
@@ -420,7 +420,7 @@ class \nodoc\ _TestIssuePRJsonConverterPreservesValues is UnitTest
         else
           obj = obj.update("merged_at", merged_val)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let ipr =
             IssuePullRequestJsonConverter(json, creds)?
@@ -459,7 +459,7 @@ class \nodoc\ _TestIssuePRJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then
           obj = obj.update("url", "url_" + b)
         end
@@ -475,7 +475,7 @@ class \nodoc\ _TestIssuePRJsonConverterMissingField is UnitTest
         if skip_idx != 4 then
           obj = obj.update("merged_at", "m_" + b)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           IssuePullRequestJsonConverter(json, creds)?
           h.fail(
@@ -509,7 +509,7 @@ class \nodoc\ _TestAssetJsonConverterPreservesValues is UnitTest
         let url_val: String val = "url_" + b
         let bd_val: String val = "bd_" + b
         let uploader_obj = _TestUserJson(b)
-        var obj = JsonObject
+        var obj = JSONObject
           .update("id", id_val)
           .update("node_id", node_id_val)
           .update("name", name_val)
@@ -527,7 +527,7 @@ class \nodoc\ _TestAssetJsonConverterPreservesValues is UnitTest
         else
           obj = obj.update("label", label_val)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let asset = AssetJsonConverter(json, creds)?
           h.assert_eq[I64](id_val, asset.id)
@@ -577,7 +577,7 @@ class \nodoc\ _TestAssetJsonConverterMissingField is UnitTest
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let uploader_obj = _TestUserJson(b)
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then
           obj = obj.update("id", I64(42))
         end
@@ -618,7 +618,7 @@ class \nodoc\ _TestAssetJsonConverterMissingField is UnitTest
           obj = obj.update(
             "browser_download_url", "bd_" + b)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           AssetJsonConverter(json, creds)?
           h.fail(
@@ -646,7 +646,7 @@ class \nodoc\ _TestGistFileJsonConverterPreservesValues is UnitTest
         let size_val: I64 = 256
         let content_val: String val = "content_" + b
         let encoding_val: String val = "utf-8"
-        var obj = JsonObject
+        var obj = JSONObject
           .update("filename", fn_val)
           .update("type", ct_val)
           .update("raw_url", raw_val)
@@ -659,7 +659,7 @@ class \nodoc\ _TestGistFileJsonConverterPreservesValues is UnitTest
         else
           obj = obj.update("language", lang_val)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let gf = GistFileJsonConverter(json, creds)?
           h.assert_eq[String](fn_val, gf.filename)
@@ -715,7 +715,7 @@ class \nodoc\ _TestGistFileJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then
           obj = obj.update("filename", "fn_" + b)
         end
@@ -731,7 +731,7 @@ class \nodoc\ _TestGistFileJsonConverterMissingField is UnitTest
         if skip_idx != 4 then
           obj = obj.update("size", I64(100))
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           GistFileJsonConverter(json, creds)?
           h.fail(
@@ -751,13 +751,13 @@ class \nodoc\ _TestGistFileJsonConverterAbsentOptionalFields is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        let obj = JsonObject
+        let obj = JSONObject
           .update("filename", "fn_" + b)
           .update("type", "ct_" + b)
           .update("language", "lang_" + b)
           .update("raw_url", "raw_" + b)
           .update("size", I64(100))
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let gf = GistFileJsonConverter(json, creds)?
           h.assert_eq[String]("fn_" + b, gf.filename)
@@ -796,12 +796,12 @@ class \nodoc\ _TestGitCommitJsonConverterPreservesValues is UnitTest
         let b: String val = base.clone()
         let message_val: String val = "message_" + b
         let url_val: String val = "gcurl_" + b
-        let obj = JsonObject
+        let obj = JSONObject
           .update("author", _TestGitPersonJson(b))
           .update("committer", _TestGitPersonJson(b))
           .update("message", message_val)
           .update("url", url_val)
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let gc = GitCommitJsonConverter(json, creds)?
           h.assert_eq[String]("name_" + b, gc.author.name)
@@ -830,7 +830,7 @@ class \nodoc\ _TestGitCommitJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then
           obj = obj.update("author",
             _TestGitPersonJson(b))
@@ -845,7 +845,7 @@ class \nodoc\ _TestGitCommitJsonConverterMissingField is UnitTest
         if skip_idx != 3 then
           obj = obj.update("url", "gcurl_" + b)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           GitCommitJsonConverter(json, creds)?
           h.fail(
@@ -869,15 +869,15 @@ class \nodoc\ _TestCommitJsonConverterPreservesValues is UnitTest
         let url_val: String val = "url_" + b
         let html_url_val: String val = "html_" + b
         let comments_url_val: String val = "curl_" + b
-        let obj = JsonObject
+        let obj = JSONObject
           .update("sha", sha_val)
           .update("files",
-            JsonArray.push(_TestCommitFileJson(b)))
+            JSONArray.push(_TestCommitFileJson(b)))
           .update("commit", _TestGitCommitJson(b))
           .update("url", url_val)
           .update("html_url", html_url_val)
           .update("comments_url", comments_url_val)
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let c = CommitJsonConverter(json, creds)?
           h.assert_eq[String](sha_val, c.sha)
@@ -923,13 +923,13 @@ class \nodoc\ _TestCommitJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then
           obj = obj.update("sha", "sha_" + b)
         end
         if skip_idx != 1 then
           obj = obj.update("files",
-            JsonArray.push(_TestCommitFileJson(b)))
+            JSONArray.push(_TestCommitFileJson(b)))
         end
         if skip_idx != 2 then
           obj = obj.update("commit",
@@ -945,7 +945,7 @@ class \nodoc\ _TestCommitJsonConverterMissingField is UnitTest
           obj = obj.update("comments_url",
             "curl_" + b)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           CommitJsonConverter(json, creds)?
           h.fail(
@@ -977,7 +977,7 @@ class \nodoc\ _TestIssueJsonConverterPreservesValues is UnitTest
         let title_val: String val = "title_" + b
         let state_val: String val = "state_" + b
         let body_val: String val = "body_" + b
-        var obj = JsonObject
+        var obj = JSONObject
           .update("url", url_val)
           .update("repository_url", repo_url_val)
           .update("labels_url", labels_url_val)
@@ -988,7 +988,7 @@ class \nodoc\ _TestIssueJsonConverterPreservesValues is UnitTest
           .update("title", title_val)
           .update("user", _TestUserJson(b))
           .update("labels",
-            JsonArray.push(_TestLabelJson(b)))
+            JSONArray.push(_TestLabelJson(b)))
           .update("pull_request",
             _TestIssuePullRequestJson(b))
         if state_is_null then
@@ -1001,7 +1001,7 @@ class \nodoc\ _TestIssueJsonConverterPreservesValues is UnitTest
         else
           obj = obj.update("body", body_val)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let issue =
             IssueJsonConverter(json, creds)?
@@ -1076,8 +1076,8 @@ primitive \nodoc\ _TestLicenseJson
   Builds a valid License JSON object for testing converters that
   nest a License.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("node_id", "licnid_" + b)
       .update("name", "licname_" + b)
       .update("key", "lickey_" + b)
@@ -1090,8 +1090,8 @@ primitive \nodoc\ _TestGistFileJson
   converters that nest a GistFile. Includes all optional fields
   (content, encoding, truncated).
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("filename", "gfn_" + b)
       .update("type", "gftype_" + b)
       .update("language", "gflang_" + b)
@@ -1107,8 +1107,8 @@ primitive \nodoc\ _TestRepositoryJson
   RepositoryJsonConverter. Includes all required and optional
   fields with non-null values.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("id", I64(1))
       .update("node_id", "rnid_" + b)
       .update("name", "rname_" + b)
@@ -1191,8 +1191,8 @@ primitive \nodoc\ _TestGistJson
   default) so preserves-values can verify the explicit value and
   absent-optional can verify the default.
   """
-  fun apply(b: String val): JsonObject =>
-    JsonObject
+  fun apply(b: String val): JSONObject =>
+    JSONObject
       .update("id", "gid_" + b)
       .update("node_id", "gnid_" + b)
       .update("description", "gdesc_" + b)
@@ -1200,7 +1200,7 @@ primitive \nodoc\ _TestGistJson
       .update("owner", _TestUserJson(b))
       .update("user", _TestUserJson(b))
       .update("files",
-        JsonObject.update(
+        JSONObject.update(
           "file1_" + b, _TestGistFileJson(b)))
       .update("comments", I64(5))
       .update("comments_enabled", false)
@@ -1227,7 +1227,7 @@ class \nodoc\ _TestIssueJsonConverterMissingField is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        var obj = JsonObject
+        var obj = JSONObject
         if skip_idx != 0 then
           obj = obj.update("url", "url_" + b)
         end
@@ -1267,9 +1267,9 @@ class \nodoc\ _TestIssueJsonConverterMissingField is UnitTest
         end
         if skip_idx != 11 then
           obj = obj.update("labels",
-            JsonArray.push(_TestLabelJson(b)))
+            JSONArray.push(_TestLabelJson(b)))
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           IssueJsonConverter(json, creds)?
           h.fail(
@@ -1289,7 +1289,7 @@ class \nodoc\ _TestIssueJsonConverterAbsentPullRequest is UnitTest
         let auth = lori.TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
-        let obj = JsonObject
+        let obj = JSONObject
           .update("url", "url_" + b)
           .update("repository_url", "rurl_" + b)
           .update("labels_url", "lsurl_" + b)
@@ -1302,8 +1302,8 @@ class \nodoc\ _TestIssueJsonConverterAbsentPullRequest is UnitTest
           .update("state", "open")
           .update("body", "body_" + b)
           .update("labels",
-            JsonArray.push(_TestLabelJson(b)))
-        let json = JsonNav(obj)
+            JSONArray.push(_TestLabelJson(b)))
+        let json = JSONNav(obj)
         try
           let issue =
             IssueJsonConverter(json, creds)?
@@ -1344,7 +1344,7 @@ class \nodoc\ _TestRepoJsonConverterPreservesValues
         if (mask and 8) != 0 then
           obj = obj.update("mirror_url", None)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let repo =
             RepositoryJsonConverter(json, creds)?
@@ -1662,7 +1662,7 @@ class \nodoc\ _TestRepoJsonConverterMissingField
         try
           let obj = _TestRepositoryJson(b)
             .remove(required(skip_idx)?)
-          let json = JsonNav(obj)
+          let json = JSONNav(obj)
           RepositoryJsonConverter(json, creds)?
           h.fail(
             "converter should have raised for "
@@ -1690,7 +1690,7 @@ class \nodoc\ _TestRepoJsonConverterAbsentOptionalFields
           .remove("license")
           .remove("network_count")
           .remove("subscribers_count")
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let repo =
             RepositoryJsonConverter(json, creds)?
@@ -1747,7 +1747,7 @@ class \nodoc\ _TestGistJsonConverterPreservesValues
         if desc_is_null then
           obj = obj.update("description", None)
         end
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let gist =
             GistJsonConverter(json, creds)?
@@ -1868,7 +1868,7 @@ class \nodoc\ _TestGistJsonConverterMissingField
         try
           let obj = _TestGistJson(b)
             .remove(required(skip_idx)?)
-          let json = JsonNav(obj)
+          let json = JSONNav(obj)
           GistJsonConverter(json, creds)?
           h.fail(
             "converter should have raised for "
@@ -1895,7 +1895,7 @@ class \nodoc\ _TestGistJsonConverterAbsentOptionalFields
           .remove("owner")
           .remove("user")
           .remove("comments_enabled")
-        let json = JsonNav(obj)
+        let json = JSONNav(obj)
         try
           let gist =
             GistJsonConverter(json, creds)?
@@ -1934,10 +1934,10 @@ class \nodoc\ _TestStringOrNoneReturnsString
       end, h)(
       {(base, h) =>
         let b: String val = base.clone()
-        let obj = JsonObject.update("key", b)
-        let json = JsonNav(obj)
+        let obj = JSONObject.update("key", b)
+        let json = JSONNav(obj)
         try
-          match JsonNavUtil.string_or_none(
+          match JSONNavUtil.string_or_none(
             json("key"))?
           | let s: String =>
             h.assert_eq[String](b, s)
@@ -1957,9 +1957,9 @@ class \nodoc\ _TestStringOrNoneReturnsNone
     "string-or-none/returns-none"
 
   fun ref apply(h: TestHelper) ? =>
-    let obj = JsonObject.update("key", None)
-    let json = JsonNav(obj)
-    match JsonNavUtil.string_or_none(
+    let obj = JSONObject.update("key", None)
+    let json = JSONNav(obj)
+    match JSONNavUtil.string_or_none(
       json("key"))?
     | None => None
     | let _: String =>
@@ -1977,10 +1977,10 @@ class \nodoc\ _TestStringOrNoneRaisesOnInvalid
       recover val Generators.i64() end, h)(
       {(value, h) =>
         let obj =
-          JsonObject.update("key", value)
-        let json = JsonNav(obj)
+          JSONObject.update("key", value)
+        let json = JSONNav(obj)
         try
-          JsonNavUtil.string_or_none(
+          JSONNavUtil.string_or_none(
             json("key"))?
           h.fail(
             "should raise for I64 value "
@@ -1988,10 +1988,10 @@ class \nodoc\ _TestStringOrNoneRaisesOnInvalid
         end
       })?
     // Missing key should also raise
-    let empty = JsonObject
-    let json = JsonNav(empty)
+    let empty = JSONObject
+    let json = JSONNav(empty)
     try
-      JsonNavUtil.string_or_none(
+      JSONNavUtil.string_or_none(
         json("missing"))?
       h.fail("should raise for missing key")
     end
@@ -2001,10 +2001,10 @@ class \nodoc\ _TestJsonTypeStringAllArms is UnitTest
     "json-type-string/all-arms"
 
   fun ref apply(h: TestHelper) =>
-    let obj = JsonObject.update("a", "b")
-    let arr = JsonArray.push("x")
-    let nav = JsonNav(
-      JsonObject
+    let obj = JSONObject.update("a", "b")
+    let arr = JSONArray.push("x")
+    let nav = JSONNav(
+      JSONObject
         .update("obj", obj)
         .update("arr", arr)
         .update("str", "hello")
@@ -2013,21 +2013,21 @@ class \nodoc\ _TestJsonTypeStringAllArms is UnitTest
         .update("bool", true)
         .update("null", None))
     h.assert_eq[String](obj.print(),
-      req.JsonTypeString(nav("obj")))
+      req.JSONTypeString(nav("obj")))
     h.assert_eq[String](arr.print(),
-      req.JsonTypeString(nav("arr")))
+      req.JSONTypeString(nav("arr")))
     h.assert_eq[String]("hello",
-      req.JsonTypeString(nav("str")))
+      req.JSONTypeString(nav("str")))
     h.assert_eq[String](I64(42).string(),
-      req.JsonTypeString(nav("i64")))
+      req.JSONTypeString(nav("i64")))
     h.assert_eq[String](F64(3.14).string(),
-      req.JsonTypeString(nav("f64")))
+      req.JSONTypeString(nav("f64")))
     h.assert_eq[String]("true",
-      req.JsonTypeString(nav("bool")))
+      req.JSONTypeString(nav("bool")))
     h.assert_eq[String]("null",
-      req.JsonTypeString(nav("null")))
-    h.assert_eq[String]("JsonNotFound",
-      req.JsonTypeString(nav("missing")))
+      req.JSONTypeString(nav("null")))
+    h.assert_eq[String]("JSONNotFound",
+      req.JSONTypeString(nav("missing")))
 
 class \nodoc\ _TestJsonTypeStringI64Property
   is UnitTest
@@ -2039,8 +2039,8 @@ class \nodoc\ _TestJsonTypeStringI64Property
       recover val Generators.i64() end, h)(
       {(value, h) =>
         let obj =
-          JsonObject.update("k", value)
-        let json = JsonNav(obj)
+          JSONObject.update("k", value)
+        let json = JSONNav(obj)
         h.assert_eq[String](value.string(),
-          req.JsonTypeString(json("k")))
+          req.JSONTypeString(json("k")))
       })?

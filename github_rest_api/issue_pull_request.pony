@@ -28,15 +28,15 @@ class val IssuePullRequest
     patch_url = patch_url'
     merged_at = merged_at'
 
-primitive IssuePullRequestJsonConverter is req.JsonConverter[IssuePullRequest]
+primitive IssuePullRequestJsonConverter is req.JSONConverter[IssuePullRequest]
   """
   Converts a JSON object into an IssuePullRequest.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): IssuePullRequest ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): IssuePullRequest ? =>
     let url = json("url").as_string()?
     let html_url = json("html_url").as_string()?
     let diff_url = json("diff_url").as_string()?
     let patch_url = json("patch_url").as_string()?
-    let merged_at = JsonNavUtil.string_or_none(json("merged_at"))?
+    let merged_at = JSONNavUtil.string_or_none(json("merged_at"))?
 
     IssuePullRequest(url, html_url, diff_url, patch_url, merged_at)

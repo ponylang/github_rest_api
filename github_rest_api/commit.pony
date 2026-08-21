@@ -60,19 +60,19 @@ primitive GetCommit
     let p = Promise[CommitOrError]
     let receiver = req.ResultReceiver[Commit](creds, p, CommitJsonConverter)
 
-    req.JsonRequester.get(creds, url, receiver)
+    req.JSONRequester.get(creds, url, receiver)
     p
 
-primitive CommitJsonConverter is req.JsonConverter[Commit]
+primitive CommitJsonConverter is req.JSONConverter[Commit]
   """
   Converts a JSON object from the commits API into a Commit.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): Commit ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): Commit ? =>
     let sha = json("sha").as_string()?
 
     let files = recover trn Array[CommitFile] end
     for f in json("files").as_array()?.values() do
-      let file = CommitFileJsonConverter(JsonNav(f), creds)?
+      let file = CommitFileJsonConverter(JSONNav(f), creds)?
       files.push(file)
     end
 

@@ -81,7 +81,7 @@ primitive GetGistComment
       p,
       GistCommentJsonConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
 primitive GetGistComments
@@ -145,8 +145,8 @@ primitive CreateGistComment
       p,
       GistCommentJsonConverter)
 
-    let json = JsonObject.update("body", body).print()
-    req.JsonRequester.post(creds, url, consume json, r)
+    let json = JSONObject.update("body", body).print()
+    req.JSONRequester.post(creds, url, consume json, r)
     p
 
 primitive UpdateGistComment
@@ -180,8 +180,8 @@ primitive UpdateGistComment
       p,
       GistCommentJsonConverter)
 
-    let json = JsonObject.update("body", body).print()
-    req.JsonRequester.patch(creds, url, consume json, r)
+    let json = JSONObject.update("body", body).print()
+    req.JSONRequester.patch(creds, url, consume json, r)
     p
 
 primitive DeleteGistComment
@@ -214,11 +214,11 @@ primitive DeleteGistComment
     req.NoContentRequester.delete(creds, url, r)
     p
 
-primitive GistCommentJsonConverter is req.JsonConverter[GistComment]
+primitive GistCommentJsonConverter is req.JSONConverter[GistComment]
   """
   Converts a JSON object from the gist comments API into a GistComment.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): GistComment ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): GistComment ? =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let url = json("url").as_string()?

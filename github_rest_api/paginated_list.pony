@@ -11,7 +11,7 @@ interface tag LinkedResultReceiver
   Receives the result of an HTTP GET request that returns JSON along with a
   Link header. Used by both paginated list and search result requesters.
   """
-  be success(json: JsonNav, link_header: String)
+  be success(json: JSONNav, link_header: String)
   be failure(status: U16, response_body: String, message: String)
 
 class val PaginatedList[A: Any val]
@@ -28,7 +28,7 @@ class val PaginatedList[A: Any val]
   let results: Array[A] val
 
   new val _from_array(creds: req.Credentials,
-    converter: req.JsonConverter[A],
+    converter: req.JSONConverter[A],
     results': Array[A] val,
     prev_link: (String | None) = None,
     next_link: (String | None) = None)
@@ -73,23 +73,23 @@ class val PaginatedListJsonConverter[A: Any val]
   """
   Converts a JSON array response with Link header pagination into a
   PaginatedList. Delegates individual item conversion to the wrapped
-  JsonConverter.
+  JSONConverter.
   """
   let _creds: req.Credentials
-  let _converter: req.JsonConverter[A]
+  let _converter: req.JSONConverter[A]
 
-  new val create(creds: req.Credentials, converter: req.JsonConverter[A]) =>
+  new val create(creds: req.Credentials, converter: req.JSONConverter[A]) =>
     _creds = creds
     _converter = converter
 
-  fun apply(json: JsonNav,
+  fun apply(json: JSONNav,
     link_header: String,
     creds: req.Credentials): PaginatedList[A] ?
   =>
     let entries = recover trn Array[A] end
 
     for i in json.as_array()?.values() do
-      let e = _converter(JsonNav(i), creds)?
+      let e = _converter(JSONNav(i), creds)?
       entries.push(e)
     end
 
@@ -118,12 +118,12 @@ actor PaginatedResultReceiver[A: Any val]
     _p = p
     _converter = c
 
-  be success(json: JsonNav, link_header: String) =>
+  be success(json: JSONNav, link_header: String) =>
     try
       _p(_converter(json, link_header, _creds)?)
     else
       let m = recover val
-        "Unable to convert json for " + req.JsonTypeString(json)
+        "Unable to convert json for " + req.JSONTypeString(json)
       end
 
       _p(req.RequestError(where message' = m))
@@ -234,9 +234,9 @@ actor LinkedJsonRequester is courier.HTTPClientConnectionActor
       let response = _collector.build()?
       if _status == 200 then
         match \exhaustive\ courier.ResponseJSON(response)
-        | let json: JsonValue =>
-          _receiver.success(JsonNav(json), _link_header)
-        | let _: JsonParseError =>
+        | let json: JSONValue =>
+          _receiver.success(JSONNav(json), _link_header)
+        | let _: JSONParseError =>
           _receiver.failure(_status, "", "Failed to parse response")
         end
       else

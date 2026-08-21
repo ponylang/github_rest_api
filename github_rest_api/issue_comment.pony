@@ -58,8 +58,8 @@ primitive CreateIssueComment
       p,
       IssueCommentJsonConverter)
 
-    let json = JsonObject.update("body", comment).print()
-    req.JsonRequester.post(creds, url, consume json, r)
+    let json = JSONObject.update("body", comment).print()
+    req.JSONRequester.post(creds, url, consume json, r)
     p
 
 primitive GetIssueComments
@@ -87,7 +87,7 @@ primitive GetIssueComments
       p,
       IssueCommentsJsonConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
 primitive IssueCommentsURL
@@ -110,11 +110,11 @@ primitive IssueCommentsURL
       e
     end
 
-primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
+primitive IssueCommentJsonConverter is req.JSONConverter[IssueComment]
   """
   Converts a JSON object into an IssueComment.
   """
-  fun apply(json: JsonNav,
+  fun apply(json: JSONNav,
     creds: req.Credentials): IssueComment ?
   =>
     let body = json("body").as_string()?
@@ -124,17 +124,17 @@ primitive IssueCommentJsonConverter is req.JsonConverter[IssueComment]
 
     IssueComment(creds, body, url, html_url, issue_url)
 
-primitive IssueCommentsJsonConverter is req.JsonConverter[Array[IssueComment] val]
+primitive IssueCommentsJsonConverter is req.JSONConverter[Array[IssueComment] val]
   """
   Converts a JSON array of issue comment objects into an Array of IssueComment.
   """
-  fun apply(json: JsonNav,
+  fun apply(json: JSONNav,
     creds: req.Credentials): Array[IssueComment] val ?
   =>
     let comments = recover trn Array[IssueComment] end
 
     for i in json.as_array()?.values() do
-      let comment = IssueCommentJsonConverter(JsonNav(i), creds)?
+      let comment = IssueCommentJsonConverter(JSONNav(i), creds)?
       comments.push(comment)
     end
 

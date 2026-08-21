@@ -6,7 +6,7 @@ use ssl = "ssl/net"
 
 // --- Test receiver actors ---
 
-actor \nodoc\ _TestJsonSuccessReceiver is req.JsonRequesterResultReceiver
+actor \nodoc\ _TestJsonSuccessReceiver is req.JSONRequesterResultReceiver
   let _h: TestHelper
   let _expected_key: String
   let _expected_value: String
@@ -19,7 +19,7 @@ actor \nodoc\ _TestJsonSuccessReceiver is req.JsonRequesterResultReceiver
     _expected_key = expected_key
     _expected_value = expected_value
 
-  be success(json: JsonNav) =>
+  be success(json: JSONNav) =>
     try
       let actual = json(_expected_key).as_string()?
       _h.assert_eq[String](_expected_value, actual)
@@ -35,7 +35,7 @@ actor \nodoc\ _TestJsonSuccessReceiver is req.JsonRequesterResultReceiver
         + " body=" + response_body + " msg=" + message)
     _h.complete(false)
 
-actor \nodoc\ _TestJsonFailureReceiver is req.JsonRequesterResultReceiver
+actor \nodoc\ _TestJsonFailureReceiver is req.JSONRequesterResultReceiver
   let _h: TestHelper
   let _expected_status: U16
   let _expected_body: String
@@ -51,7 +51,7 @@ actor \nodoc\ _TestJsonFailureReceiver is req.JsonRequesterResultReceiver
     _expected_body = expected_body
     _expected_message = expected_message
 
-  be success(json: JsonNav) =>
+  be success(json: JSONNav) =>
     _h.fail("Expected failure, got success")
     _h.complete(false)
 
@@ -155,7 +155,7 @@ actor \nodoc\ _TestLinkedSuccessReceiver is LinkedResultReceiver
     _expected_value = expected_value
     _expected_link = expected_link
 
-  be success(json: JsonNav, link_header: String) =>
+  be success(json: JSONNav, link_header: String) =>
     try
       let actual = json(_expected_key).as_string()?
       _h.assert_eq[String](_expected_value, actual)
@@ -185,7 +185,7 @@ actor \nodoc\ _TestLinkedFailureReceiver is LinkedResultReceiver
     _expected_status = expected_status
     _expected_body = expected_body
 
-  be success(json: JsonNav, link_header: String) =>
+  be success(json: JSONNav, link_header: String) =>
     _h.fail("Expected failure, got success")
     _h.complete(false)
 
@@ -218,7 +218,7 @@ class \nodoc\ _TestJsonRequesterGetSuccess is UnitTest
       } val
     let listener = _MockHTTPListener(h, port, sslctx, responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -244,7 +244,7 @@ class \nodoc\ _TestJsonRequesterGetFailure is UnitTest
       } val
     let listener = _MockHTTPListener(h, port, sslctx, responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -270,7 +270,7 @@ class \nodoc\ _TestJsonRequesterPostSuccess is UnitTest
       } val
     let listener = _MockHTTPListener(h, port, sslctx, responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.post(creds, url, "{}", receiver)
+        req.JSONRequester.post(creds, url, "{}", receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -304,7 +304,7 @@ class \nodoc\ _TestJsonRequesterGetRedirect is UnitTest
       } val
     let listener = _MockHTTPListener(h, port, sslctx, responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -332,7 +332,7 @@ class \nodoc\ _TestJsonRequesterGetParseError is UnitTest
       } val
     let listener = _MockHTTPListener(h, port, sslctx, responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -574,7 +574,7 @@ class \nodoc\ _TestBearerTokenSent is UnitTest
       } val
     let listener = _MockHTTPListener(h, port, sslctx, responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 
@@ -604,7 +604,7 @@ class \nodoc\ _TestNoTokenNoAuthHeader is UnitTest
       } val
     let listener = _MockHTTPListener(h, port, sslctx, responder,
       {()(creds, url, receiver) =>
-        req.JsonRequester.get(creds, url, receiver)
+        req.JSONRequester.get(creds, url, receiver)
       } val)
     h.dispose_when_done(listener)
 

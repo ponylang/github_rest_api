@@ -103,6 +103,9 @@ actor \nodoc\ _MockHTTPConnection
   fun ref _connection(): lori.TCPConnection =>
     _tcp_connection
 
+  fun ref _on_start_failure(reason: lori.StartFailureReason) =>
+    None
+
   fun ref _on_received(data: Array[U8] iso): lori.ReadAction =>
     _buf.append(consume data)
     if _buf.contains("\r\n\r\n") then

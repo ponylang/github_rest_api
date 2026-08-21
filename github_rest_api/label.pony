@@ -71,7 +71,7 @@ primitive CreateLabel
       p,
       LabelJsonConverter)
 
-    var obj = JsonObject.update("name", name)
+    var obj = JSONObject.update("name", name)
     match color
     | let c: String => obj = obj.update("color", c)
     end
@@ -79,7 +79,7 @@ primitive CreateLabel
     | let d: String => obj = obj.update("description", d)
     end
     let json = obj.print()
-    req.JsonRequester.post(creds, url, consume json, r)
+    req.JSONRequester.post(creds, url, consume json, r)
     p
 
 primitive DeleteLabel
@@ -116,18 +116,18 @@ primitive DeleteLabel
     req.NoContentRequester.delete(creds, url, r)
     p
 
-primitive LabelJsonConverter is req.JsonConverter[Label]
+primitive LabelJsonConverter is req.JSONConverter[Label]
   """
   Converts a JSON object into a Label.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): Label ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): Label ? =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let url = json("url").as_string()?
     let name = json("name").as_string()?
     let color = json("color").as_string()?
     let default = json("default").as_bool()?
-    let description = JsonNavUtil.string_or_none(json("description"))?
+    let description = JSONNavUtil.string_or_none(json("description"))?
 
     Label(creds,
       id,

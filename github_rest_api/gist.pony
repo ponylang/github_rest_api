@@ -181,7 +181,7 @@ primitive GetGist
     let p = Promise[GistOrError]
     let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
 primitive CreateGist
@@ -209,13 +209,13 @@ primitive CreateGist
     let p = Promise[GistOrError]
     let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
 
-    var files_obj = JsonObject
+    var files_obj = JSONObject
     for (name, content) in files.values() do
       files_obj = files_obj.update(name,
-        JsonObject.update("content", content))
+        JSONObject.update("content", content))
     end
 
-    var obj = JsonObject
+    var obj = JSONObject
       .update("files", files_obj)
       .update("public", is_public)
     match description
@@ -223,7 +223,7 @@ primitive CreateGist
     end
     let json = obj.print()
 
-    req.JsonRequester.post(creds, url, consume json, r)
+    req.JSONRequester.post(creds, url, consume json, r)
     p
 
 primitive UpdateGist
@@ -257,14 +257,14 @@ primitive UpdateGist
     let p = Promise[GistOrError]
     let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
 
-    var files_obj = JsonObject
+    var files_obj = JSONObject
     for (name, update) in files.values() do
       match \exhaustive\ update
       | let edit: GistFileEdit =>
         files_obj = files_obj.update(name,
-          JsonObject.update("content", edit.content))
+          JSONObject.update("content", edit.content))
       | let rename: GistFileRename =>
-        var entry = JsonObject.update("filename", rename.filename)
+        var entry = JSONObject.update("filename", rename.filename)
         match rename.content
         | let c: String => entry = entry.update("content", c)
         end
@@ -274,13 +274,13 @@ primitive UpdateGist
       end
     end
 
-    var obj = JsonObject.update("files", files_obj)
+    var obj = JSONObject.update("files", files_obj)
     match description
     | let d: String => obj = obj.update("description", d)
     end
     let json = obj.print()
 
-    req.JsonRequester.patch(creds, url, consume json, r)
+    req.JSONRequester.patch(creds, url, consume json, r)
     p
 
 primitive DeleteGist
@@ -403,7 +403,7 @@ primitive ForkGist
     let p = Promise[GistOrError]
     let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
 
-    req.JsonRequester.post(creds, url, "", r)
+    req.JSONRequester.post(creds, url, "", r)
     p
 
 primitive GetGistForks
@@ -560,23 +560,23 @@ primitive _GetPaginatedGists
     LinkedJsonRequester(creds, url, r)
     p
 
-primitive GistJsonConverter is req.JsonConverter[Gist]
+primitive GistJsonConverter is req.JSONConverter[Gist]
   """
   Converts a JSON object from the GitHub gist API into a Gist. Handles the
   files object by iterating its key-value pairs and converting each value with
   GistFileJsonConverter.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): Gist ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): Gist ? =>
     let id = json("id").as_string()?
     let node_id = json("node_id").as_string()?
-    let description = JsonNavUtil.string_or_none(json("description"))?
+    let description = JSONNavUtil.string_or_none(json("description"))?
     let public = json("public").as_bool()?
     let owner = try UserJsonConverter(json("owner"), creds)? else None end
     let user = try UserJsonConverter(json("user"), creds)? else None end
 
     let files = recover trn Array[(String, GistFile)] end
     for (name, value) in json("files").as_object()?.pairs() do
-      let gf = GistFileJsonConverter(JsonNav(value), creds)?
+      let gf = GistFileJsonConverter(JSONNav(value), creds)?
       files.push((name, gf))
     end
 

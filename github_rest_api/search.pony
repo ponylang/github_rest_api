@@ -40,7 +40,7 @@ class val SearchResults[A: Any val]
   let items: Array[A] val
 
   new val _create(creds: req.Credentials,
-    converter: req.JsonConverter[A],
+    converter: req.JSONConverter[A],
     total_count': I64,
     incomplete_results': Bool,
     items': Array[A] val,
@@ -91,13 +91,13 @@ class val PaginatedSearchJsonConverter[A: Any val]
   and `items` fields) plus Link header pagination into SearchResults.
   """
   let _creds: req.Credentials
-  let _converter: req.JsonConverter[A]
+  let _converter: req.JSONConverter[A]
 
-  new val create(creds: req.Credentials, converter: req.JsonConverter[A]) =>
+  new val create(creds: req.Credentials, converter: req.JSONConverter[A]) =>
     _creds = creds
     _converter = converter
 
-  fun apply(json: JsonNav,
+  fun apply(json: JSONNav,
     link_header: String,
     creds: req.Credentials): SearchResults[A] ?
   =>
@@ -106,7 +106,7 @@ class val PaginatedSearchJsonConverter[A: Any val]
 
     let items = recover trn Array[A] end
     for i in json("items").as_array()?.values() do
-      let item = _converter(JsonNav(i), creds)?
+      let item = _converter(JSONNav(i), creds)?
       items.push(item)
     end
 
@@ -137,12 +137,12 @@ actor SearchResultReceiver[A: Any val]
     _p = p
     _converter = c
 
-  be success(json: JsonNav, link_header: String) =>
+  be success(json: JSONNav, link_header: String) =>
     try
       _p(_converter(json, link_header, _creds)?)
     else
       let m = recover val
-        "Unable to convert json for " + req.JsonTypeString(json)
+        "Unable to convert json for " + req.JSONTypeString(json)
       end
 
       _p(req.RequestError(where message' = m))
