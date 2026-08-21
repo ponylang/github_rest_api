@@ -7,7 +7,6 @@ class val Asset
   its name, size, download count, and the browser download URL.
   """
   let _creds: req.Credentials
-
   let id: I64
   let node_id: String
   let name: String
@@ -19,7 +18,6 @@ class val Asset
   let download_count: I64
   let created_at: String
   let updated_at: String
-
   let url: String
   let browser_download_url: String
 
@@ -53,16 +51,19 @@ class val Asset
     url = url'
     browser_download_url = browser_download_url'
 
-primitive AssetJsonConverter is req.JSONConverter[Asset]
+primitive AssetJSONConverter is req.JSONConverter[Asset]
   """
   Converts a JSON object into an Asset.
   """
   fun apply(json: JSONNav, creds: req.Credentials): Asset ? =>
+    """
+    Parses the JSON representation of a release asset.
+    """
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let name = json("name").as_string()?
     let label = JSONNavUtil.string_or_none(json("label"))?
-    let uploader = UserJsonConverter(json("uploader"), creds)?
+    let uploader = UserJSONConverter(json("uploader"), creds)?
     let content_type = json("content_type").as_string()?
     let state = json("state").as_string()?
     let size = json("size").as_i64()?
@@ -72,7 +73,8 @@ primitive AssetJsonConverter is req.JSONConverter[Asset]
     let url = json("url").as_string()?
     let browser_download_url = json("browser_download_url").as_string()?
 
-    Asset(creds,
+    Asset(
+      creds,
       id,
       node_id,
       name,

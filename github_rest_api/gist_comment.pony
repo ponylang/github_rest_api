@@ -64,22 +64,27 @@ primitive GetGistComment
       "https://api.github.com/gists{/gist_id}/comments{/comment_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
-        .>set("comment_id", comment_id.string())
+        .> set("gist_id", gist_id)
+        .> set("comment_id", comment_id.string())
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[GistCommentOrError].>apply(
+      Promise[GistCommentOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     creds: req.Credentials): Promise[GistCommentOrError]
   =>
+    """
+    Fetches a gist comment by its direct API URL.
+    """
     let p = Promise[GistCommentOrError]
-    let r = req.ResultReceiver[GistComment](creds,
-      p,
-      GistCommentJsonConverter)
+    let r =
+      req.ResultReceiver[GistComment](
+        creds,
+        p,
+        GistCommentJSONConverter)
 
     req.JSONRequester.get(creds, url, r)
     p
@@ -96,11 +101,12 @@ primitive GetGistComments
       "https://api.github.com/gists{/gist_id}/comments")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[(PaginatedList[GistComment] | req.RequestError)].>apply(
+      Promise[(PaginatedList[GistComment] |
+        req.RequestError)] .> apply(
         req.RequestError(where message' = e.message))
     end
 
@@ -108,12 +114,18 @@ primitive GetGistComments
     creds: req.Credentials)
     : Promise[(PaginatedList[GistComment] | req.RequestError)]
   =>
-    let gc = GistCommentJsonConverter
-    let plc = PaginatedListJsonConverter[GistComment](creds, gc)
-    let p = Promise[(PaginatedList[GistComment] | req.RequestError)]
-    let r = PaginatedResultReceiver[GistComment](creds, p, plc)
+    """
+    Fetches gist comments by their direct API URL.
+    """
+    let gc = GistCommentJSONConverter
+    let plc =
+      PaginatedListJSONConverter[GistComment](creds, gc)
+    let p =
+      Promise[(PaginatedList[GistComment] | req.RequestError)]
+    let r =
+      PaginatedResultReceiver[GistComment](creds, p, plc)
 
-    LinkedJsonRequester(creds, url, r)
+    LinkedJSONRequester(creds, url, r)
     p
 
 primitive CreateGistComment
@@ -128,11 +140,11 @@ primitive CreateGistComment
       "https://api.github.com/gists{/gist_id}/comments")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, body, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[GistCommentOrError].>apply(
+      Promise[GistCommentOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
@@ -140,10 +152,15 @@ primitive CreateGistComment
     body: String,
     creds: req.Credentials): Promise[GistCommentOrError]
   =>
+    """
+    Creates a gist comment at the given API URL.
+    """
     let p = Promise[GistCommentOrError]
-    let r = req.ResultReceiver[GistComment](creds,
-      p,
-      GistCommentJsonConverter)
+    let r =
+      req.ResultReceiver[GistComment](
+        creds,
+        p,
+        GistCommentJSONConverter)
 
     let json = JSONObject.update("body", body).print()
     req.JSONRequester.post(creds, url, consume json, r)
@@ -162,12 +179,12 @@ primitive UpdateGistComment
       "https://api.github.com/gists{/gist_id}/comments{/comment_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
-        .>set("comment_id", comment_id.string())
+        .> set("gist_id", gist_id)
+        .> set("comment_id", comment_id.string())
       let u: String val = tpl.expand(vars)
       by_url(u, body, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[GistCommentOrError].>apply(
+      Promise[GistCommentOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
@@ -175,10 +192,15 @@ primitive UpdateGistComment
     body: String,
     creds: req.Credentials): Promise[GistCommentOrError]
   =>
+    """
+    Updates a gist comment at the given API URL.
+    """
     let p = Promise[GistCommentOrError]
-    let r = req.ResultReceiver[GistComment](creds,
-      p,
-      GistCommentJsonConverter)
+    let r =
+      req.ResultReceiver[GistComment](
+        creds,
+        p,
+        GistCommentJSONConverter)
 
     let json = JSONObject.update("body", body).print()
     req.JSONRequester.patch(creds, url, consume json, r)
@@ -196,39 +218,48 @@ primitive DeleteGistComment
       "https://api.github.com/gists{/gist_id}/comments{/comment_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
-        .>set("comment_id", comment_id.string())
+        .> set("gist_id", gist_id)
+        .> set("comment_id", comment_id.string())
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[req.DeletedOrError].>apply(
+      Promise[req.DeletedOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
+    """
+    Deletes a gist comment at the given API URL.
+    """
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
     req.NoContentRequester.delete(creds, url, r)
     p
 
-primitive GistCommentJsonConverter is req.JSONConverter[GistComment]
+primitive GistCommentJSONConverter is req.JSONConverter[GistComment]
   """
   Converts a JSON object from the gist comments API into a GistComment.
   """
   fun apply(json: JSONNav, creds: req.Credentials): GistComment ? =>
+    """
+    Converts a JSON object into a GistComment.
+    """
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let url = json("url").as_string()?
     let body = json("body").as_string()?
-    let user = try UserJsonConverter(json("user"), creds)? else None end
-    let author_association = json("author_association").as_string()?
+    let user =
+      try UserJSONConverter(json("user"), creds)? else None end
+    let author_association =
+      json("author_association").as_string()?
     let created_at = json("created_at").as_string()?
     let updated_at = json("updated_at").as_string()?
 
-    GistComment(creds,
+    GistComment(
+      creds,
       id,
       node_id,
       url,

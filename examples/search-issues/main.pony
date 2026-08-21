@@ -7,34 +7,38 @@ use "promises"
 actor Main
   new create(env: Env) =>
     try
-      // ----- CLI setup
       let cs =
-        CommandSpec.leaf("search-issues",
+        CommandSpec.leaf(
+          "search-issues",
           "Search issues",
           [
-            OptionSpec.string("query", "Query string")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "query",
+              "Query string")
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
-        c
-      | let ch: CommandHelp =>
-        ch.print_help(env.out)
-        return
-      | let se: SyntaxError =>
-        env.err.print(se.string())
-        env.exitcode(1)
-        return
-      end
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(
+          env.args, env.vars)
+        | let c: Command =>
+          c
+        | let ch: CommandHelp =>
+          ch.print_help(env.out)
+          return
+        | let se: SyntaxError =>
+          env.err.print(se.string())
+          env.exitcode(1)
+          return
+        end
 
       let query = cmd.option("query").string()
       let token = cmd.option("token").string()
 
-      // ----- Search issues
       let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
@@ -45,16 +49,30 @@ actor Main
     end
 
 primitive PrintResults
-  fun apply(out: OutStream, r: IssueSearchResultsOrError) =>
+  """
+  Prints issue search results to the given output stream.
+  """
+  fun apply(
+    out: OutStream,
+    r: IssueSearchResultsOrError)
+  =>
     match \exhaustive\ r
     | let results: SearchResults[Issue] =>
-      out.print("Total results: " + results.total_count.string())
+      out.print(
+        "Total results: " +
+        results.total_count.string())
       for i in results.items.values() do
-        out.print(i.title + " #" + i.number.string() + " " + i.html_url)
+        out.print(
+          i.title + " #" +
+          i.number.string() + " " +
+          i.html_url)
       end
       match results.next_page()
-      | let promise: Promise[IssueSearchResultsOrError] =>
-        promise.next[None](PrintResults~apply(out))
+      | let promise: Promise[
+        IssueSearchResultsOrError]
+      =>
+        promise.next[None](
+          PrintResults~apply(out))
       else
         out.print("------- No more results")
       end

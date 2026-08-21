@@ -11,7 +11,6 @@ class val PullRequest
   changed in this pull request.
   """
   let _creds: req.Credentials
-
   let number: I64
   let title: String
   let body: (String | None)
@@ -23,7 +22,8 @@ class val PullRequest
   let files_url: String
   let comments_url: String
 
-  new val create(creds: req.Credentials,
+  new val create(
+    creds: req.Credentials,
     number': I64,
     title': String,
     body': (String | None),
@@ -56,57 +56,82 @@ primitive GetPullRequest
   """
   Fetches a single pull request by owner, repo, and number.
   """
-  fun apply(owner: String,
+  fun apply(
+    owner: String,
     repo: String,
     number: I64,
     creds: req.Credentials): Promise[PullRequestOrError]
   =>
     match \exhaustive\ ut.URITemplateParse(
-      "https://api.github.com/repos{/owner}{/repo}/pulls{/number}")
+      "https://api.github.com/repos" +
+      "{/owner}{/repo}/pulls{/number}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
-        .>set("number", number.string())
+        .> set("owner", owner)
+        .> set("repo", repo)
+        .> set("number", number.string())
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[PullRequestOrError].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[PullRequestOrError] .> apply(
+        req.RequestError(
+          where message' = e.message))
     end
 
-  fun by_url(url: String, creds: req.Credentials): Promise[PullRequestOrError] =>
+  fun by_url(
+    url: String,
+    creds: req.Credentials
+  ): Promise[PullRequestOrError]
+  =>
+    """
+    Fetches a pull request from a URL.
+    """
     let p = Promise[PullRequestOrError]
-    let r = req.ResultReceiver[PullRequest](creds,
-      p,
-      PullRequestJsonConverter)
+    let r =
+      req.ResultReceiver[PullRequest](
+        creds,
+        p,
+        PullRequestJSONConverter)
 
     req.JSONRequester.get(creds, url, r)
     p
 
-primitive PullRequestJsonConverter is req.JSONConverter[PullRequest]
+primitive PullRequestJSONConverter is
+  req.JSONConverter[PullRequest]
   """
   Converts a JSON object from the pulls API into a PullRequest.
   """
-  fun apply(json: JSONNav, creds: req.Credentials): PullRequest ? =>
+  fun apply(
+    json: JSONNav,
+    creds: req.Credentials): PullRequest ?
+  =>
+    """
+    Builds a PullRequest from its JSON representation.
+    """
     let number = json("number").as_i64()?
     let title = json("title").as_string()?
-    let body = JSONNavUtil.string_or_none(json("body"))?
+    let body =
+      JSONNavUtil.string_or_none(json("body"))?
     let state = json("state").as_string()?
 
     let labels = recover trn Array[Label] end
     for i in json("labels").as_array()?.values() do
-      let l = LabelJsonConverter(JSONNav(i), creds)?
+      let l =
+        LabelJSONConverter(JSONNav(i), creds)?
       labels.push(l)
     end
 
-    let base = PullRequestBaseJsonConverter(json("base"), creds)?
+    let base =
+      PullRequestBaseJSONConverter(
+        json("base"), creds)?
 
     let url = json("url").as_string()?
     let html_url = json("html_url").as_string()?
-    let comments_url = json("comments_url").as_string()?
+    let comments_url =
+      json("comments_url").as_string()?
 
-    PullRequest(creds,
+    PullRequest(
+      creds,
       number,
       title,
       body,

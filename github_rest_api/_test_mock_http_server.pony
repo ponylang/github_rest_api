@@ -22,13 +22,13 @@ primitive \nodoc\ _TestSSLContext
     let file_auth = FileAuth(h.env.root)
     recover val
       ssl.SSLContext
-        .>set_authority(
+        .> set_authority(
           FilePath(file_auth, "assets/cert.pem"))?
-        .>set_cert(
+        .> set_cert(
           FilePath(file_auth, "assets/cert.pem"),
           FilePath(file_auth, "assets/key.pem"))?
-        .>set_client_verify(false)
-        .>set_server_verify(false)
+        .> set_client_verify(false)
+        .> set_server_verify(false)
     end
 
 // Type aliases can't carry annotations; the underscore prefix keeps it
@@ -57,11 +57,12 @@ actor \nodoc\ _MockHTTPListener is lori.TCPListenerActor
     _sslctx = sslctx
     _responder = responder
     _on_listening_cb = on_listening_cb
-    _tcp_listener = lori.TCPListener(
-      lori.TCPListenAuth(h.env.root),
-      _TestHost(),
-      port,
-      this)
+    _tcp_listener =
+      lori.TCPListener(
+        lori.TCPListenAuth(h.env.root),
+        _TestHost(),
+        port,
+        this)
 
   fun ref _listener(): lori.TCPListener =>
     _tcp_listener
@@ -93,12 +94,13 @@ actor \nodoc\ _MockHTTPConnection
     responder: _Responder)
   =>
     _responder = responder
-    _tcp_connection = lori.TCPConnection.ssl_server(
-      server_auth,
-      sslctx,
-      fd,
-      this,
-      this)
+    _tcp_connection =
+      lori.TCPConnection.ssl_server(
+        server_auth,
+        sslctx,
+        fd,
+        this,
+        this)
 
   fun ref _connection(): lori.TCPConnection =>
     _tcp_connection

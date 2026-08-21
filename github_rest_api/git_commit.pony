@@ -25,13 +25,18 @@ class val GitCommit
     message = message'
     url = url'
 
-primitive GitCommitJsonConverter is req.JSONConverter[GitCommit]
+primitive GitCommitJSONConverter is req.JSONConverter[GitCommit]
   """
   Converts a JSON object into a GitCommit.
   """
   fun apply(json: JSONNav, creds: req.Credentials): GitCommit ? =>
-    let author = GitPersonJsonConverter(json("author"), creds)?
-    let committer = GitPersonJsonConverter(json("committer"), creds)?
+    """
+    Parses the JSON representation of a git commit.
+    """
+    let author =
+      GitPersonJSONConverter(json("author"), creds)?
+    let committer =
+      GitPersonJSONConverter(json("committer"), creds)?
     let message = json("message").as_string()?
     let url = json("url").as_string()?
 

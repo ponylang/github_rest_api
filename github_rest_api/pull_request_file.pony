@@ -4,7 +4,9 @@ use req = "request"
 use ut = "uri/template"
 
 type PullRequestFiles is Array[PullRequestFile] val
-type PullRequestFilesOrError is (PullRequestFiles | req.RequestError)
+
+type PullRequestFilesOrError is
+  (PullRequestFiles | req.RequestError)
 
 class val PullRequestFile
   """
@@ -21,45 +23,59 @@ primitive GetPullRequestFiles
   """
   Fetches the list of files changed in a pull request.
   """
-  fun apply(owner: String,
+  fun apply(
+    owner: String,
     repo: String,
     number: I64,
     creds: req.Credentials): Promise[PullRequestFilesOrError]
   =>
     match \exhaustive\ ut.URITemplateParse(
-      "https://api.github.com/repos{/owner}{/repo}/pulls{/number}/files")
+      "https://api.github.com/repos" +
+      "{/owner}{/repo}/pulls{/number}/files")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
-        .>set("number", number.string())
+        .> set("owner", owner)
+        .> set("repo", repo)
+        .> set("number", number.string())
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[PullRequestFilesOrError].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[PullRequestFilesOrError] .> apply(
+        req.RequestError(
+          where message' = e.message))
     end
 
-  fun by_url(url: String,
-    creds: req.Credentials): Promise[PullRequestFilesOrError]
+  fun by_url(
+    url: String,
+    creds: req.Credentials
+  ): Promise[PullRequestFilesOrError]
   =>
+    """
+    Fetches pull request files from a URL.
+    """
     let p = Promise[PullRequestFilesOrError]
-    let r = req.ResultReceiver[PullRequestFiles](creds,
-      p,
-      PullRequestFilesJsonConverter)
+    let r =
+      req.ResultReceiver[PullRequestFiles](
+        creds,
+        p,
+        PullRequestFilesJSONConverter)
 
     req.JSONRequester.get(creds, url, r)
     p
 
-primitive PullRequestFilesJsonConverter is
+primitive PullRequestFilesJSONConverter is
   req.JSONConverter[Array[PullRequestFile] val]
   """
   Converts a JSON array of pull request file objects into an Array of
   PullRequestFile.
   """
-  fun apply(json: JSONNav,
+  fun apply(
+    json: JSONNav,
     creds: req.Credentials): Array[PullRequestFile] val ?
   =>
+    """
+    Builds a PullRequestFile array from JSON.
+    """
     let files = recover trn Array[PullRequestFile] end
 
     for i in json.as_array()?.values() do

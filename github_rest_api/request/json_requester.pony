@@ -75,19 +75,19 @@ actor JSONRequester is courier.HTTPClientConnectionActor
     _connect(url)
 
   fun ref _connect(url: String) =>
-    match uri.ParseURI(url)
+    match \exhaustive\ uri.ParseURI(url)
     | let parsed: uri.URI val =>
-      match parsed.authority
+      match \exhaustive\ parsed.authority
       | let auth: uri.URIAuthority =>
         _request_path = parsed.path
         match parsed.query
         | let q: String => _request_path = _request_path + "?" + q
         end
-        let port = match auth.port
+        let port = match \exhaustive\ auth.port
         | let p: U16 => p.string()
         | None => "443"
         end
-        let ctx = match _creds.ssl_ctx
+        let ctx = match \exhaustive\ _creds.ssl_ctx
         | let c: ssl.SSLContext val => c
         | None => SSLContextFactory()
         end
@@ -121,7 +121,7 @@ actor JSONRequester is courier.HTTPClientConnectionActor
       _method,
       _request_path,
       consume hdrs,
-      match _body
+      match \exhaustive\ _body
       | let b: String => b.array()
       | None => None
       end)

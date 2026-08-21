@@ -6,36 +6,42 @@ use lori = "lori"
 actor Main
   new create(env: Env) =>
     try
-      // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-repository",
+        CommandSpec.leaf(
+          "get-repository",
           "Get information about a repository",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "owner",
+              "Owner of the repository")
+            OptionSpec.string(
+              "repo",
+              "Name of the repository")
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
-        c
-      | let ch: CommandHelp =>
-        ch.print_help(env.out)
-        return
-      | let se: SyntaxError =>
-        env.err.print(se.string())
-        env.exitcode(1)
-        return
-      end
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(
+          env.args, env.vars)
+        | let c: Command =>
+          c
+        | let ch: CommandHelp =>
+          ch.print_help(env.out)
+          return
+        | let se: SyntaxError =>
+          env.err.print(se.string())
+          env.exitcode(1)
+          return
+        end
 
       let owner = cmd.option("owner").string()
       let repo = cmd.option("repo").string()
       let token = cmd.option("token").string()
 
-      // ----- Get repository
       let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
@@ -46,6 +52,9 @@ actor Main
     end
 
 primitive PrintRepository
+  """
+  Prints repository details to the given output stream.
+  """
   fun apply(out: OutStream, c: RepositoryOrError) =>
     match \exhaustive\ c
     | let repo: Repository =>

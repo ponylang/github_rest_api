@@ -2,44 +2,56 @@ use "json"
 use "promises"
 use req = "request"
 
-type IssueSearchResultsOrError is (SearchResults[Issue] | req.RequestError)
+type IssueSearchResultsOrError is
+  (SearchResults[Issue] | req.RequestError)
 
 primitive SearchIssues
   """
-  Searches GitHub issues and pull requests using the given query string.
+  Searches GitHub issues and pull requests using the given query
+  string.
   """
-  fun apply(query: String,
-    creds: req.Credentials): Promise[IssueSearchResultsOrError]
+  fun apply(
+    query: String,
+    creds: req.Credentials)
+    : Promise[IssueSearchResultsOrError]
   =>
+    """
+    Searches issues matching the given query string.
+    """
     let p = Promise[IssueSearchResultsOrError]
-    let sc = PaginatedSearchJsonConverter[Issue](creds, IssueJsonConverter)
+    let sc =
+      PaginatedSearchJSONConverter[Issue](
+        creds, IssueJSONConverter)
     let r = SearchResultReceiver[Issue](creds, p, sc)
 
-    let url = recover val
-      "https://api.github.com/search/issues"
-        + req.QueryParams(recover val [("q", query)] end)
-    end
+    let url =
+      recover val
+        "https://api.github.com/search/issues" +
+          req.QueryParams(
+            recover val [("q", query)] end)
+      end
 
-    LinkedJsonRequester(creds, url, r)
+    LinkedJSONRequester(creds, url, r)
 
     p
 
 class val SearchResults[A: Any val]
   """
-  A page of search results from the GitHub search API. Contains the total
-  match count, an incomplete-results flag, and the items for this page. Use
-  `prev_page()` and `next_page()` to navigate between pages.
+  A page of search results from the GitHub search API. Contains
+  the total match count, an incomplete-results flag, and the items
+  for this page. Use `prev_page()` and `next_page()` to navigate
+  between pages.
   """
   let _creds: req.Credentials
-  let _converter: PaginatedSearchJsonConverter[A]
+  let _converter: PaginatedSearchJSONConverter[A]
   let _prev_link: (String | None)
   let _next_link: (String | None)
-
   let total_count: I64
   let incomplete_results: Bool
   let items: Array[A] val
 
-  new val _create(creds: req.Credentials,
+  new val _create(
+    creds: req.Credentials,
     converter: req.JSONConverter[A],
     total_count': I64,
     incomplete_results': Bool,
@@ -48,16 +60,21 @@ class val SearchResults[A: Any val]
     next_link: (String | None) = None)
   =>
     _creds = creds
-    _converter = PaginatedSearchJsonConverter[A](creds, converter)
+    _converter =
+      PaginatedSearchJSONConverter[A](creds, converter)
     total_count = total_count'
     incomplete_results = incomplete_results'
     items = items'
     _prev_link = prev_link
     _next_link = next_link
 
-  fun prev_page(): (Promise[(SearchResults[A] | req.RequestError)] | None) =>
+  fun prev_page()
+    : (Promise[(SearchResults[A] | req.RequestError)]
+      | None)
+  =>
     """
-    Fetches the previous page, or returns None if on the first page.
+    Fetches the previous page, or returns None if on the first
+    page.
     """
     match \exhaustive\ _prev_link
     | let prev: String =>
@@ -66,7 +83,10 @@ class val SearchResults[A: Any val]
       None
     end
 
-  fun next_page(): (Promise[(SearchResults[A] | req.RequestError)] | None) =>
+  fun next_page()
+    : (Promise[(SearchResults[A] | req.RequestError)]
+      | None)
+  =>
     """
     Fetches the next page, or returns None if on the last page.
     """
@@ -77,32 +97,45 @@ class val SearchResults[A: Any val]
       None
     end
 
-  fun _retrieve_link(link: String):
-    Promise[(SearchResults[A] | req.RequestError)]
+  fun _retrieve_link(
+    link: String)
+    : Promise[(SearchResults[A] | req.RequestError)]
   =>
-    let p = Promise[(SearchResults[A] | req.RequestError)]
-    let r = SearchResultReceiver[A](_creds, p, _converter)
-    LinkedJsonRequester(_creds, link, r)
+    let p =
+      Promise[(SearchResults[A] | req.RequestError)]
+    let r =
+      SearchResultReceiver[A](_creds, p, _converter)
+    LinkedJSONRequester(_creds, link, r)
     p
 
-class val PaginatedSearchJsonConverter[A: Any val]
+class val PaginatedSearchJSONConverter[A: Any val]
   """
-  Converts a JSON search response (with `total_count`, `incomplete_results`,
-  and `items` fields) plus Link header pagination into SearchResults.
+  Converts a JSON search response (with `total_count`,
+  `incomplete_results`, and `items` fields) plus Link header
+  pagination into SearchResults.
   """
   let _creds: req.Credentials
   let _converter: req.JSONConverter[A]
 
-  new val create(creds: req.Credentials, converter: req.JSONConverter[A]) =>
+  new val create(
+    creds: req.Credentials,
+    converter: req.JSONConverter[A])
+  =>
     _creds = creds
     _converter = converter
 
-  fun apply(json: JSONNav,
+  fun apply(
+    json: JSONNav,
     link_header: String,
-    creds: req.Credentials): SearchResults[A] ?
+    creds: req.Credentials)
+    : SearchResults[A] ?
   =>
+    """
+    Converts a JSON search response into SearchResults.
+    """
     let total_count = json("total_count").as_i64()?
-    let incomplete = json("incomplete_results").as_bool()?
+    let incomplete =
+      json("incomplete_results").as_bool()?
 
     let items = recover trn Array[A] end
     for i in json("items").as_array()?.values() do
@@ -110,9 +143,11 @@ class val PaginatedSearchJsonConverter[A: Any val]
       items.push(item)
     end
 
-    (let prev, let next) = _ExtractPaginationLinks(link_header)
+    (let prev, let next) =
+      _ExtractPaginationLinks(link_header)
 
-    SearchResults[A]._create(_creds,
+    SearchResults[A]._create(
+      _creds,
       _converter,
       total_count,
       incomplete,
@@ -122,16 +157,17 @@ class val PaginatedSearchJsonConverter[A: Any val]
 
 actor SearchResultReceiver[A: Any val]
   """
-  Receives the HTTP response for a search request and fulfills the associated
-  Promise with SearchResults or RequestError.
+  Receives the HTTP response for a search request and fulfills
+  the associated Promise with SearchResults or RequestError.
   """
   let _creds: req.Credentials
   let _p: Promise[(SearchResults[A] | req.RequestError)]
-  let _converter: PaginatedSearchJsonConverter[A]
+  let _converter: PaginatedSearchJSONConverter[A]
 
-  new create(creds: req.Credentials,
+  new create(
+    creds: req.Credentials,
     p: Promise[(SearchResults[A] | req.RequestError)],
-    c: PaginatedSearchJsonConverter[A])
+    c: PaginatedSearchJSONConverter[A])
   =>
     _creds = creds
     _p = p
@@ -141,12 +177,18 @@ actor SearchResultReceiver[A: Any val]
     try
       _p(_converter(json, link_header, _creds)?)
     else
-      let m = recover val
-        "Unable to convert json for " + req.JSONTypeString(json)
-      end
+      let m =
+        recover val
+          "Unable to convert json for " +
+            req.JSONTypeString(json)
+        end
 
       _p(req.RequestError(where message' = m))
     end
 
-  be failure(status: U16, response_body: String, message: String) =>
+  be failure(
+    status: U16,
+    response_body: String,
+    message: String)
+  =>
     _p(req.RequestError(status, response_body, message))

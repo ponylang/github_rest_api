@@ -36,6 +36,7 @@ make unit-tests ssl=3.0.x            # unit tests only
 make test-one t=TestName ssl=3.0.x   # run a single test by name
 make examples ssl=3.0.x              # build examples only
 make config=debug ssl=3.0.x          # debug build
+make lint                            # run pony-lint (no ssl= needed)
 make clean                           # clean build artifacts + corral deps
 ```
 
@@ -43,7 +44,7 @@ make clean                           # clean build artifacts + corral deps
 
 ## Architecture
 
-Every API operation returns `Promise[(T | RequestError)]`. An operation primitive (for example `GetRepository`) builds the URL by RFC 6570 template expansion (`ponylang/uri`), then hands off to a short-lived request actor — `JsonRequester`, `NoContentRequester`, or `CheckRequester` in the `request/` subpackage — that owns a `courier` HTTP connection; the response is turned into a model by a `JsonConverter[T]`, and the promise is fulfilled with the model or a `RequestError`. Paginated results come back as `PaginatedList[A]`, whose `prev_page()`/`next_page()` fetch through `LinkedJsonRequester`, following the HTTP `Link` header (parsed by `ponylang/web_link`).
+Every API operation returns `Promise[(T | RequestError)]`. An operation primitive (for example `GetRepository`) builds the URL by RFC 6570 template expansion (`ponylang/uri`), then hands off to a short-lived request actor — `JSONRequester`, `NoContentRequester`, or `CheckRequester` in the `request/` subpackage — that owns a `courier` HTTP connection; the response is turned into a model by a `JSONConverter[T]`, and the promise is fulfilled with the model or a `RequestError`. Paginated results come back as `PaginatedList[A]`, whose `prev_page()`/`next_page()` fetch through `LinkedJSONRequester`, following the HTTP `Link` header (parsed by `ponylang/web_link`).
 
 The `request/` subpackage is self-contained HTTP infrastructure — it imports nothing from the parent package.
 

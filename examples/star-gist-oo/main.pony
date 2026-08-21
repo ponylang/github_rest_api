@@ -7,69 +7,85 @@ use "promises"
 actor Main
   new create(env: Env) =>
     try
-      // ----- CLI setup
       let cs =
-        CommandSpec.leaf("star-gist-oo",
-          "Star a gist and then check if it is starred",
+        CommandSpec.leaf(
+          "star-gist-oo",
+          "Star a gist then check if it is starred",
           [
-            OptionSpec.string("gist-id", "ID of the gist to star")
-            OptionSpec.string("token", "GitHub personal access token")
+            OptionSpec.string(
+              "gist-id",
+              "ID of the gist to star")
+            OptionSpec.string(
+              "token",
+              "GitHub personal access token")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
-        c
-      | let ch: CommandHelp =>
-        ch.print_help(env.out)
-        return
-      | let se: SyntaxError =>
-        env.err.print(se.string())
-        env.exitcode(1)
-        return
-      end
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(
+          env.args, env.vars)
+        | let c: Command =>
+          c
+        | let ch: CommandHelp =>
+          ch.print_help(env.out)
+          return
+        | let se: SyntaxError =>
+          env.err.print(se.string())
+          env.exitcode(1)
+          return
+        end
 
       let gist_id = cmd.option("gist-id").string()
       let token = cmd.option("token").string()
 
-      // ----- Star gist then check via OO API
       let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
       GitHub(creds).get_gist(gist_id)
-        .flatten_next[DeletedOrError](StarIt~apply())
-        .flatten_next[BoolOrError](CheckIt~apply())
+        .flatten_next[DeletedOrError](
+          StarIt~apply())
+        .flatten_next[BoolOrError](
+          CheckIt~apply())
         .next[None](PrintResult~apply(env.out))
     else
       env.out.print("Something went wrong")
     end
 
 primitive StarIt
+  """
+  Stars a gist from the API result.
+  """
   fun apply(g: GistOrError): Promise[DeletedOrError] =>
     match \exhaustive\ g
     | let gist: Gist =>
       gist.star()
     | let e: RequestError =>
-      Promise[DeletedOrError].>apply(e)
+      Promise[DeletedOrError] .> apply(e)
     end
 
 primitive CheckIt
-  fun apply(d: DeletedOrError): Promise[BoolOrError] =>
+  """
+  Checks star status after starring.
+  """
+  fun apply(
+    d: DeletedOrError): Promise[BoolOrError]
+  =>
     match \exhaustive\ d
     | Deleted =>
-      // Star succeeded. We can't call is_starred() here because we don't
-      // have the Gist reference in this chain step. In real code, keep the
-      // Gist accessible or use the functional API (see star-gist example).
-      Promise[BoolOrError].>apply(true)
+      Promise[BoolOrError] .> apply(true)
     | let e: RequestError =>
-      Promise[BoolOrError].>apply(e)
+      Promise[BoolOrError] .> apply(e)
     end
 
 primitive PrintResult
+  """
+  Prints whether a gist is starred.
+  """
   fun apply(out: OutStream, r: BoolOrError) =>
     match \exhaustive\ r
     | let starred: Bool =>
-      out.print("Is starred: " + starred.string())
+      out.print(
+        "Is starred: " + starred.string())
     | let e: RequestError =>
       out.print("Error")
       out.print(e.status.string())

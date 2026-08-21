@@ -12,7 +12,7 @@ class val GitPerson
     name = name'
     email = email'
 
-primitive GitPersonJsonConverter is req.JSONConverter[GitPerson]
+primitive GitPersonJSONConverter is req.JSONConverter[GitPerson]
   """
   Converts a JSON object into a GitPerson.
   """
