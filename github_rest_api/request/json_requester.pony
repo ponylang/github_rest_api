@@ -3,15 +3,15 @@ use "json"
 use ssl = "ssl/net"
 use uri = "uri"
 
-interface tag JsonRequesterResultReceiver
+interface tag JSONRequesterResultReceiver
   """
   Receives the result of a JSON API request: either a parsed JSON response
   on success, or status/body/message details on failure.
   """
-  be success(json: JsonNav)
+  be success(json: JSONNav)
   be failure(status: U16, response_body: String, message: String)
 
-actor JsonRequester is courier.HTTPClientConnectionActor
+actor JSONRequester is courier.HTTPClientConnectionActor
   """
   Issues an HTTP request that expects a JSON response. Supports GET (200),
   POST (201), and PATCH (200) methods. GET requests follow 301/307 redirects
@@ -22,7 +22,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
   var _http: courier.HTTPClientConnection = courier.HTTPClientConnection.none()
   var _collector: courier.ResponseCollector = courier.ResponseCollector
   let _creds: Credentials
-  let _receiver: JsonRequesterResultReceiver
+  let _receiver: JSONRequesterResultReceiver
   let _method: courier.Method
   let _expected_status: U16
   let _body: (String | None)
@@ -32,7 +32,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
 
   new get(creds: Credentials,
     url: String,
-    receiver: JsonRequesterResultReceiver)
+    receiver: JSONRequesterResultReceiver)
   =>
     """
     Issues an HTTP GET request expecting a 200 response with a JSON body.
@@ -47,7 +47,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
   new post(creds: Credentials,
     url: String,
     body: String,
-    receiver: JsonRequesterResultReceiver)
+    receiver: JSONRequesterResultReceiver)
   =>
     """
     Issues an HTTP POST request expecting a 201 response with a JSON body.
@@ -62,7 +62,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
   new patch(creds: Credentials,
     url: String,
     body: String,
-    receiver: JsonRequesterResultReceiver)
+    receiver: JSONRequesterResultReceiver)
   =>
     """
     Issues an HTTP PATCH request expecting a 200 response with a JSON body.
@@ -136,7 +136,7 @@ actor JsonRequester is courier.HTTPClientConnectionActor
       | let loc: String =>
         _redirected = true
         _http.close()
-        JsonRequester.get(_creds, loc, _receiver)
+        JSONRequester.get(_creds, loc, _receiver)
         return
       end
     end
@@ -153,9 +153,9 @@ actor JsonRequester is courier.HTTPClientConnectionActor
       let response = _collector.build()?
       if _status == _expected_status then
         match \exhaustive\ courier.ResponseJSON(response)
-        | let json: JsonValue =>
-          _receiver.success(JsonNav(json))
-        | let _: JsonParseError =>
+        | let json: JSONValue =>
+          _receiver.success(JSONNav(json))
+        | let _: JSONParseError =>
           _receiver.failure(_status, "", "Failed to parse response")
         end
       else

@@ -81,22 +81,22 @@ primitive GetPullRequest
       p,
       PullRequestJsonConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
-primitive PullRequestJsonConverter is req.JsonConverter[PullRequest]
+primitive PullRequestJsonConverter is req.JSONConverter[PullRequest]
   """
   Converts a JSON object from the pulls API into a PullRequest.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): PullRequest ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): PullRequest ? =>
     let number = json("number").as_i64()?
     let title = json("title").as_string()?
-    let body = JsonNavUtil.string_or_none(json("body"))?
+    let body = JSONNavUtil.string_or_none(json("body"))?
     let state = json("state").as_string()?
 
     let labels = recover trn Array[Label] end
     for i in json("labels").as_array()?.values() do
-      let l = LabelJsonConverter(JsonNav(i), creds)?
+      let l = LabelJsonConverter(JSONNav(i), creds)?
       labels.push(l)
     end
 

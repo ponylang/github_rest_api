@@ -159,7 +159,7 @@ primitive GetIssue
     let p = Promise[IssueOrError]
     let receiver = req.ResultReceiver[Issue](creds, p, IssueJsonConverter)
 
-    req.JsonRequester.get(creds, url, receiver)
+    req.JSONRequester.get(creds, url, receiver)
     p
 
 primitive GetRepositoryIssues
@@ -220,11 +220,11 @@ primitive GetRepositoryIssues
     p
 
 
-primitive IssueJsonConverter is req.JsonConverter[Issue]
+primitive IssueJsonConverter is req.JSONConverter[Issue]
   """
   Converts a JSON object from the issues API into an Issue.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): Issue ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): Issue ? =>
     let url = json("url").as_string()?
     let respository_url = json("repository_url").as_string()?
     let labels_url = json("labels_url").as_string()?
@@ -235,18 +235,18 @@ primitive IssueJsonConverter is req.JsonConverter[Issue]
     let number = json("number").as_i64()?
     let title = json("title").as_string()?
     let user = UserJsonConverter(json("user"), creds)?
-    let state = JsonNavUtil.string_or_none(json("state"))?
-    let body = JsonNavUtil.string_or_none(json("body"))?
+    let state = JSONNavUtil.string_or_none(json("state"))?
+    let body = JSONNavUtil.string_or_none(json("body"))?
 
     let labels = recover trn Array[Label] end
     for i in json("labels").as_array()?.values() do
-      let l = LabelJsonConverter(JsonNav(i), creds)?
+      let l = LabelJsonConverter(JSONNav(i), creds)?
       labels.push(l)
     end
 
     let pr_json = json("pull_request")
     let pull_request = match pr_json.json()
-    | let _: JsonValue =>
+    | let _: JSONValue =>
       IssuePullRequestJsonConverter(pr_json, creds)?
     else
       None

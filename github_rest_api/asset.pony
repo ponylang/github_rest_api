@@ -53,15 +53,15 @@ class val Asset
     url = url'
     browser_download_url = browser_download_url'
 
-primitive AssetJsonConverter is req.JsonConverter[Asset]
+primitive AssetJsonConverter is req.JSONConverter[Asset]
   """
   Converts a JSON object into an Asset.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): Asset ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): Asset ? =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let name = json("name").as_string()?
-    let label = JsonNavUtil.string_or_none(json("label"))?
+    let label = JSONNavUtil.string_or_none(json("label"))?
     let uploader = UserJsonConverter(json("uploader"), creds)?
     let content_type = json("content_type").as_string()?
     let state = json("state").as_string()?

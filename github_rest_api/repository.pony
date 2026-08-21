@@ -410,7 +410,7 @@ primitive GetRepository
       p,
       RepositoryJsonConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
 primitive GetRepositoryLabels
@@ -474,25 +474,25 @@ primitive GetOrganizationRepositories
     LinkedJsonRequester(creds, url, r)
     p
 
-primitive RepositoryJsonConverter is req.JsonConverter[Repository]
+primitive RepositoryJsonConverter is req.JSONConverter[Repository]
   """
   Converts a JSON object from the repositories API into a Repository.
   """
-  fun apply(json: JsonNav,
+  fun apply(json: JSONNav,
     creds: req.Credentials): Repository ?
   =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let name = json("name").as_string()?
     let full_name = json("full_name").as_string()?
-    let description = JsonNavUtil.string_or_none(json("description"))?
+    let description = JSONNavUtil.string_or_none(json("description"))?
     let owner = UserJsonConverter(json("owner"), creds)?
     let private = json("private").as_bool()?
     let fork = json("fork").as_bool()?
     let created_at = json("created_at").as_string()?
     let pushed_at = json("pushed_at").as_string()?
     let updated_at = json("updated_at").as_string()?
-    let homepage = JsonNavUtil.string_or_none(json("homepage"))?
+    let homepage = JSONNavUtil.string_or_none(json("homepage"))?
     let default_branch = json("default_branch").as_string()?
     let organization = try
       UserJsonConverter(json("organization"), creds)?
@@ -512,7 +512,7 @@ primitive RepositoryJsonConverter is req.JsonConverter[Repository]
       try json("subscribers_count").as_i64()? else None end
     let watchers = json("watchers").as_i64()?
     let watchers_count = json("watchers_count").as_i64()?
-    let language = JsonNavUtil.string_or_none(json("language"))?
+    let language = JSONNavUtil.string_or_none(json("language"))?
     let license = try
       LicenseJsonConverter(json("license"), creds)?
     else
@@ -565,7 +565,7 @@ primitive RepositoryJsonConverter is req.JsonConverter[Repository]
 
     let clone_url = json("clone_url").as_string()?
     let git_url = json("git_url").as_string()?
-    let mirror_url = JsonNavUtil.string_or_none(json("mirror_url"))?
+    let mirror_url = JSONNavUtil.string_or_none(json("mirror_url"))?
     let ssh_url = json("ssh_url").as_string()?
     let svn_url = json("svn_url").as_string()?
 

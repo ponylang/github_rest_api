@@ -48,22 +48,22 @@ primitive GetPullRequestFiles
       p,
       PullRequestFilesJsonConverter)
 
-    req.JsonRequester.get(creds, url, r)
+    req.JSONRequester.get(creds, url, r)
     p
 
 primitive PullRequestFilesJsonConverter is
-  req.JsonConverter[Array[PullRequestFile] val]
+  req.JSONConverter[Array[PullRequestFile] val]
   """
   Converts a JSON array of pull request file objects into an Array of
   PullRequestFile.
   """
-  fun apply(json: JsonNav,
+  fun apply(json: JSONNav,
     creds: req.Credentials): Array[PullRequestFile] val ?
   =>
     let files = recover trn Array[PullRequestFile] end
 
     for i in json.as_array()?.values() do
-      let json_i = JsonNav(i)
+      let json_i = JSONNav(i)
       let filename = json_i("filename").as_string()?
       let file = PullRequestFile(creds, filename)
       files.push(file)

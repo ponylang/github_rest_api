@@ -120,7 +120,7 @@ primitive CreateRelease
       p,
       ReleaseJsonConverter)
 
-    var obj = JsonObject
+    var obj = JSONObject
       .update("tag_name", tag_name)
       .update("name", name)
       .update("body", body)
@@ -130,14 +130,14 @@ primitive CreateRelease
     end
     obj = obj.update("draft", draft).update("prerelease", prerelease)
     let json = obj.print()
-    req.JsonRequester.post(creds, url, consume json, r)
+    req.JSONRequester.post(creds, url, consume json, r)
     p
 
-primitive ReleaseJsonConverter is req.JsonConverter[Release]
+primitive ReleaseJsonConverter is req.JSONConverter[Release]
   """
   Converts a JSON object from the releases API into a Release.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): Release ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): Release ? =>
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let author = UserJsonConverter(json("author"), creds)?
@@ -152,7 +152,7 @@ primitive ReleaseJsonConverter is req.JsonConverter[Release]
 
     let assets = recover trn Array[Asset] end
     for i in json("assets").as_array()?.values() do
-      let a = AssetJsonConverter(JsonNav(i), creds)?
+      let a = AssetJsonConverter(JSONNav(i), creds)?
       assets.push(a)
     end
 

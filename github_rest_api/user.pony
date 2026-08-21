@@ -67,11 +67,11 @@ class val User
     user_type = user_type'
     site_admin = site_admin'
 
-primitive UserJsonConverter is req.JsonConverter[User]
+primitive UserJsonConverter is req.JSONConverter[User]
   """
   Converts a JSON object into a User.
   """
-  fun apply(json: JsonNav, creds: req.Credentials): User ? =>
+  fun apply(json: JSONNav, creds: req.Credentials): User ? =>
     let login = json("login").as_string()?
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?

@@ -15,10 +15,10 @@ class \nodoc\ _TestSearchConverterExtractsLinks is UnitTest
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
     let converter = PaginatedSearchJsonConverter[String](
       creds, _TestStringConverter)
-    let items_arr = JsonArray
-      .push(JsonObject.update("value", "a"))
-      .push(JsonObject.update("value", "b"))
-    let envelope = JsonObject
+    let items_arr = JSONArray
+      .push(JSONObject.update("value", "a"))
+      .push(JSONObject.update("value", "b"))
+    let envelope = JSONObject
       .update("total_count", I64(10))
       .update("incomplete_results", true)
       .update("items", items_arr)
@@ -27,7 +27,7 @@ class \nodoc\ _TestSearchConverterExtractsLinks is UnitTest
         + "<https://example.com/next>; rel=\"next\""
     end
     try
-      let sr = converter(JsonNav(envelope), link, creds)?
+      let sr = converter(JSONNav(envelope), link, creds)?
       h.assert_eq[I64](10, sr.total_count)
       h.assert_true(sr.incomplete_results)
       h.assert_eq[USize](2, sr.items.size())
@@ -51,14 +51,14 @@ class \nodoc\ _TestSearchConverterNoLinks is UnitTest
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
     let converter = PaginatedSearchJsonConverter[String](
       creds, _TestStringConverter)
-    let items_arr = JsonArray
-      .push(JsonObject.update("value", "x"))
-    let envelope = JsonObject
+    let items_arr = JSONArray
+      .push(JSONObject.update("value", "x"))
+    let envelope = JSONObject
       .update("total_count", I64(1))
       .update("incomplete_results", false)
       .update("items", items_arr)
     try
-      let sr = converter(JsonNav(envelope), "", creds)?
+      let sr = converter(JSONNav(envelope), "", creds)?
       h.assert_eq[USize](1, sr.items.size())
       h.assert_eq[String]("x", sr.items(0)?)
       h.assert_true(sr.next_page() is None,
@@ -79,15 +79,15 @@ class \nodoc\ _TestListConverterExtractsLinks is UnitTest
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
     let converter = PaginatedListJsonConverter[String](
       creds, _TestStringConverter)
-    let arr = JsonArray
-      .push(JsonObject.update("value", "p"))
-      .push(JsonObject.update("value", "q"))
+    let arr = JSONArray
+      .push(JSONObject.update("value", "p"))
+      .push(JSONObject.update("value", "q"))
     let link = recover val
       "<https://example.com/prev>; rel=\"prev\", "
         + "<https://example.com/next>; rel=\"next\""
     end
     try
-      let pl = converter(JsonNav(arr), link, creds)?
+      let pl = converter(JSONNav(arr), link, creds)?
       h.assert_eq[USize](2, pl.results.size())
       h.assert_eq[String]("p", pl.results(0)?)
       h.assert_eq[String]("q", pl.results(1)?)
@@ -109,10 +109,10 @@ class \nodoc\ _TestListConverterNoLinks is UnitTest
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
     let converter = PaginatedListJsonConverter[String](
       creds, _TestStringConverter)
-    let arr = JsonArray
-      .push(JsonObject.update("value", "z"))
+    let arr = JSONArray
+      .push(JSONObject.update("value", "z"))
     try
-      let pl = converter(JsonNav(arr), "", creds)?
+      let pl = converter(JSONNav(arr), "", creds)?
       h.assert_eq[USize](1, pl.results.size())
       h.assert_eq[String]("z", pl.results(0)?)
       h.assert_true(pl.next_page() is None,

@@ -11,7 +11,7 @@ Additional API surface and functionality will be added as needed. If you need fu
 
 ## Installation
 
-* Requires ponyc 0.67.0 or later.
+* Requires ponyc 0.69.1 or later.
 * Install [corral](https://github.com/ponylang/corral)
 * `corral add github.com/ponylang/github_rest_api.git --version 0.8.0`
 * `corral fetch` to fetch your dependencies

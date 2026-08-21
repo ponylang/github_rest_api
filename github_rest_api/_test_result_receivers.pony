@@ -4,8 +4,8 @@ use "promises"
 use "pony_test"
 use req = "request"
 
-primitive \nodoc\ _TestStringConverter is req.JsonConverter[String]
-  fun apply(json: JsonNav, creds: req.Credentials): String ? =>
+primitive \nodoc\ _TestStringConverter is req.JSONConverter[String]
+  fun apply(json: JSONNav, creds: req.Credentials): String ? =>
     json("value").as_string()?
 
 class \nodoc\ _TestDeletedResultReceiverSuccess is UnitTest
@@ -132,8 +132,8 @@ class \nodoc\ _TestResultReceiverSuccess is UnitTest
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
     let receiver = req.ResultReceiver[String](
       creds, p, _TestStringConverter)
-    let obj = JsonObject.update("value", "hello")
-    receiver.success(JsonNav(obj))
+    let obj = JSONObject.update("value", "hello")
+    receiver.success(JSONNav(obj))
 
 class \nodoc\ _TestResultReceiverConverterError is UnitTest
   fun name(): String => "result-receivers/json/converter-error"
@@ -158,7 +158,7 @@ class \nodoc\ _TestResultReceiverConverterError is UnitTest
     let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
     let receiver = req.ResultReceiver[String](
       creds, p, _TestStringConverter)
-    receiver.success(JsonNav(JsonObject))
+    receiver.success(JSONNav(JSONObject))
 
 class \nodoc\ _TestResultReceiverFailure is UnitTest
   fun name(): String => "result-receivers/json/failure"
@@ -213,9 +213,9 @@ class \nodoc\ _TestPaginatedResultReceiverSuccess is UnitTest
       creds, _TestStringConverter)
     let receiver = PaginatedResultReceiver[String](
       creds, p, converter)
-    let arr = JsonArray
-      .push(JsonObject.update("value", "item1"))
-    receiver.success(JsonNav(arr), "")
+    let arr = JSONArray
+      .push(JSONObject.update("value", "item1"))
+    receiver.success(JSONNav(arr), "")
 
 class \nodoc\ _TestPaginatedResultReceiverConverterError is UnitTest
   fun name(): String =>
@@ -243,7 +243,7 @@ class \nodoc\ _TestPaginatedResultReceiverConverterError is UnitTest
       creds, _TestStringConverter)
     let receiver = PaginatedResultReceiver[String](
       creds, p, converter)
-    receiver.success(JsonNav("not-an-array"), "")
+    receiver.success(JSONNav("not-an-array"), "")
 
 class \nodoc\ _TestPaginatedResultReceiverFailure is UnitTest
   fun name(): String => "result-receivers/paginated/failure"
@@ -302,13 +302,13 @@ class \nodoc\ _TestSearchResultReceiverSuccess is UnitTest
       creds, _TestStringConverter)
     let receiver = SearchResultReceiver[String](
       creds, p, converter)
-    let items_arr = JsonArray
-      .push(JsonObject.update("value", "result1"))
-    let envelope = JsonObject
+    let items_arr = JSONArray
+      .push(JSONObject.update("value", "result1"))
+    let envelope = JSONObject
       .update("total_count", I64(42))
       .update("incomplete_results", false)
       .update("items", items_arr)
-    receiver.success(JsonNav(envelope), "")
+    receiver.success(JSONNav(envelope), "")
 
 class \nodoc\ _TestSearchResultReceiverConverterError is UnitTest
   fun name(): String =>
@@ -336,7 +336,7 @@ class \nodoc\ _TestSearchResultReceiverConverterError is UnitTest
       creds, _TestStringConverter)
     let receiver = SearchResultReceiver[String](
       creds, p, converter)
-    receiver.success(JsonNav(JsonObject), "")
+    receiver.success(JSONNav(JSONObject), "")
 
 class \nodoc\ _TestSearchResultReceiverFailure is UnitTest
   fun name(): String => "result-receivers/search/failure"
