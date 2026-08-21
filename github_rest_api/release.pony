@@ -7,11 +7,10 @@ type ReleaseOrError is (Release | req.RequestError)
 
 class val Release
   """
-  A GitHub release, containing its tag, target commit, release notes body,
-  draft/prerelease status, and associated assets.
+  A GitHub release, containing its tag, target commit, release
+  notes body, draft/prerelease status, and associated assets.
   """
   let _creds: req.Credentials
-
   let id: I64
   let node_id: String
   let author: User
@@ -21,11 +20,9 @@ class val Release
   let body: String
   let draft: Bool
   let prerelease: Bool
-
   let created_at: String
   let published_at: String
   let assets: Array[Asset] val
-
   let url: String
   let assets_url: String
   let upload_url: String
@@ -33,7 +30,8 @@ class val Release
   let tarball_url: String
   let zipball_url: String
 
-  new val create(creds: req.Credentials,
+  new val create(
+    creds: req.Credentials,
     id': I64,
     node_id': String,
     author': User,
@@ -77,7 +75,8 @@ primitive CreateRelease
   """
   Creates a new release on a repository.
   """
-  fun apply(owner: String,
+  fun apply(
+    owner: String,
     repo: String,
     tag_name: String,
     name: String,
@@ -85,16 +84,22 @@ primitive CreateRelease
     creds: req.Credentials,
     target_commitish: (String | None) = None,
     draft: Bool = false,
-    prerelease: Bool = false): Promise[ReleaseOrError]
+    prerelease: Bool = false)
+    : Promise[ReleaseOrError]
   =>
+    """
+    Creates a release by owner and repo name.
+    """
     match \exhaustive\ ut.URITemplateParse(
-      "https://api.github.com/repos{/owner}{/repo}/releases")
+      "https://api.github.com/repos" +
+        "{/owner}{/repo}/releases")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
+        .> set("owner", owner)
+        .> set("repo", repo)
       let u: String val = tpl.expand(vars)
-      by_url(u,
+      by_url(
+        u,
         tag_name,
         name,
         body,
@@ -103,22 +108,31 @@ primitive CreateRelease
         draft,
         prerelease)
     | let e: ut.URITemplateParseError =>
-      Promise[ReleaseOrError].>apply(req.RequestError(where message' = e.message))
+      Promise[ReleaseOrError] .> apply(
+        req.RequestError(
+          where message' = e.message))
     end
 
-  fun by_url(url: String,
+  fun by_url(
+    url: String,
     tag_name: String,
     name: String,
     body: String,
     creds: req.Credentials,
     target_commitish: (String | None) = None,
     draft: Bool = false,
-    prerelease: Bool = false): Promise[ReleaseOrError]
+    prerelease: Bool = false)
+    : Promise[ReleaseOrError]
   =>
+    """
+    Creates a release by direct API URL.
+    """
     let p = Promise[ReleaseOrError]
-    let r = req.ResultReceiver[Release](creds,
-      p,
-      ReleaseJsonConverter)
+    let r =
+      req.ResultReceiver[Release](
+        creds,
+        p,
+        ReleaseJSONConverter)
 
     var obj = JSONObject
       .update("tag_name", tag_name)
@@ -128,42 +142,62 @@ primitive CreateRelease
     | let tc: String =>
       obj = obj.update("target_commitish", tc)
     end
-    obj = obj.update("draft", draft).update("prerelease", prerelease)
+    obj = obj
+      .update("draft", draft)
+      .update("prerelease", prerelease)
     let json = obj.print()
-    req.JSONRequester.post(creds, url, consume json, r)
+    req.JSONRequester.post(
+      creds, url, consume json, r)
     p
 
-primitive ReleaseJsonConverter is req.JSONConverter[Release]
+primitive ReleaseJSONConverter
+  is req.JSONConverter[Release]
   """
   Converts a JSON object from the releases API into a Release.
   """
-  fun apply(json: JSONNav, creds: req.Credentials): Release ? =>
+  fun apply(
+    json: JSONNav,
+    creds: req.Credentials)
+    : Release ?
+  =>
+    """
+    Converts a JSON object into a Release.
+    """
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
-    let author = UserJsonConverter(json("author"), creds)?
+    let author =
+      UserJSONConverter(json("author"), creds)?
     let tag_name = json("tag_name").as_string()?
-    let target_commitish = json("target_commitish").as_string()?
+    let target_commitish =
+      json("target_commitish").as_string()?
     let name = json("name").as_string()?
     let body = json("body").as_string()?
     let draft = json("draft").as_bool()?
     let prerelease = json("prerelease").as_bool()?
     let created_at = json("created_at").as_string()?
-    let published_at = json("published_at").as_string()?
+    let published_at =
+      json("published_at").as_string()?
 
     let assets = recover trn Array[Asset] end
     for i in json("assets").as_array()?.values() do
-      let a = AssetJsonConverter(JSONNav(i), creds)?
+      let a =
+        AssetJSONConverter(JSONNav(i), creds)?
       assets.push(a)
     end
 
     let url = json("url").as_string()?
-    let assets_url = json("assets_url").as_string()?
-    let upload_url = json("upload_url").as_string()?
+    let assets_url =
+      json("assets_url").as_string()?
+    let upload_url =
+      json("upload_url").as_string()?
     let html_url = json("html_url").as_string()?
-    let tarball_url = json("tarball_url").as_string()?
-    let zipball_url = json("zipball_url").as_string()?
+    let tarball_url =
+      json("tarball_url").as_string()?
+    let zipball_url =
+      json("zipball_url").as_string()?
 
-    Release(creds,
+    Release(
+      creds,
       id,
       node_id,
       author,

@@ -80,12 +80,14 @@ class val Gist
 
   fun update_gist(
     update_files: Array[(String, GistFileUpdate)] val,
-    new_description: (String | None) = None): Promise[GistOrError]
+    new_description: (String | None) = None)
+    : Promise[GistOrError]
   =>
     """
     Updates this gist's files and/or description.
     """
-    UpdateGist.by_url(url, update_files, _creds, new_description)
+    UpdateGist.by_url(
+      url, update_files, _creds, new_description)
 
   fun delete_gist(): Promise[req.DeletedOrError] =>
     """
@@ -145,7 +147,9 @@ class val Gist
       recover val url + "/star" end,
       _creds)
 
-  fun create_comment(body: String): Promise[GistCommentOrError] =>
+  fun create_comment(body: String)
+    : Promise[GistCommentOrError]
+  =>
     """
     Creates a new comment on this gist.
     """
@@ -166,20 +170,28 @@ primitive GetGist
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[GistOrError]
   =>
-    match \exhaustive\ ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
+    match \exhaustive\ ut.URITemplateParse(
+      "https://api.github.com/gists{/gist_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[GistOrError].>apply(
+      Promise[GistOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: req.Credentials): Promise[GistOrError] =>
+  fun by_url(url: String,
+    creds: req.Credentials): Promise[GistOrError]
+  =>
+    """
+    Fetches a gist by its direct API URL.
+    """
     let p = Promise[GistOrError]
-    let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
+    let r =
+      req.ResultReceiver[Gist](
+        creds, p, GistJSONConverter)
 
     req.JSONRequester.get(creds, url, r)
     p
@@ -194,7 +206,8 @@ primitive CreateGist
     description: (String | None) = None,
     is_public: Bool = false): Promise[GistOrError]
   =>
-    by_url("https://api.github.com/gists",
+    by_url(
+      "https://api.github.com/gists",
       files,
       creds,
       description,
@@ -206,13 +219,20 @@ primitive CreateGist
     description: (String | None) = None,
     is_public: Bool = false): Promise[GistOrError]
   =>
+    """
+    Creates a gist at the given API URL.
+    """
     let p = Promise[GistOrError]
-    let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
+    let r =
+      req.ResultReceiver[Gist](
+        creds, p, GistJSONConverter)
 
     var files_obj = JSONObject
     for (name, content) in files.values() do
-      files_obj = files_obj.update(name,
-        JSONObject.update("content", content))
+      files_obj =
+        files_obj.update(
+          name,
+          JSONObject.update("content", content))
     end
 
     var obj = JSONObject
@@ -236,37 +256,50 @@ primitive UpdateGist
   fun apply(gist_id: String,
     files: Array[(String, GistFileUpdate)] val,
     creds: req.Credentials,
-    description: (String | None) = None): Promise[GistOrError]
+    description: (String | None) = None)
+    : Promise[GistOrError]
   =>
-    match \exhaustive\ ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
+    match \exhaustive\ ut.URITemplateParse(
+      "https://api.github.com/gists{/gist_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, files, creds, description)
     | let e: ut.URITemplateParseError =>
-      Promise[GistOrError].>apply(
+      Promise[GistOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     files: Array[(String, GistFileUpdate)] val,
     creds: req.Credentials,
-    description: (String | None) = None): Promise[GistOrError]
+    description: (String | None) = None)
+    : Promise[GistOrError]
   =>
+    """
+    Updates a gist at the given API URL.
+    """
     let p = Promise[GistOrError]
-    let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
+    let r =
+      req.ResultReceiver[Gist](
+        creds, p, GistJSONConverter)
 
     var files_obj = JSONObject
     for (name, update) in files.values() do
       match \exhaustive\ update
       | let edit: GistFileEdit =>
-        files_obj = files_obj.update(name,
-          JSONObject.update("content", edit.content))
+        files_obj =
+          files_obj.update(
+            name,
+            JSONObject.update("content", edit.content))
       | let rename: GistFileRename =>
-        var entry = JSONObject.update("filename", rename.filename)
+        var entry =
+          JSONObject.update(
+            "filename", rename.filename)
         match rename.content
-        | let c: String => entry = entry.update("content", c)
+        | let c: String =>
+          entry = entry.update("content", c)
         end
         files_obj = files_obj.update(name, entry)
       | GistFileDelete =>
@@ -276,11 +309,13 @@ primitive UpdateGist
 
     var obj = JSONObject.update("files", files_obj)
     match description
-    | let d: String => obj = obj.update("description", d)
+    | let d: String =>
+      obj = obj.update("description", d)
     end
     let json = obj.print()
 
-    req.JSONRequester.patch(creds, url, consume json, r)
+    req.JSONRequester.patch(
+      creds, url, consume json, r)
     p
 
 primitive DeleteGist
@@ -290,20 +325,24 @@ primitive DeleteGist
   fun apply(gist_id: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
-    match \exhaustive\ ut.URITemplateParse("https://api.github.com/gists{/gist_id}")
+    match \exhaustive\ ut.URITemplateParse(
+      "https://api.github.com/gists{/gist_id}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[req.DeletedOrError].>apply(
+      Promise[req.DeletedOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
+    """
+    Deletes a gist at the given API URL.
+    """
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
@@ -317,7 +356,8 @@ primitive GetUserGists
   fun apply(creds: req.Credentials)
     : Promise[(PaginatedList[Gist] | req.RequestError)]
   =>
-    _GetPaginatedGists.by_url("https://api.github.com/gists", creds)
+    _GetPaginatedGists.by_url(
+      "https://api.github.com/gists", creds)
 
 primitive GetPublicGists
   """
@@ -326,7 +366,8 @@ primitive GetPublicGists
   fun apply(creds: req.Credentials)
     : Promise[(PaginatedList[Gist] | req.RequestError)]
   =>
-    _GetPaginatedGists.by_url("https://api.github.com/gists/public", creds)
+    _GetPaginatedGists.by_url(
+      "https://api.github.com/gists/public", creds)
 
 primitive GetStarredGists
   """
@@ -335,7 +376,8 @@ primitive GetStarredGists
   fun apply(creds: req.Credentials)
     : Promise[(PaginatedList[Gist] | req.RequestError)]
   =>
-    _GetPaginatedGists.by_url("https://api.github.com/gists/starred", creds)
+    _GetPaginatedGists.by_url(
+      "https://api.github.com/gists/starred", creds)
 
 primitive GetUsernameGists
   """
@@ -349,11 +391,12 @@ primitive GetUsernameGists
       "https://api.github.com/users{/username}/gists")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("username", username)
+        .> set("username", username)
       let u: String val = tpl.expand(vars)
       _GetPaginatedGists.by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[(PaginatedList[Gist] | req.RequestError)].>apply(
+      Promise[(PaginatedList[Gist] |
+        req.RequestError)] .> apply(
         req.RequestError(where message' = e.message))
     end
 
@@ -369,12 +412,12 @@ primitive GetGistRevision
       "https://api.github.com/gists{/gist_id}{/sha}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
-        .>set("sha", sha)
+        .> set("gist_id", gist_id)
+        .> set("sha", sha)
       let u: String val = tpl.expand(vars)
       GetGist.by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[GistOrError].>apply(
+      Promise[GistOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
@@ -389,19 +432,24 @@ primitive ForkGist
       "https://api.github.com/gists{/gist_id}/forks")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[GistOrError].>apply(
+      Promise[GistOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     creds: req.Credentials): Promise[GistOrError]
   =>
+    """
+    Forks a gist at the given API URL.
+    """
     let p = Promise[GistOrError]
-    let r = req.ResultReceiver[Gist](creds, p, GistJsonConverter)
+    let r =
+      req.ResultReceiver[Gist](
+        creds, p, GistJSONConverter)
 
     req.JSONRequester.post(creds, url, "", r)
     p
@@ -418,11 +466,12 @@ primitive GetGistForks
       "https://api.github.com/gists{/gist_id}/forks")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       _GetPaginatedGists.by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[(PaginatedList[Gist] | req.RequestError)].>apply(
+      Promise[(PaginatedList[Gist] |
+        req.RequestError)] .> apply(
         req.RequestError(where message' = e.message))
     end
 
@@ -438,11 +487,12 @@ primitive GetGistCommits
       "https://api.github.com/gists{/gist_id}/commits")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[(PaginatedList[GistCommit] | req.RequestError)].>apply(
+      Promise[(PaginatedList[GistCommit] |
+        req.RequestError)] .> apply(
         req.RequestError(where message' = e.message))
     end
 
@@ -450,12 +500,19 @@ primitive GetGistCommits
     creds: req.Credentials)
     : Promise[(PaginatedList[GistCommit] | req.RequestError)]
   =>
-    let gc = GistCommitJsonConverter
-    let plc = PaginatedListJsonConverter[GistCommit](creds, gc)
-    let p = Promise[(PaginatedList[GistCommit] | req.RequestError)]
-    let r = PaginatedResultReceiver[GistCommit](creds, p, plc)
+    """
+    Lists gist commits at the given API URL.
+    """
+    let gc = GistCommitJSONConverter
+    let plc =
+      PaginatedListJSONConverter[GistCommit](creds, gc)
+    let p =
+      Promise[(PaginatedList[GistCommit] |
+        req.RequestError)]
+    let r =
+      PaginatedResultReceiver[GistCommit](creds, p, plc)
 
-    LinkedJsonRequester(creds, url, r)
+    LinkedJSONRequester(creds, url, r)
     p
 
 primitive StarGist
@@ -469,17 +526,20 @@ primitive StarGist
       "https://api.github.com/gists{/gist_id}/star")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[req.DeletedOrError].>apply(
+      Promise[req.DeletedOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
+    """
+    Stars a gist at the given API URL.
+    """
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
@@ -497,17 +557,20 @@ primitive UnstarGist
       "https://api.github.com/gists{/gist_id}/star")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[req.DeletedOrError].>apply(
+      Promise[req.DeletedOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
+    """
+    Unstars a gist at the given API URL.
+    """
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
@@ -526,17 +589,20 @@ primitive CheckGistStar
       "https://api.github.com/gists{/gist_id}/star")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("gist_id", gist_id)
+        .> set("gist_id", gist_id)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[req.BoolOrError].>apply(
+      Promise[req.BoolOrError] .> apply(
         req.RequestError(where message' = e.message))
     end
 
   fun by_url(url: String,
     creds: req.Credentials): Promise[req.BoolOrError]
   =>
+    """
+    Checks gist star status at the given API URL.
+    """
     let p = Promise[req.BoolOrError]
     let r = req.BoolResultReceiver(p)
 
@@ -552,37 +618,53 @@ primitive _GetPaginatedGists
     creds: req.Credentials)
     : Promise[(PaginatedList[Gist] | req.RequestError)]
   =>
-    let gc = GistJsonConverter
-    let plc = PaginatedListJsonConverter[Gist](creds, gc)
-    let p = Promise[(PaginatedList[Gist] | req.RequestError)]
-    let r = PaginatedResultReceiver[Gist](creds, p, plc)
+    let gc = GistJSONConverter
+    let plc =
+      PaginatedListJSONConverter[Gist](creds, gc)
+    let p =
+      Promise[(PaginatedList[Gist] | req.RequestError)]
+    let r =
+      PaginatedResultReceiver[Gist](creds, p, plc)
 
-    LinkedJsonRequester(creds, url, r)
+    LinkedJSONRequester(creds, url, r)
     p
 
-primitive GistJsonConverter is req.JSONConverter[Gist]
+primitive GistJSONConverter is req.JSONConverter[Gist]
   """
   Converts a JSON object from the GitHub gist API into a Gist. Handles the
-  files object by iterating its key-value pairs and converting each value with
-  GistFileJsonConverter.
+  files object by iterating its key-value pairs and converting each value
+  with GistFileJSONConverter.
   """
   fun apply(json: JSONNav, creds: req.Credentials): Gist ? =>
+    """
+    Converts a JSON object into a Gist.
+    """
     let id = json("id").as_string()?
     let node_id = json("node_id").as_string()?
-    let description = JSONNavUtil.string_or_none(json("description"))?
+    let description =
+      JSONNavUtil.string_or_none(json("description"))?
     let public = json("public").as_bool()?
-    let owner = try UserJsonConverter(json("owner"), creds)? else None end
-    let user = try UserJsonConverter(json("user"), creds)? else None end
+    let owner =
+      try UserJSONConverter(json("owner"), creds)?
+      else None
+      end
+    let user =
+      try UserJSONConverter(json("user"), creds)?
+      else None
+      end
 
     let files = recover trn Array[(String, GistFile)] end
     for (name, value) in json("files").as_object()?.pairs() do
-      let gf = GistFileJsonConverter(JSONNav(value), creds)?
+      let gf =
+        GistFileJSONConverter(JSONNav(value), creds)?
       files.push((name, gf))
     end
 
     let comments_count = json("comments").as_i64()?
     let comments_enabled =
-      try json("comments_enabled").as_bool()? else true end
+      try json("comments_enabled").as_bool()?
+      else true
+      end
     let truncated = json("truncated").as_bool()?
     let created_at = json("created_at").as_string()?
     let updated_at = json("updated_at").as_string()?
@@ -591,11 +673,15 @@ primitive GistJsonConverter is req.JSONConverter[Gist]
     let html_url = json("html_url").as_string()?
     let forks_url = json("forks_url").as_string()?
     let commits_url = json("commits_url").as_string()?
-    let comments_url = json("comments_url").as_string()?
-    let git_pull_url = json("git_pull_url").as_string()?
-    let git_push_url = json("git_push_url").as_string()?
+    let comments_url =
+      json("comments_url").as_string()?
+    let git_pull_url =
+      json("git_pull_url").as_string()?
+    let git_push_url =
+      json("git_push_url").as_string()?
 
-    Gist(creds,
+    Gist(
+      creds,
       id,
       node_id,
       description,

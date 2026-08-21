@@ -23,11 +23,11 @@ Additional API surface and functionality will be added as needed. If you need fu
 ```pony
 use "github_rest_api"
 use "github_rest_api/request"
-use "net"
+use lori = "lori"
 
 actor Main
   new create(env: Env) =>
-    let auth = TCPConnectAuth(env.root)
+    let auth = lori.TCPConnectAuth(env.root)
     let creds = Credentials(auth, "your-github-token")
 
     GitHub(creds).get_repo("ponylang", "ponyc")
@@ -35,7 +35,7 @@ actor Main
 
 primitive PrintRepository
   fun apply(out: OutStream, result: RepositoryOrError) =>
-    match result
+    match \exhaustive\ result
     | let repo: Repository =>
       out.print(repo.full_name)
     | let err: RequestError =>

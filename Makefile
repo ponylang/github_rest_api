@@ -5,6 +5,7 @@ GET_DEPENDENCIES_WITH := corral fetch
 CLEAN_DEPENDENCIES_WITH := corral clean
 COMPILE_WITH := corral run -- ponyc
 BUILD_DOCS_WITH := corral run -- pony-doc
+LINT_WITH := corral run -- pony-lint
 
 BUILD_DIR ?= build/$(config)
 SRC_DIR := $(PACKAGE)
@@ -24,7 +25,7 @@ else
 	PONYC = $(COMPILE_WITH) --debug
 endif
 
-ifeq (,$(filter $(MAKECMDGOALS),clean docs realclean TAGS))
+ifeq (,$(filter $(MAKECMDGOALS),clean docs lint realclean TAGS))
   ifeq ($(ssl), 3.0.x)
     SSL = -Dopenssl_3.0.x
   else ifeq ($(ssl), 1.1.x)
@@ -66,6 +67,10 @@ _build_examples: $(EXAMPLES_BINARIES)
 $(EXAMPLES_BINARIES): $(BUILD_DIR)/%: $(SOURCE_FILES) $(EXAMPLES_SOURCE_FILES) | $(BUILD_DIR)
 	BUILD_DIR=$(mkfile_path)$(BUILD_DIR) $(MAKE) -C $(EXAMPLES_DIR)/$*
 
+lint:
+	$(GET_DEPENDENCIES_WITH)
+	$(LINT_WITH) .
+
 clean:
 	$(CLEAN_DEPENDENCIES_WITH)
 	rm -rf $(BUILD_DIR)
@@ -85,4 +90,4 @@ all: test
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-.PHONY: all examples _build_examples clean fetch TAGS test test-one
+.PHONY: all examples _build_examples clean fetch lint TAGS test test-one

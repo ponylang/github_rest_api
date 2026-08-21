@@ -6,34 +6,44 @@ use lori = "lori"
 actor Main
   new create(env: Env) =>
     try
-      // ----- CLI setup
       let cs =
-        CommandSpec.leaf("create-gist",
+        CommandSpec.leaf(
+          "create-gist",
           "Create a new gist with a single file",
           [
-            OptionSpec.string("filename", "Name of the file to create")
-            OptionSpec.string("content", "Content of the file")
-            OptionSpec.string("description",
+            OptionSpec.string(
+              "filename",
+              "Name of the file to create")
+            OptionSpec.string(
+              "content",
+              "Content of the file")
+            OptionSpec.string(
+              "description",
               "Description of the gist"
               where default' = "")
-            OptionSpec.bool("public",
+            OptionSpec.bool(
+              "public",
               "Whether the gist should be public"
               where default' = false)
-            OptionSpec.string("token", "GitHub personal access token")
+            OptionSpec.string(
+              "token",
+              "GitHub personal access token")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
-        c
-      | let ch: CommandHelp =>
-        ch.print_help(env.out)
-        return
-      | let se: SyntaxError =>
-        env.err.print(se.string())
-        env.exitcode(1)
-        return
-      end
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(
+          env.args, env.vars)
+        | let c: Command =>
+          c
+        | let ch: CommandHelp =>
+          ch.print_help(env.out)
+          return
+        | let se: SyntaxError =>
+          env.err.print(se.string())
+          env.exitcode(1)
+          return
+        end
 
       let filename = cmd.option("filename").string()
       let content = cmd.option("content").string()
@@ -41,18 +51,21 @@ actor Main
       let is_public = cmd.option("public").bool()
       let token = cmd.option("token").string()
 
-      // ----- Create gist
       let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
-      let files = recover val
-        let f = Array[(String, String)]
-        f.push((filename, content))
-        f
-      end
+      let files =
+        recover val
+          Array[(String, String)]
+            .> push((filename, content))
+        end
 
       let desc: (String | None) =
-        if description.size() > 0 then description else None end
+        if description.size() > 0 then
+          description
+        else
+          None
+        end
 
       let p = CreateGist(files, creds, desc, is_public)
       p.next[None](PrintGist~apply(env.out))
@@ -61,6 +74,9 @@ actor Main
     end
 
 primitive PrintGist
+  """
+  Prints gist details to the given output stream.
+  """
   fun apply(out: OutStream, g: GistOrError) =>
     match \exhaustive\ g
     | let gist: Gist =>

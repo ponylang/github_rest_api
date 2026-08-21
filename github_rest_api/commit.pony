@@ -47,41 +47,55 @@ primitive GetCommit
       "https://api.github.com/repos{/owner}{/repo}/commits{/sha}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
-        .>set("sha", sha)
+        .> set("owner", owner)
+        .> set("repo", repo)
+        .> set("sha", sha)
       let u: String val = tpl.expand(vars)
       by_url(u, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[CommitOrError].>apply(req.RequestError(where message' = e.message))
+      Promise[CommitOrError] .> apply(
+        req.RequestError(where message' = e.message))
     end
 
-  fun by_url(url: String, creds: req.Credentials): Promise[CommitOrError] =>
+  fun by_url(
+    url: String,
+    creds: req.Credentials): Promise[CommitOrError]
+  =>
+    """
+    Fetches a commit by its full API URL.
+    """
     let p = Promise[CommitOrError]
-    let receiver = req.ResultReceiver[Commit](creds, p, CommitJsonConverter)
+    let receiver =
+      req.ResultReceiver[Commit](creds, p, CommitJSONConverter)
 
     req.JSONRequester.get(creds, url, receiver)
     p
 
-primitive CommitJsonConverter is req.JSONConverter[Commit]
+primitive CommitJSONConverter is req.JSONConverter[Commit]
   """
   Converts a JSON object from the commits API into a Commit.
   """
   fun apply(json: JSONNav, creds: req.Credentials): Commit ? =>
+    """
+    Parses the JSON representation of a commit.
+    """
     let sha = json("sha").as_string()?
 
     let files = recover trn Array[CommitFile] end
     for f in json("files").as_array()?.values() do
-      let file = CommitFileJsonConverter(JSONNav(f), creds)?
+      let file =
+        CommitFileJSONConverter(JSONNav(f), creds)?
       files.push(file)
     end
 
-    let git_commit = GitCommitJsonConverter(json("commit"), creds)?
+    let git_commit =
+      GitCommitJSONConverter(json("commit"), creds)?
     let url = json("url").as_string()?
     let html_url = json("html_url").as_string()?
     let comments_url = json("comments_url").as_string()?
 
-    Commit(creds,
+    Commit(
+      creds,
       sha,
       consume files,
       git_commit,

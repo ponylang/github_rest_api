@@ -15,41 +15,41 @@ actor \nodoc\ Main is TestList
     test(_TestExtractPaginationLinksFirstPage)
     test(_TestExtractPaginationLinksLastPage)
     test(_TestExtractPaginationLinksBetweenPages)
-    test(_TestGitPersonJsonConverterPreservesValues)
-    test(_TestGitPersonJsonConverterMissingField)
-    test(_TestLicenseJsonConverterPreservesValues)
-    test(_TestLicenseJsonConverterMissingField)
-    test(_TestCommitFileJsonConverterPreservesValues)
-    test(_TestCommitFileJsonConverterMissingField)
-    test(_TestGistChangeStatusJsonConverterPreservesValues)
-    test(_TestGistChangeStatusJsonConverterMissingField)
-    test(_TestLabelJsonConverterPreservesValues)
-    test(_TestLabelJsonConverterMissingField)
-    test(_TestIssuePRJsonConverterPreservesValues)
-    test(_TestIssuePRJsonConverterMissingField)
-    test(_TestAssetJsonConverterPreservesValues)
-    test(_TestAssetJsonConverterMissingField)
-    test(_TestGistFileJsonConverterPreservesValues)
-    test(_TestGistFileJsonConverterMissingField)
-    test(_TestGistFileJsonConverterAbsentOptionalFields)
-    test(_TestGitCommitJsonConverterPreservesValues)
-    test(_TestGitCommitJsonConverterMissingField)
-    test(_TestCommitJsonConverterPreservesValues)
-    test(_TestCommitJsonConverterMissingField)
-    test(_TestIssueJsonConverterPreservesValues)
-    test(_TestIssueJsonConverterMissingField)
-    test(_TestIssueJsonConverterAbsentPullRequest)
-    test(_TestRepoJsonConverterPreservesValues)
-    test(_TestRepoJsonConverterMissingField)
-    test(_TestRepoJsonConverterAbsentOptionalFields)
-    test(_TestGistJsonConverterPreservesValues)
-    test(_TestGistJsonConverterMissingField)
-    test(_TestGistJsonConverterAbsentOptionalFields)
+    test(_TestGitPersonJSONConverterPreservesValues)
+    test(_TestGitPersonJSONConverterMissingField)
+    test(_TestLicenseJSONConverterPreservesValues)
+    test(_TestLicenseJSONConverterMissingField)
+    test(_TestCommitFileJSONConverterPreservesValues)
+    test(_TestCommitFileJSONConverterMissingField)
+    test(_TestGistChangeStatusJSONConverterPreservesValues)
+    test(_TestGistChangeStatusJSONConverterMissingField)
+    test(_TestLabelJSONConverterPreservesValues)
+    test(_TestLabelJSONConverterMissingField)
+    test(_TestIssuePRJSONConverterPreservesValues)
+    test(_TestIssuePRJSONConverterMissingField)
+    test(_TestAssetJSONConverterPreservesValues)
+    test(_TestAssetJSONConverterMissingField)
+    test(_TestGistFileJSONConverterPreservesValues)
+    test(_TestGistFileJSONConverterMissingField)
+    test(_TestGistFileJSONConverterAbsentOptionalFields)
+    test(_TestGitCommitJSONConverterPreservesValues)
+    test(_TestGitCommitJSONConverterMissingField)
+    test(_TestCommitJSONConverterPreservesValues)
+    test(_TestCommitJSONConverterMissingField)
+    test(_TestIssueJSONConverterPreservesValues)
+    test(_TestIssueJSONConverterMissingField)
+    test(_TestIssueJSONConverterAbsentPullRequest)
+    test(_TestRepoJSONConverterPreservesValues)
+    test(_TestRepoJSONConverterMissingField)
+    test(_TestRepoJSONConverterAbsentOptionalFields)
+    test(_TestGistJSONConverterPreservesValues)
+    test(_TestGistJSONConverterMissingField)
+    test(_TestGistJSONConverterAbsentOptionalFields)
     test(_TestStringOrNoneReturnsString)
     test(_TestStringOrNoneReturnsNone)
     test(_TestStringOrNoneRaisesOnInvalid)
-    test(_TestJsonTypeStringAllArms)
-    test(_TestJsonTypeStringI64Property)
+    test(_TestJSONTypeStringAllArms)
+    test(_TestJSONTypeStringI64Property)
     test(_TestDeletedResultReceiverSuccess)
     test(_TestDeletedResultReceiverFailure)
     test(_TestBoolResultReceiverSuccessTrue)
@@ -64,11 +64,11 @@ actor \nodoc\ Main is TestList
     test(_TestSearchResultReceiverSuccess)
     test(_TestSearchResultReceiverConverterError)
     test(_TestSearchResultReceiverFailure)
-    test(_TestJsonRequesterGetSuccess)
-    test(_TestJsonRequesterGetFailure)
-    test(_TestJsonRequesterPostSuccess)
-    test(_TestJsonRequesterGetRedirect)
-    test(_TestJsonRequesterGetParseError)
+    test(_TestJSONRequesterGetSuccess)
+    test(_TestJSONRequesterGetFailure)
+    test(_TestJSONRequesterPostSuccess)
+    test(_TestJSONRequesterGetRedirect)
+    test(_TestJSONRequesterGetParseError)
     test(_TestNoContentDeleteSuccess)
     test(_TestNoContentDeleteFailure)
     test(_TestCheckRequester204)
@@ -95,20 +95,25 @@ class \nodoc\ _TestExtractPaginationLinksNoLinks is UnitTest
 
   fun ref apply(h: TestHelper) ? =>
     (let prev, let next) = _ExtractPaginationLinks("")
-    h.assert_is[None](None, prev as None,
-      "prev should be None")
-    h.assert_is[None](None, next as None,
-      "next should be None")
+    h.assert_is[None](
+      None, prev as None, "prev should be None")
+    h.assert_is[None](
+      None, next as None, "next should be None")
 
 class \nodoc\ _TestExtractPaginationLinksInvalidHeader is UnitTest
   fun name(): String =>
     "extract-pagination-links/invalid-header"
 
   fun ref apply(h: TestHelper) ? =>
-    (let prev, let next) = _ExtractPaginationLinks("not a valid link header")
-    h.assert_is[None](None, prev as None,
+    (let prev, let next) =
+      _ExtractPaginationLinks("not a valid link header")
+    h.assert_is[None](
+      None,
+      prev as None,
       "prev should be None for invalid header")
-    h.assert_is[None](None, next as None,
+    h.assert_is[None](
+      None,
+      next as None,
       "next should be None for invalid header")
 
 class \nodoc\ _TestExtractPaginationLinksFirstPage is UnitTest
@@ -116,13 +121,18 @@ class \nodoc\ _TestExtractPaginationLinksFirstPage is UnitTest
     "extract-pagination-links/first-page"
 
   fun ref apply(h: TestHelper) ? =>
-    let link = "<https://api.github.com/repositories/218833512/labels?per_page=2&page=2>; rel=\"next\", <https://api.github.com/repositories/218833512/labels?per_page=2&page=5>; rel=\"last\""
+    let link =
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=2>; rel=\"next\", " +
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=5>; rel=\"last\""
 
     (let prev, let next) = _ExtractPaginationLinks(link)
-    h.assert_is[None](None, prev as None,
-      "prev should be None")
+    h.assert_is[None](
+      None, prev as None, "prev should be None")
     h.assert_eq[String](
-      "https://api.github.com/repositories/218833512/labels?per_page=2&page=2",
+      "https://api.github.com/repositories/218833512/" +
+        "labels?per_page=2&page=2",
       next as String)
 
 class \nodoc\ _TestExtractPaginationLinksLastPage is UnitTest
@@ -130,26 +140,41 @@ class \nodoc\ _TestExtractPaginationLinksLastPage is UnitTest
     "extract-pagination-links/last-page"
 
   fun ref apply(h: TestHelper) ? =>
-    let link = "<https://api.github.com/repositories/218833512/labels?per_page=2&page=4>; rel=\"prev\", <https://api.github.com/repositories/218833512/labels?per_page=2&page=1>; rel=\"first\""
+    let link =
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=4>; rel=\"prev\", " +
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=1>; rel=\"first\""
 
     (let prev, let next) = _ExtractPaginationLinks(link)
     h.assert_eq[String](
-      "https://api.github.com/repositories/218833512/labels?per_page=2&page=4",
+      "https://api.github.com/repositories/218833512/" +
+        "labels?per_page=2&page=4",
       prev as String)
-    h.assert_is[None](None, next as None,
-      "next should be None")
+    h.assert_is[None](
+      None, next as None, "next should be None")
 
 class \nodoc\ _TestExtractPaginationLinksBetweenPages is UnitTest
   fun name(): String =>
     "extract-pagination-links/between-pages"
 
   fun ref apply(h: TestHelper) ? =>
-    let link = "<https://api.github.com/repositories/218833512/labels?per_page=2&page=1>; rel=\"prev\", <https://api.github.com/repositories/218833512/labels?per_page=2&page=3>; rel=\"next\", <https://api.github.com/repositories/218833512/labels?per_page=2&page=5>; rel=\"last\", <https://api.github.com/repositories/218833512/labels?per_page=2&page=1>; rel=\"first\""
+    let link =
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=1>; rel=\"prev\", " +
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=3>; rel=\"next\", " +
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=5>; rel=\"last\", " +
+      "<https://api.github.com/repositories/218833512/" +
+      "labels?per_page=2&page=1>; rel=\"first\""
 
     (let prev, let next) = _ExtractPaginationLinks(link)
     h.assert_eq[String](
-      "https://api.github.com/repositories/218833512/labels?per_page=2&page=1",
+      "https://api.github.com/repositories/218833512/" +
+        "labels?per_page=2&page=1",
       prev as String)
     h.assert_eq[String](
-      "https://api.github.com/repositories/218833512/labels?per_page=2&page=3",
+      "https://api.github.com/repositories/218833512/" +
+        "labels?per_page=2&page=3",
       next as String)

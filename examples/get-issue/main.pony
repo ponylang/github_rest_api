@@ -6,38 +6,47 @@ use lori = "lori"
 actor Main
   new create(env: Env) =>
     try
-      // ----- CLI setup
       let cs =
-        CommandSpec.leaf("get-issue",
+        CommandSpec.leaf(
+          "get-issue",
           "Get an issue",
           [
-            OptionSpec.string("owner", "Owner of the repository the issue is in")
-            OptionSpec.string("repo", "Name of the repository the issue is in")
-            OptionSpec.i64("issue", "Issue number to retrieve")
-            OptionSpec.string("token",
+            OptionSpec.string(
+              "owner",
+              "Owner of the repository the issue is in")
+            OptionSpec.string(
+              "repo",
+              "Name of the repository the issue is in")
+            OptionSpec.i64(
+              "issue",
+              "Issue number to retrieve")
+            OptionSpec.string(
+              "token",
               "GitHub personal access token"
               where default' = "")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
-        c
-      | let ch: CommandHelp =>
-        ch.print_help(env.out)
-        return
-      | let se: SyntaxError =>
-        env.err.print(se.string())
-        env.exitcode(1)
-        return
-      end
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(
+          env.args,
+          env.vars)
+        | let c: Command =>
+          c
+        | let ch: CommandHelp =>
+          ch.print_help(env.out)
+          return
+        | let se: SyntaxError =>
+          env.err.print(se.string())
+          env.exitcode(1)
+          return
+        end
 
       let owner = cmd.option("owner").string()
       let repo = cmd.option("repo").string()
       let issue = cmd.option("issue").i64()
       let token = cmd.option("token").string()
 
-      // ----- Get issue
       let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
@@ -48,6 +57,9 @@ actor Main
     end
 
 primitive PrintIssue
+  """
+  Prints details of a fetched issue to the given output stream.
+  """
   fun apply(out: OutStream, i: IssueOrError) =>
     match \exhaustive\ i
     | let issue: Issue =>

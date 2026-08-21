@@ -16,7 +16,8 @@ class val IssuePullRequest
   let patch_url: String
   let merged_at: (String | None)
 
-  new val create(url': String,
+  new val create(
+    url': String,
     html_url': String,
     diff_url': String,
     patch_url': String,
@@ -28,15 +29,24 @@ class val IssuePullRequest
     patch_url = patch_url'
     merged_at = merged_at'
 
-primitive IssuePullRequestJsonConverter is req.JSONConverter[IssuePullRequest]
+primitive IssuePullRequestJSONConverter is
+  req.JSONConverter[IssuePullRequest]
   """
   Converts a JSON object into an IssuePullRequest.
   """
-  fun apply(json: JSONNav, creds: req.Credentials): IssuePullRequest ? =>
+  fun apply(
+    json: JSONNav,
+    creds: req.Credentials): IssuePullRequest ?
+  =>
+    """
+    Builds an IssuePullRequest from its JSON representation.
+    """
     let url = json("url").as_string()?
     let html_url = json("html_url").as_string()?
     let diff_url = json("diff_url").as_string()?
     let patch_url = json("patch_url").as_string()?
-    let merged_at = JSONNavUtil.string_or_none(json("merged_at"))?
+    let merged_at =
+      JSONNavUtil.string_or_none(json("merged_at"))?
 
-    IssuePullRequest(url, html_url, diff_url, patch_url, merged_at)
+    IssuePullRequest(
+      url, html_url, diff_url, patch_url, merged_at)

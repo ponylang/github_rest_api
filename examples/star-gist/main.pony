@@ -7,32 +7,37 @@ use "promises"
 actor Main
   new create(env: Env) =>
     try
-      // ----- CLI setup
       let cs =
-        CommandSpec.leaf("star-gist",
-          "Star a gist and then check if it is starred",
+        CommandSpec.leaf(
+          "star-gist",
+          "Star a gist then check if it is starred",
           [
-            OptionSpec.string("gist-id", "ID of the gist to star")
-            OptionSpec.string("token", "GitHub personal access token")
+            OptionSpec.string(
+              "gist-id",
+              "ID of the gist to star")
+            OptionSpec.string(
+              "token",
+              "GitHub personal access token")
           ]
         )? .> add_help()?
 
-      let cmd = match \exhaustive\ CommandParser(cs).parse(env.args, env.vars)
-      | let c: Command =>
-        c
-      | let ch: CommandHelp =>
-        ch.print_help(env.out)
-        return
-      | let se: SyntaxError =>
-        env.err.print(se.string())
-        env.exitcode(1)
-        return
-      end
+      let cmd =
+        match \exhaustive\ CommandParser(cs).parse(
+          env.args, env.vars)
+        | let c: Command =>
+          c
+        | let ch: CommandHelp =>
+          ch.print_help(env.out)
+          return
+        | let se: SyntaxError =>
+          env.err.print(se.string())
+          env.exitcode(1)
+          return
+        end
 
       let gist_id = cmd.option("gist-id").string()
       let token = cmd.option("token").string()
 
-      // ----- Star gist then check
       let auth = lori.TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
@@ -45,7 +50,11 @@ actor Main
     end
 
 primitive CheckStar
-  fun apply(gist_id: String,
+  """
+  Checks whether a gist is starred after starring it.
+  """
+  fun apply(
+    gist_id: String,
     creds: Credentials,
     d: DeletedOrError): Promise[BoolOrError]
   =>
@@ -53,14 +62,18 @@ primitive CheckStar
     | Deleted =>
       CheckGistStar(gist_id, creds)
     | let e: RequestError =>
-      Promise[BoolOrError].>apply(e)
+      Promise[BoolOrError] .> apply(e)
     end
 
 primitive PrintResult
+  """
+  Prints whether a gist is starred.
+  """
   fun apply(out: OutStream, r: BoolOrError) =>
     match \exhaustive\ r
     | let starred: Bool =>
-      out.print("Is starred: " + starred.string())
+      out.print(
+        "Is starred: " + starred.string())
     | let e: RequestError =>
       out.print("Error")
       out.print(e.status.string())

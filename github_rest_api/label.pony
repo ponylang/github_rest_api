@@ -18,7 +18,8 @@ class val Label
   let default: Bool
   let description: (String | None)
 
-  new val create(creds: req.Credentials,
+  new val create(
+    creds: req.Credentials,
     id': I64,
     node_id': String,
     url': String,
@@ -40,96 +41,123 @@ primitive CreateLabel
   """
   Creates a new label on a repository.
   """
-  fun apply(owner: String,
+  fun apply(
+    owner: String,
     repo: String,
     name: String,
     creds: req.Credentials,
     color: (String | None) = None,
-    description: (String | None) = None): Promise[LabelOrError]
+    description: (String | None) = None
+  ): Promise[LabelOrError]
   =>
     match \exhaustive\ ut.URITemplateParse(
-      "https://api.github.com/repos{/owner}{/repo}/labels")
+      "https://api.github.com/repos" +
+      "{/owner}{/repo}/labels")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
+        .> set("owner", owner)
+        .> set("repo", repo)
       let u: String val = tpl.expand(vars)
       by_url(u, name, creds, color, description)
     | let e: ut.URITemplateParseError =>
-      Promise[LabelOrError].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[LabelOrError] .> apply(
+        req.RequestError(
+          where message' = e.message))
     end
 
-  fun by_url(url: String,
+  fun by_url(
+    url: String,
     name: String,
     creds: req.Credentials,
     color: (String | None) = None,
-    description: (String | None) = None): Promise[LabelOrError]
+    description: (String | None) = None
+  ): Promise[LabelOrError]
   =>
+    """
+    Creates a label at the given URL.
+    """
     let p = Promise[LabelOrError]
-    let r = req.ResultReceiver[Label](creds,
-      p,
-      LabelJsonConverter)
+    let r =
+      req.ResultReceiver[Label](
+        creds,
+        p,
+        LabelJSONConverter)
 
     var obj = JSONObject.update("name", name)
     match color
     | let c: String => obj = obj.update("color", c)
     end
     match description
-    | let d: String => obj = obj.update("description", d)
+    | let d: String =>
+      obj = obj.update("description", d)
     end
     let json = obj.print()
-    req.JSONRequester.post(creds, url, consume json, r)
+    req.JSONRequester.post(
+      creds, url, consume json, r)
     p
 
 primitive DeleteLabel
   """
   Deletes a label from a repository.
   """
-  fun apply(owner: String,
+  fun apply(
+    owner: String,
     repo: String,
     name: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
     match \exhaustive\ ut.URITemplateParse(
-      "https://api.github.com/repos{/owner}{/repo}/labels{/name}")
+      "https://api.github.com/repos" +
+      "{/owner}{/repo}/labels{/name}")
     | let tpl: ut.URITemplate =>
       let vars = ut.URITemplateVariables
-        .>set("owner", owner)
-        .>set("repo", repo)
-        .>set("name", name)
+        .> set("owner", owner)
+        .> set("repo", repo)
+        .> set("name", name)
       let u: String val = tpl.expand(vars)
       by_url(u, name, creds)
     | let e: ut.URITemplateParseError =>
-      Promise[req.DeletedOrError].>apply(
-        req.RequestError(where message' = e.message))
+      Promise[req.DeletedOrError] .> apply(
+        req.RequestError(
+          where message' = e.message))
     end
 
-
-  fun by_url(url: String,
+  fun by_url(
+    url: String,
     name: String,
     creds: req.Credentials): Promise[req.DeletedOrError]
   =>
+    """
+    Deletes a label at the given URL.
+    """
     let p = Promise[req.DeletedOrError]
     let r = req.DeletedResultReceiver(p)
 
     req.NoContentRequester.delete(creds, url, r)
     p
 
-primitive LabelJsonConverter is req.JSONConverter[Label]
+primitive LabelJSONConverter is req.JSONConverter[Label]
   """
   Converts a JSON object into a Label.
   """
-  fun apply(json: JSONNav, creds: req.Credentials): Label ? =>
+  fun apply(
+    json: JSONNav,
+    creds: req.Credentials): Label ?
+  =>
+    """
+    Builds a Label from its JSON representation.
+    """
     let id = json("id").as_i64()?
     let node_id = json("node_id").as_string()?
     let url = json("url").as_string()?
     let name = json("name").as_string()?
     let color = json("color").as_string()?
     let default = json("default").as_bool()?
-    let description = JSONNavUtil.string_or_none(json("description"))?
+    let description =
+      JSONNavUtil.string_or_none(json("description"))?
 
-    Label(creds,
+    Label(
+      creds,
       id,
       node_id,
       url,
