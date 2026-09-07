@@ -1,7 +1,6 @@
 use "files"
 use lori = "lori"
 use "pony_test"
-use ssl = "ssl/net"
 
 primitive \nodoc\ _TestHost
   """
@@ -18,10 +17,10 @@ primitive \nodoc\ _TestSSLContext
   Both client and server verification are disabled so the self-signed certs
   are accepted without a trusted CA chain.
   """
-  fun apply(h: TestHelper): ssl.SSLContext val ? =>
+  fun apply(h: TestHelper): lori.SSLContext val ? =>
     let file_auth = FileAuth(h.env.root)
     recover val
-      ssl.SSLContext
+      lori.SSLContext
         .> set_authority(
           FilePath(file_auth, "assets/cert.pem"))?
         .> set_cert(
@@ -43,13 +42,13 @@ actor \nodoc\ _MockHTTPListener is lori.TCPListenerActor
   """
   var _tcp_listener: lori.TCPListener = lori.TCPListener.none()
   let _server_auth: lori.TCPServerAuth
-  let _sslctx: ssl.SSLContext val
+  let _sslctx: lori.SSLContext val
   let _responder: _Responder
   let _on_listening_cb: {()} val
 
   new create(h: TestHelper,
     port: String,
-    sslctx: ssl.SSLContext val,
+    sslctx: lori.SSLContext val,
     responder: _Responder,
     on_listening_cb: {()} val)
   =>
@@ -89,7 +88,7 @@ actor \nodoc\ _MockHTTPConnection
   var _buf: String ref = String
 
   new create(server_auth: lori.TCPServerAuth,
-    sslctx: ssl.SSLContext val,
+    sslctx: lori.SSLContext val,
     fd: U32,
     responder: _Responder)
   =>

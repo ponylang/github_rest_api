@@ -1,7 +1,6 @@
 use "json"
 use lori = "lori"
 use "promises"
-use ssl = "ssl/net"
 
 class val Credentials
   """
@@ -14,11 +13,11 @@ class val Credentials
   """
   let auth: lori.TCPConnectAuth
   let token: (String | None)
-  let ssl_ctx: (ssl.SSLContext val | None)
+  let ssl_ctx: (lori.SSLContext val | None)
 
   new val create(auth': lori.TCPConnectAuth,
     token': (String | None) = None,
-    ssl_ctx': (ssl.SSLContext val | None) = None)
+    ssl_ctx': (lori.SSLContext val | None) = None)
   =>
     auth = auth'
     token = token'

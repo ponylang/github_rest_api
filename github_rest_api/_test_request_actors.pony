@@ -2,7 +2,6 @@ use "json"
 use lori = "lori"
 use "pony_test"
 use req = "request"
-use ssl = "ssl/net"
 
 // --- Test receiver actors ---
 

@@ -1,6 +1,6 @@
 use courier = "courier"
 use "promises"
-use ssl = "ssl/net"
+use lori = "lori"
 use uri = "uri"
 
 interface tag CheckResultReceiver
@@ -69,7 +69,7 @@ actor CheckRequester is courier.HTTPClientConnectionActor
         | None => "443"
         end
         let ctx = match \exhaustive\ _creds.ssl_ctx
-        | let c: ssl.SSLContext val => c
+        | let c: lori.SSLContext val => c
         | None => SSLContextFactory()
         end
         let config = courier.ClientConnectionConfig
