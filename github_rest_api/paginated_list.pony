@@ -3,7 +3,6 @@ use "json"
 use lori = "lori"
 use "promises"
 use req = "request"
-use ssl = "ssl/net"
 use uri = "uri"
 
 class val PaginatedList[A: Any val]
@@ -202,7 +201,7 @@ actor LinkedJSONRequester
           end
         let ctx =
           match \exhaustive\ _creds.ssl_ctx
-          | let c: ssl.SSLContext val => c
+          | let c: lori.SSLContext val => c
           | None => req.SSLContextFactory()
           end
         let config = courier.ClientConnectionConfig

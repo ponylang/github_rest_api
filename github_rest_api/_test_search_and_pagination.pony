@@ -3,7 +3,6 @@ use lori = "lori"
 use "promises"
 use "pony_test"
 use req = "request"
-use ssl = "ssl/net"
 
 // --- Unit tests: converter + None checks ---
 
