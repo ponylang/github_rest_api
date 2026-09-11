@@ -1,5 +1,5 @@
 use "json"
-use lori = "lori"
+use "net"
 use "pony_test"
 use req = "request"
 
@@ -248,7 +248,7 @@ class \nodoc\ _TestJSONRequesterGetSuccess is UnitTest
     let url = _TestURL(host, port, "/test")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestJSONSuccessReceiver(h, "greeting", "hello")
@@ -284,7 +284,7 @@ class \nodoc\ _TestJSONRequesterGetFailure is UnitTest
     let url = _TestURL(host, port, "/missing")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestJSONFailureReceiver(
@@ -321,7 +321,7 @@ class \nodoc\ _TestJSONRequesterPostSuccess is UnitTest
     let url = _TestURL(host, port, "/create")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestJSONSuccessReceiver(h, "id", "42")
@@ -360,7 +360,7 @@ class \nodoc\ _TestJSONRequesterGetRedirect is UnitTest
       _TestURL(host, port, "/redirected")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestJSONSuccessReceiver(
@@ -404,7 +404,7 @@ class \nodoc\ _TestJSONRequesterGetParseError is UnitTest
     let url = _TestURL(host, port, "/bad-json")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestJSONFailureReceiver(
@@ -441,7 +441,7 @@ class \nodoc\ _TestNoContentDeleteSuccess is UnitTest
     let url = _TestURL(host, port, "/delete-me")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver = _TestDeleteSuccessReceiver(h)
     let responder: _Responder =
@@ -474,7 +474,7 @@ class \nodoc\ _TestNoContentDeleteFailure is UnitTest
     let url = _TestURL(host, port, "/no-access")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestDeleteFailureReceiver(h, 403, "forbidden")
@@ -511,7 +511,7 @@ class \nodoc\ _TestCheckRequester204 is UnitTest
     let url = _TestURL(host, port, "/starred")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestCheckSuccessReceiver(h, true)
@@ -544,7 +544,7 @@ class \nodoc\ _TestCheckRequester404 is UnitTest
     let url = _TestURL(host, port, "/not-starred")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestCheckSuccessReceiver(h, false)
@@ -577,7 +577,7 @@ class \nodoc\ _TestCheckRequesterOther is UnitTest
     let url = _TestURL(host, port, "/broken")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestCheckFailureReceiver(h, 500, "server error")
@@ -613,7 +613,7 @@ class \nodoc\ _TestLinkedWithLink is UnitTest
     let url = _TestURL(host, port, "/list")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let link_value =
       "<https://api.github.com/repos?page=2>" +
@@ -654,7 +654,7 @@ class \nodoc\ _TestLinkedNoLink is UnitTest
     let url = _TestURL(host, port, "/list")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestLinkedSuccessReceiver(
@@ -691,7 +691,7 @@ class \nodoc\ _TestLinkedFailure is UnitTest
     let url = _TestURL(host, port, "/broken")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestLinkedFailureReceiver(
@@ -728,7 +728,7 @@ class \nodoc\ _TestBearerTokenSent is UnitTest
     let url = _TestURL(host, port, "/auth-check")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where
           token' = "ghp_test_token_12345",
           ssl_ctx' = sslctx)
@@ -772,7 +772,7 @@ class \nodoc\ _TestNoTokenNoAuthHeader is UnitTest
     let url = _TestURL(host, port, "/no-auth-check")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let receiver =
       _TestJSONSuccessReceiver(h, "result", "ok")

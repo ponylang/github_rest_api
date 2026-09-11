@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- Update to work with ponyc 0.72.0
 
 ## [0.11.0] - 2026-09-07
 

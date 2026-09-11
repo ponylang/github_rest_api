@@ -1,5 +1,5 @@
 use "json"
-use lori = "lori"
+use "net"
 use "promises"
 use "pony_test"
 use req = "request"
@@ -148,7 +148,7 @@ class \nodoc\ _TestResultReceiverSuccess is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let receiver =
       req.ResultReceiver[String](
         creds, p, _TestStringConverter)
@@ -180,7 +180,7 @@ class \nodoc\ _TestResultReceiverConverterError is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let receiver =
       req.ResultReceiver[String](
         creds, p, _TestStringConverter)
@@ -211,7 +211,7 @@ class \nodoc\ _TestResultReceiverFailure is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let receiver =
       req.ResultReceiver[String](
         creds, p, _TestStringConverter)
@@ -252,7 +252,7 @@ class \nodoc\ _TestPaginatedResultReceiverSuccess is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let converter =
       PaginatedListJSONConverter[String](
         creds, _TestStringConverter)
@@ -294,7 +294,7 @@ class \nodoc\ _TestPaginatedResultReceiverConverterError is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let converter =
       PaginatedListJSONConverter[String](
         creds, _TestStringConverter)
@@ -334,7 +334,7 @@ class \nodoc\ _TestPaginatedResultReceiverFailure is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let converter =
       PaginatedListJSONConverter[String](
         creds, _TestStringConverter)
@@ -379,7 +379,7 @@ class \nodoc\ _TestSearchResultReceiverSuccess is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let converter =
       PaginatedSearchJSONConverter[String](
         creds, _TestStringConverter)
@@ -425,7 +425,7 @@ class \nodoc\ _TestSearchResultReceiverConverterError is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let converter =
       PaginatedSearchJSONConverter[String](
         creds, _TestStringConverter)
@@ -465,7 +465,7 @@ class \nodoc\ _TestSearchResultReceiverFailure is UnitTest
       })
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root))
+        TCPConnectAuth(h.env.root))
     let converter =
       PaginatedSearchJSONConverter[String](
         creds, _TestStringConverter)

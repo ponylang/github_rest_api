@@ -1,4 +1,4 @@
-use lori = "lori"
+use "net"
 
 primitive SSLContextFactory
   """
@@ -9,15 +9,15 @@ primitive SSLContextFactory
   This is the default SSL context used by request actors when
   `Credentials.ssl_ctx` is None.
   """
-  fun apply(): lori.SSLContext val =>
+  fun apply(): SSLContext val =>
     try
       recover val
-        lori.SSLContext
+        SSLContext
           .>set_client_verify(true)
           .>set_authority(None)?
       end
     else
       recover val
-        lori.SSLContext.>set_client_verify(false)
+        SSLContext.>set_client_verify(false)
       end
     end

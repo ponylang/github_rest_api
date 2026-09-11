@@ -1,6 +1,6 @@
 use courier = "courier"
 use "json"
-use lori = "lori"
+use "net"
 use "promises"
 use req = "request"
 use uri = "uri"
@@ -201,7 +201,7 @@ actor LinkedJSONRequester
           end
         let ctx =
           match \exhaustive\ _creds.ssl_ctx
-          | let c: lori.SSLContext val => c
+          | let c: SSLContext val => c
           | None => req.SSLContextFactory()
           end
         let config = courier.ClientConnectionConfig
@@ -300,19 +300,19 @@ actor LinkedJSONRequester
     end
 
   fun ref on_connection_failure(
-    reason: courier.ConnectionFailureReason)
+    reason: ConnectionFailureReason)
   =>
     let msg =
       match \exhaustive\ reason
-      | courier.ConnectionFailedDNS =>
+      | ConnectionFailedDNS =>
         "DNS resolution failed"
-      | courier.ConnectionFailedTCP =>
+      | ConnectionFailedTCP =>
         "Unable to connect"
-      | courier.ConnectionFailedSSL =>
+      | ConnectionFailedSSL =>
         "SSL handshake failed"
-      | courier.ConnectionFailedTimeout =>
+      | ConnectionFailedTimeout =>
         "Connection timed out"
-      | courier.ConnectionFailedTimerError =>
+      | ConnectionFailedTimerError =>
         "Connect timer failed"
       end
     _receiver.failure(0, "", consume msg)

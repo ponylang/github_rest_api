@@ -1,7 +1,7 @@
 use "../../github_rest_api"
 use "../../github_rest_api/request"
 use "cli"
-use lori = "lori"
+use "net"
 use "promises"
 
 actor Main
@@ -96,7 +96,7 @@ actor Main
           None
         end
 
-      let auth = lori.TCPConnectAuth(env.root)
+      let auth = TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
       let p =

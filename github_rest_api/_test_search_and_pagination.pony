@@ -1,5 +1,5 @@
 use "json"
-use lori = "lori"
+use "net"
 use "promises"
 use "pony_test"
 use req = "request"
@@ -11,7 +11,7 @@ class \nodoc\ _TestSearchConverterExtractsLinks is UnitTest
 
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
-    let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
+    let creds = req.Credentials(TCPConnectAuth(h.env.root))
     let converter =
       PaginatedSearchJSONConverter[String](
         creds, _TestStringConverter)
@@ -51,7 +51,7 @@ class \nodoc\ _TestSearchConverterNoLinks is UnitTest
 
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
-    let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
+    let creds = req.Credentials(TCPConnectAuth(h.env.root))
     let converter =
       PaginatedSearchJSONConverter[String](
         creds, _TestStringConverter)
@@ -82,7 +82,7 @@ class \nodoc\ _TestListConverterExtractsLinks is UnitTest
 
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
-    let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
+    let creds = req.Credentials(TCPConnectAuth(h.env.root))
     let converter =
       PaginatedListJSONConverter[String](
         creds, _TestStringConverter)
@@ -116,7 +116,7 @@ class \nodoc\ _TestListConverterNoLinks is UnitTest
 
   fun ref apply(h: TestHelper) =>
     h.long_test(2_000_000_000)
-    let creds = req.Credentials(lori.TCPConnectAuth(h.env.root))
+    let creds = req.Credentials(TCPConnectAuth(h.env.root))
     let converter =
       PaginatedListJSONConverter[String](
         creds, _TestStringConverter)
@@ -150,7 +150,7 @@ class \nodoc\ _TestSearchNextPageFollowsLink is UnitTest
     let page1_url = _TestURL(host, port, "/page1")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let converter =
       PaginatedSearchJSONConverter[String](
@@ -272,7 +272,7 @@ class \nodoc\ _TestSearchPrevPageFollowsLink is UnitTest
     let page2_url = _TestURL(host, port, "/page2")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let converter =
       PaginatedSearchJSONConverter[String](
@@ -393,7 +393,7 @@ class \nodoc\ _TestListNextPageFollowsLink is UnitTest
     let page1_url = _TestURL(host, port, "/page1")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let converter =
       PaginatedListJSONConverter[String](
@@ -512,7 +512,7 @@ class \nodoc\ _TestListPrevPageFollowsLink is UnitTest
     let page2_url = _TestURL(host, port, "/page2")
     let creds =
       req.Credentials(
-        lori.TCPConnectAuth(h.env.root)
+        TCPConnectAuth(h.env.root)
         where ssl_ctx' = sslctx)
     let converter =
       PaginatedListJSONConverter[String](
