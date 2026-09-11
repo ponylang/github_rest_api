@@ -1,6 +1,6 @@
 use courier = "courier"
 use "promises"
-use lori = "lori"
+use "net"
 use uri = "uri"
 
 interface tag DeleteResultReceiver
@@ -88,7 +88,7 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
         | None => "443"
         end
         let ctx = match \exhaustive\ _creds.ssl_ctx
-        | let c: lori.SSLContext val => c
+        | let c: SSLContext val => c
         | None => SSLContextFactory()
         end
         let config = courier.ClientConnectionConfig
@@ -142,13 +142,13 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
       end
     end
 
-  fun ref on_connection_failure(reason: courier.ConnectionFailureReason) =>
+  fun ref on_connection_failure(reason: ConnectionFailureReason) =>
     let msg = match \exhaustive\ reason
-    | courier.ConnectionFailedDNS => "DNS resolution failed"
-    | courier.ConnectionFailedTCP => "Unable to connect"
-    | courier.ConnectionFailedSSL => "SSL handshake failed"
-    | courier.ConnectionFailedTimeout => "Connection timed out"
-    | courier.ConnectionFailedTimerError => "Connect timer failed"
+    | ConnectionFailedDNS => "DNS resolution failed"
+    | ConnectionFailedTCP => "Unable to connect"
+    | ConnectionFailedSSL => "SSL handshake failed"
+    | ConnectionFailedTimeout => "Connection timed out"
+    | ConnectionFailedTimerError => "Connect timer failed"
     end
     _receiver.failure(0, "", consume msg)
 

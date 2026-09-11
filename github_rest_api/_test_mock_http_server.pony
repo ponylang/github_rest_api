@@ -1,5 +1,5 @@
 use "files"
-use lori = "lori"
+use "net"
 use "pony_test"
 
 primitive \nodoc\ _TestHost
@@ -17,10 +17,10 @@ primitive \nodoc\ _TestSSLContext
   Both client and server verification are disabled so the self-signed certs
   are accepted without a trusted CA chain.
   """
-  fun apply(h: TestHelper): lori.SSLContext val ? =>
+  fun apply(h: TestHelper): SSLContext val ? =>
     let file_auth = FileAuth(h.env.root)
     recover val
-      lori.SSLContext
+      SSLContext
         .> set_authority(
           FilePath(file_auth, "assets/cert.pem"))?
         .> set_cert(
@@ -34,36 +34,36 @@ primitive \nodoc\ _TestSSLContext
 // package-private.
 type _Responder is {(String): String} val
 
-actor \nodoc\ _MockHTTPListener is lori.TCPListenerActor
+actor \nodoc\ _MockHTTPListener is TCPListenerActor
   """
   A mock HTTPS server for testing request actors. Listens on a fixed port
   with SSL, accepts connections, and dispatches them to _MockHTTPConnection
   actors that use the provided responder function to generate responses.
   """
-  var _tcp_listener: lori.TCPListener = lori.TCPListener.none()
-  let _server_auth: lori.TCPServerAuth
-  let _sslctx: lori.SSLContext val
+  var _tcp_listener: TCPListener = TCPListener.none()
+  let _server_auth: TCPServerAuth
+  let _sslctx: SSLContext val
   let _responder: _Responder
   let _on_listening_cb: {()} val
 
   new create(h: TestHelper,
     port: String,
-    sslctx: lori.SSLContext val,
+    sslctx: SSLContext val,
     responder: _Responder,
     on_listening_cb: {()} val)
   =>
-    _server_auth = lori.TCPServerAuth(h.env.root)
+    _server_auth = TCPServerAuth(h.env.root)
     _sslctx = sslctx
     _responder = responder
     _on_listening_cb = on_listening_cb
     _tcp_listener =
-      lori.TCPListener(
-        lori.TCPListenAuth(h.env.root),
+      TCPListener(
+        TCPListenAuth(h.env.root),
         _TestHost(),
         port,
         this)
 
-  fun ref _listener(): lori.TCPListener =>
+  fun ref _listener(): TCPListener =>
     _tcp_listener
 
   fun ref _on_accept(fd: U32): _MockHTTPConnection =>
@@ -76,42 +76,42 @@ actor \nodoc\ _MockHTTPListener is lori.TCPListenerActor
     None
 
 actor \nodoc\ _MockHTTPConnection
-  is (lori.TCPConnectionActor & lori.ServerLifecycleEventReceiver)
+  is (TCPConnectionActor & ServerLifecycleEventReceiver)
   """
   Handles a single accepted SSL connection. Buffers incoming data until a
   complete HTTP request is received (detected by the `\\r\\n\\r\\n` header
   terminator), then calls the responder to generate a response and sends it
   back.
   """
-  var _tcp_connection: lori.TCPConnection = lori.TCPConnection.none()
+  var _tcp_connection: TCPConnection = TCPConnection.none()
   let _responder: _Responder
   var _buf: String ref = String
 
-  new create(server_auth: lori.TCPServerAuth,
-    sslctx: lori.SSLContext val,
+  new create(server_auth: TCPServerAuth,
+    sslctx: SSLContext val,
     fd: U32,
     responder: _Responder)
   =>
     _responder = responder
     _tcp_connection =
-      lori.TCPConnection.ssl_server(
+      TCPConnection.ssl_server(
         server_auth,
         sslctx,
         fd,
         this,
         this)
 
-  fun ref _connection(): lori.TCPConnection =>
+  fun ref _connection(): TCPConnection =>
     _tcp_connection
 
-  fun ref _on_start_failure(reason: lori.StartFailureReason) =>
+  fun ref _on_start_failure(reason: StartFailureReason) =>
     None
 
-  fun ref _on_received(data: Array[U8] iso): lori.ReadAction =>
+  fun ref _on_received(data: Array[U8] iso): ReadAction =>
     _buf.append(consume data)
     if _buf.contains("\r\n\r\n") then
       let request: String val = (_buf = String).clone()
       let response = _responder(request)
       _tcp_connection.send(response)
     end
-    lori.KeepReading
+    KeepReading

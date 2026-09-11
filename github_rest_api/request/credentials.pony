@@ -1,5 +1,5 @@
 use "json"
-use lori = "lori"
+use "net"
 use "promises"
 
 class val Credentials
@@ -11,13 +11,13 @@ class val Credentials
   `SSLContextFactory`. This allows callers to supply a custom SSL context
   (e.g., one configured for self-signed certificates in tests).
   """
-  let auth: lori.TCPConnectAuth
+  let auth: TCPConnectAuth
   let token: (String | None)
-  let ssl_ctx: (lori.SSLContext val | None)
+  let ssl_ctx: (SSLContext val | None)
 
-  new val create(auth': lori.TCPConnectAuth,
+  new val create(auth': TCPConnectAuth,
     token': (String | None) = None,
-    ssl_ctx': (lori.SSLContext val | None) = None)
+    ssl_ctx': (SSLContext val | None) = None)
   =>
     auth = auth'
     token = token'

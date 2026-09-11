@@ -1,7 +1,7 @@
 use "json"
 use "pony_check"
 use "pony_test"
-use lori = "lori"
+use "net"
 use req = "request"
 
 class \nodoc\ _TestGitPersonJSONConverterPreservesValues is UnitTest
@@ -12,7 +12,7 @@ class \nodoc\ _TestGitPersonJSONConverterPreservesValues is UnitTest
       recover val Generators.ascii_printable(1, 20) end,
       h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let name_val: String val = "name_" + b
@@ -39,7 +39,7 @@ class \nodoc\ _TestGitPersonJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 1) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -63,7 +63,7 @@ class \nodoc\ _TestLicenseJSONConverterPreservesValues is UnitTest
       recover val Generators.ascii_printable(1, 20) end,
       h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let node_id_val: String val = "node_id_" + b
@@ -99,7 +99,7 @@ class \nodoc\ _TestLicenseJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 4) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -126,7 +126,7 @@ class \nodoc\ _TestCommitFileJSONConverterPreservesValues is UnitTest
       recover val Generators.ascii_printable(1, 20) end,
       h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let sha_val: String val = "sha_" + b
@@ -156,7 +156,7 @@ class \nodoc\ _TestCommitFileJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 2) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -186,7 +186,7 @@ class \nodoc\ _TestGistChangeStatusJSONConverterPreservesValues is UnitTest
       recover val Generators.i64() end,
       h)(
       {(additions, deletions, total, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let obj = JSONObject
           .update("additions", additions)
@@ -213,7 +213,7 @@ class \nodoc\ _TestGistChangeStatusJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 2) end,
       h)(
       {(value, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         var obj = JSONObject
         if skip_idx != 0 then obj = obj.update("additions", value) end
@@ -323,7 +323,7 @@ class \nodoc\ _TestLabelJSONConverterPreservesValues is UnitTest
       recover val Generators.bool() end,
       h)(
       {(base, desc_is_null, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let id_val: I64 = 42
@@ -381,7 +381,7 @@ class \nodoc\ _TestLabelJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 6) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -422,7 +422,7 @@ class \nodoc\ _TestIssuePRJSONConverterPreservesValues is UnitTest
       recover val Generators.bool() end,
       h)(
       {(base, merged_is_null, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let url_val: String val = "url_" + b
@@ -477,7 +477,7 @@ class \nodoc\ _TestIssuePRJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 4) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -516,7 +516,7 @@ class \nodoc\ _TestAssetJSONConverterPreservesValues is UnitTest
       recover val Generators.bool() end,
       h)(
       {(base, label_is_null, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let id_val: I64 = 42
@@ -597,7 +597,7 @@ class \nodoc\ _TestAssetJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 12) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let uploader_obj = _TestUserJSON(b)
@@ -663,7 +663,7 @@ class \nodoc\ _TestGistFileJSONConverterPreservesValues is UnitTest
       recover val Generators.bool() end,
       h)(
       {(base, lang_is_null, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let fn_val: String val = "fn_" + b
@@ -740,7 +740,7 @@ class \nodoc\ _TestGistFileJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 4) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -778,7 +778,7 @@ class \nodoc\ _TestGistFileJSONConverterAbsentOptionalFields is UnitTest
       recover val Generators.ascii_printable(1, 20) end,
       h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let obj = JSONObject
@@ -822,7 +822,7 @@ class \nodoc\ _TestGitCommitJSONConverterPreservesValues is UnitTest
       recover val Generators.ascii_printable(1, 20) end,
       h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let message_val: String val = "message_" + b
@@ -860,7 +860,7 @@ class \nodoc\ _TestGitCommitJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 3) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -899,7 +899,7 @@ class \nodoc\ _TestCommitJSONConverterPreservesValues is UnitTest
       recover val Generators.ascii_printable(1, 20) end,
       h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let sha_val: String val = "sha_" + b
@@ -960,7 +960,7 @@ class \nodoc\ _TestCommitJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 5) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -1012,7 +1012,7 @@ class \nodoc\ _TestIssueJSONConverterPreservesValues is UnitTest
       recover val Generators.bool() end,
       h)(
       {(base, state_is_null, body_is_null, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let url_val: String val = "url_" + b
@@ -1277,7 +1277,7 @@ class \nodoc\ _TestIssueJSONConverterMissingField is UnitTest
       recover val Generators.usize(0, 11) end,
       h)(
       {(base, skip_idx, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = JSONObject
@@ -1347,7 +1347,7 @@ class \nodoc\ _TestIssueJSONConverterAbsentPullRequest is UnitTest
       recover val Generators.ascii_printable(1, 20) end,
       h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let obj = JSONObject
@@ -1391,7 +1391,7 @@ class \nodoc\ _TestRepoJSONConverterPreservesValues
       recover val Generators.usize(0, 15) end,
       h)(
       {(base, mask, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = _TestRepositoryJSON(b)
@@ -1728,7 +1728,7 @@ class \nodoc\ _TestRepoJSONConverterMissingField
         Generators.usize(0, 68)
       end, h)(
       {(base, skip_idx, h)(required) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         try
@@ -1754,7 +1754,7 @@ class \nodoc\ _TestRepoJSONConverterAbsentOptionalFields
         Generators.ascii_printable(1, 20)
       end, h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let obj = _TestRepositoryJSON(b)
@@ -1813,7 +1813,7 @@ class \nodoc\ _TestGistJSONConverterPreservesValues
       recover val Generators.bool() end,
       h)(
       {(base, desc_is_null, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         var obj = _TestGistJSON(b)
@@ -1937,7 +1937,7 @@ class \nodoc\ _TestGistJSONConverterMissingField
         Generators.usize(0, 15)
       end, h)(
       {(base, skip_idx, h)(required) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         try
@@ -1963,7 +1963,7 @@ class \nodoc\ _TestGistJSONConverterAbsentOptionalFields
         Generators.ascii_printable(1, 20)
       end, h)(
       {(base, h) =>
-        let auth = lori.TCPConnectAuth(h.env.root)
+        let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
         let b: String val = base.clone()
         let obj = _TestGistJSON(b)

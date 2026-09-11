@@ -11,7 +11,7 @@ Additional API surface and functionality will be added as needed. If you need fu
 
 ## Installation
 
-* Requires ponyc 0.70.0 or later.
+* Requires ponyc 0.72.0 or later.
 * Install [corral](https://github.com/ponylang/corral)
 * `corral add github.com/ponylang/github_rest_api.git --version 0.11.0`
 * `corral fetch` to fetch your dependencies
@@ -23,11 +23,11 @@ Additional API surface and functionality will be added as needed. If you need fu
 ```pony
 use "github_rest_api"
 use "github_rest_api/request"
-use lori = "lori"
+use "net"
 
 actor Main
   new create(env: Env) =>
-    let auth = lori.TCPConnectAuth(env.root)
+    let auth = TCPConnectAuth(env.root)
     let creds = Credentials(auth, "your-github-token")
 
     GitHub(creds).get_repo("ponylang", "ponyc")

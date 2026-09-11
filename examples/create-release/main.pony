@@ -1,7 +1,7 @@
 use "../../github_rest_api"
 use "../../github_rest_api/request"
 use "cli"
-use lori = "lori"
+use "net"
 
 actor Main
   new create(env: Env) =>
@@ -47,7 +47,7 @@ actor Main
       let body = cmd.option("body").string()
       let token = cmd.option("token").string()
 
-      let auth = lori.TCPConnectAuth(env.root)
+      let auth = TCPConnectAuth(env.root)
       let creds = Credentials(auth, token)
 
       CreateRelease(
