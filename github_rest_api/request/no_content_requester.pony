@@ -1,4 +1,4 @@
-use courier = "courier"
+use http_client = "http_client"
 use "promises"
 use "net"
 use uri = "uri"
@@ -35,17 +35,17 @@ primitive Deleted
   Marker type indicating a successful deletion or no-content operation.
   """
 
-actor NoContentRequester is courier.HTTPClientConnectionActor
+actor NoContentRequester is http_client.HTTPClientConnectionActor
   """
   Issues an HTTP request that expects a 204 No Content response. Supports
   DELETE and PUT methods. On success, calls `receiver.success()`; on any other
   status or connection failure, calls `receiver.failure()` with details.
   """
-  var _http: courier.HTTPClientConnection = courier.HTTPClientConnection.none()
-  var _collector: courier.ResponseCollector = courier.ResponseCollector
+  var _http: http_client.HTTPClientConnection = http_client.HTTPClientConnection.none()
+  var _collector: http_client.ResponseCollector = http_client.ResponseCollector
   let _creds: Credentials
   let _receiver: DeleteResultReceiver
-  let _method: courier.Method
+  let _method: http_client.Method
   var _request_path: String = ""
   var _status: U16 = 0
 
@@ -58,7 +58,7 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
     """
     _creds = creds
     _receiver = receiver
-    _method = courier.DELETE
+    _method = http_client.DELETE
     _connect(url)
 
   new put(creds: Credentials,
@@ -71,7 +71,7 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
     """
     _creds = creds
     _receiver = receiver
-    _method = courier.PUT
+    _method = http_client.PUT
     _connect(url)
 
   fun ref _connect(url: String) =>
@@ -91,8 +91,8 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
         | let c: SSLContext val => c
         | None => SSLContextFactory()
         end
-        let config = courier.ClientConnectionConfig
-        _http = courier.HTTPClientConnection.ssl(
+        let config = http_client.ClientConnectionConfig
+        _http = http_client.HTTPClientConnection.ssl(
           _creds.auth, ctx, auth.host, port, this, config)
       else
         _fail("Unable to parse URL: " + url)
@@ -101,28 +101,28 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
       _fail("Unable to parse URL: " + url)
     end
 
-  fun ref _http_client_connection(): courier.HTTPClientConnection =>
+  fun ref _http_client_connection(): http_client.HTTPClientConnection =>
     _http
 
   fun ref on_connected() =>
-    let hdrs = recover trn courier.Headers end
+    let hdrs = recover trn http_client.Headers end
     hdrs.set("User-Agent", "Pony GitHub Rest API Client")
     hdrs.set("Accept", "application/vnd.github.v3+json")
     match _creds.token
     | let t: String =>
-      (let n, let v) = courier.BearerAuth(t)
+      (let n, let v) = http_client.BearerAuth(t)
       hdrs.set(n, v)
     end
     hdrs.set("Content-Length", "0")
-    let request = courier.HTTPRequest(
+    let request = http_client.HTTPRequest(
       _method,
       _request_path,
       consume hdrs)
     _http.send_request(request)
 
-  fun ref on_response(response: courier.Response val) =>
+  fun ref on_response(response: http_client.Response val) =>
     _status = response.status
-    _collector = courier.ResponseCollector
+    _collector = http_client.ResponseCollector
     _collector.set_response(response)
 
   fun ref on_body_chunk(data: Array[U8] val) =>
@@ -152,7 +152,7 @@ actor NoContentRequester is courier.HTTPClientConnectionActor
     end
     _receiver.failure(0, "", consume msg)
 
-  fun ref on_parse_error(err: courier.ParseError) =>
+  fun ref on_parse_error(err: http_client.ParseError) =>
     _http.close()
     _receiver.failure(0, "", "HTTP parse error")
 
