@@ -1,4 +1,4 @@
-use courier = "courier"
+use http_client = "http_client"
 use "json"
 use "net"
 use "promises"
@@ -153,17 +153,17 @@ actor PaginatedResultReceiver[A: Any val]
     _p(req.RequestError(status, response_body, message))
 
 actor LinkedJSONRequester
-  is courier.HTTPClientConnectionActor
+  is http_client.HTTPClientConnectionActor
   """
   Issues an HTTP GET request and delivers the JSON response along
   with the Link header to a LinkedResultReceiver. Used by both
   paginated list and search result endpoints. Follows 301/307
   redirects automatically.
   """
-  var _http: courier.HTTPClientConnection =
-    courier.HTTPClientConnection.none()
-  var _collector: courier.ResponseCollector =
-    courier.ResponseCollector
+  var _http: http_client.HTTPClientConnection =
+    http_client.HTTPClientConnection.none()
+  var _collector: http_client.ResponseCollector =
+    http_client.ResponseCollector
   let _creds: req.Credentials
   let _receiver: LinkedResultReceiver
   var _request_path: String = ""
@@ -204,9 +204,9 @@ actor LinkedJSONRequester
           | let c: SSLContext val => c
           | None => req.SSLContextFactory()
           end
-        let config = courier.ClientConnectionConfig
+        let config = http_client.ClientConnectionConfig
         _http =
-          courier.HTTPClientConnection.ssl(
+          http_client.HTTPClientConnection.ssl(
             _creds.auth,
             ctx,
             auth.host,
@@ -221,7 +221,7 @@ actor LinkedJSONRequester
     end
 
   fun ref _http_client_connection()
-    : courier.HTTPClientConnection
+    : http_client.HTTPClientConnection
   =>
     _http
 
@@ -229,24 +229,24 @@ actor LinkedJSONRequester
     """
     Sends the HTTP GET request when connected.
     """
-    let hdrs = recover trn courier.Headers end
+    let hdrs = recover trn http_client.Headers end
     hdrs.set(
       "User-Agent", "Pony GitHub Rest API Client")
     hdrs.set(
       "Accept", "application/vnd.github.v3+json")
     match _creds.token
     | let t: String =>
-      (let n, let v) = courier.BearerAuth(t)
+      (let n, let v) = http_client.BearerAuth(t)
       hdrs.set(n, v)
     end
     let request =
-      courier.HTTPRequest(
-        courier.GET,
+      http_client.HTTPRequest(
+        http_client.GET,
         _request_path,
         consume hdrs)
     _http.send_request(request)
 
-  fun ref on_response(response: courier.Response val) =>
+  fun ref on_response(response: http_client.Response val) =>
     """
     Handles the HTTP response status and headers.
     """
@@ -267,7 +267,7 @@ actor LinkedJSONRequester
       end
     end
 
-    _collector = courier.ResponseCollector
+    _collector = http_client.ResponseCollector
     _collector.set_response(response)
 
   fun ref on_body_chunk(data: Array[U8] val) =>
@@ -279,7 +279,7 @@ actor LinkedJSONRequester
     try
       let response = _collector.build()?
       if _status == 200 then
-        match \exhaustive\ courier.ResponseJSON(
+        match \exhaustive\ http_client.ResponseJSON(
           response)
         | let json: JSONValue =>
           _receiver.success(
@@ -317,7 +317,7 @@ actor LinkedJSONRequester
       end
     _receiver.failure(0, "", consume msg)
 
-  fun ref on_parse_error(err: courier.ParseError) =>
+  fun ref on_parse_error(err: http_client.ParseError) =>
     _http.close()
     _receiver.failure(0, "", "HTTP parse error")
 
