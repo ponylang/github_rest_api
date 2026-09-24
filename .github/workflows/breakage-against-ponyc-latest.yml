@@ -33,11 +33,11 @@ jobs:
     name: Test against ponyc main
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ponylang/shared-docker-ci-standard-builder-with-openssl-3.6.2:nightly
+      image: ghcr.io/ponylang/shared-docker-ci-standard-builder-with-libressl-4.2.1:nightly
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Test
-        run: make test config=debug ssl=3.0.x
+        run: make test config=debug ssl=libressl
       - name: Send alert on failure
         if: ${{ failure() }}
         uses: zulip/github-actions-zulip/send-message@bd8ec52de371d139ae8313661b7d8318c19266aa

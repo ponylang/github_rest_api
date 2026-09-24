@@ -31,16 +31,16 @@ If you are running on an Anthropic model, use `claude-opus-4-6` for writing comm
 ## Building and testing
 
 ```
-make ssl=3.0.x                       # build + run unit tests + build examples
-make unit-tests ssl=3.0.x            # unit tests only
-make test-one t=TestName ssl=3.0.x   # run a single test by name
-make examples ssl=3.0.x              # build examples only
-make config=debug ssl=3.0.x          # debug build
+make ssl=libressl                       # build + run unit tests + build examples
+make unit-tests ssl=libressl            # unit tests only
+make test-one t=TestName ssl=libressl   # run a single test by name
+make examples ssl=libressl              # build examples only
+make config=debug ssl=libressl          # debug build
 make lint                            # run pony-lint (no ssl= needed)
 make clean                           # clean build artifacts + corral deps
 ```
 
-`ssl=` is required on every build and test target, set to your installed TLS library: `3.0.x` or `1.1.x`. `make` runs `corral fetch` before compiling.
+`ssl=` is required on every build and test target, set to your installed TLS library: `libressl`, `3.0.x`, or `1.1.x`. `make` runs `corral fetch` before compiling.
 
 ## Architecture
 
