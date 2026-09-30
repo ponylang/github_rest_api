@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- Update to work with pony 0.74.0 ([PR #154](https://github.com/ponylang/github_rest_api/pull/154))
 
 ## [0.13.0] - 2026-09-13
 
