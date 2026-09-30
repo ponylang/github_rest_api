@@ -1,5 +1,4 @@
 use "json"
-use "pony_check"
 use "pony_test"
 use "net"
 use req = "request"
@@ -8,9 +7,8 @@ class \nodoc\ _TestGitPersonJSONConverterPreservesValues is UnitTest
   fun name(): String => "git-person-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 20) end,
-      h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 20) end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -34,10 +32,9 @@ class \nodoc\ _TestGitPersonJSONConverterMissingField is UnitTest
   fun name(): String => "git-person-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 1) end,
-      h)(
+      recover val Generators.usize(0, 1) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -59,9 +56,8 @@ class \nodoc\ _TestLicenseJSONConverterPreservesValues is UnitTest
   fun name(): String => "license-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 20) end,
-      h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 20) end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -94,10 +90,9 @@ class \nodoc\ _TestLicenseJSONConverterMissingField is UnitTest
   fun name(): String => "license-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 4) end,
-      h)(
+      recover val Generators.usize(0, 4) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -122,9 +117,8 @@ class \nodoc\ _TestCommitFileJSONConverterPreservesValues is UnitTest
   fun name(): String => "commit-file-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 20) end,
-      h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 20) end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -151,10 +145,9 @@ class \nodoc\ _TestCommitFileJSONConverterMissingField is UnitTest
   fun name(): String => "commit-file-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 2) end,
-      h)(
+      recover val Generators.usize(0, 2) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -180,11 +173,10 @@ class \nodoc\ _TestGistChangeStatusJSONConverterPreservesValues is UnitTest
     "gist-change-status-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all3[I64, I64, I64](
+    h.for_all3[I64, I64, I64](
       recover val Generators.i64() end,
       recover val Generators.i64() end,
-      recover val Generators.i64() end,
-      h)(
+      recover val Generators.i64() end)(
       {(additions, deletions, total, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -208,10 +200,9 @@ class \nodoc\ _TestGistChangeStatusJSONConverterMissingField is UnitTest
     "gist-change-status-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[I64, USize](
+    h.for_all2[I64, USize](
       recover val Generators.i64() end,
-      recover val Generators.usize(0, 2) end,
-      h)(
+      recover val Generators.usize(0, 2) end)(
       {(value, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -318,10 +309,9 @@ class \nodoc\ _TestLabelJSONConverterPreservesValues is UnitTest
   fun name(): String => "label-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, Bool](
+    h.for_all2[String, Bool](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.bool() end,
-      h)(
+      recover val Generators.bool() end)(
       {(base, desc_is_null, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -376,10 +366,9 @@ class \nodoc\ _TestLabelJSONConverterMissingField is UnitTest
   fun name(): String => "label-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 6) end,
-      h)(
+      recover val Generators.usize(0, 6) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -417,10 +406,9 @@ class \nodoc\ _TestIssuePRJSONConverterPreservesValues is UnitTest
     "issue-pull-request-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, Bool](
+    h.for_all2[String, Bool](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.bool() end,
-      h)(
+      recover val Generators.bool() end)(
       {(base, merged_is_null, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -472,10 +460,9 @@ class \nodoc\ _TestIssuePRJSONConverterMissingField is UnitTest
     "issue-pull-request-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 4) end,
-      h)(
+      recover val Generators.usize(0, 4) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -511,10 +498,9 @@ class \nodoc\ _TestAssetJSONConverterPreservesValues is UnitTest
     "asset-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, Bool](
+    h.for_all2[String, Bool](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.bool() end,
-      h)(
+      recover val Generators.bool() end)(
       {(base, label_is_null, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -592,10 +578,9 @@ class \nodoc\ _TestAssetJSONConverterMissingField is UnitTest
     "asset-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 12) end,
-      h)(
+      recover val Generators.usize(0, 12) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -658,10 +643,9 @@ class \nodoc\ _TestGistFileJSONConverterPreservesValues is UnitTest
     "gist-file-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, Bool](
+    h.for_all2[String, Bool](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.bool() end,
-      h)(
+      recover val Generators.bool() end)(
       {(base, lang_is_null, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -735,10 +719,9 @@ class \nodoc\ _TestGistFileJSONConverterMissingField is UnitTest
     "gist-file-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 4) end,
-      h)(
+      recover val Generators.usize(0, 4) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -774,9 +757,8 @@ class \nodoc\ _TestGistFileJSONConverterAbsentOptionalFields is UnitTest
     "gist-file-json-converter/absent-optional-fields"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 20) end,
-      h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 20) end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -818,9 +800,8 @@ class \nodoc\ _TestGitCommitJSONConverterPreservesValues is UnitTest
     "git-commit-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 20) end,
-      h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 20) end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -855,10 +836,9 @@ class \nodoc\ _TestGitCommitJSONConverterMissingField is UnitTest
     "git-commit-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 3) end,
-      h)(
+      recover val Generators.usize(0, 3) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -895,9 +875,8 @@ class \nodoc\ _TestCommitJSONConverterPreservesValues is UnitTest
     "commit-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 20) end,
-      h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 20) end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -955,10 +934,9 @@ class \nodoc\ _TestCommitJSONConverterMissingField is UnitTest
     "commit-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 5) end,
-      h)(
+      recover val Generators.usize(0, 5) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1006,11 +984,10 @@ class \nodoc\ _TestIssueJSONConverterPreservesValues is UnitTest
     "issue-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all3[String, Bool, Bool](
+    h.for_all3[String, Bool, Bool](
       recover val Generators.ascii_printable(1, 20) end,
       recover val Generators.bool() end,
-      recover val Generators.bool() end,
-      h)(
+      recover val Generators.bool() end)(
       {(base, state_is_null, body_is_null, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1272,10 +1249,9 @@ class \nodoc\ _TestIssueJSONConverterMissingField is UnitTest
     "issue-json-converter/missing-field"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 11) end,
-      h)(
+      recover val Generators.usize(0, 11) end)(
       {(base, skip_idx, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1343,9 +1319,8 @@ class \nodoc\ _TestIssueJSONConverterAbsentPullRequest is UnitTest
     "issue-json-converter/absent-pull-request"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 20) end,
-      h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 20) end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1386,10 +1361,9 @@ class \nodoc\ _TestRepoJSONConverterPreservesValues
     "repo-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val Generators.ascii_printable(1, 20) end,
-      recover val Generators.usize(0, 15) end,
-      h)(
+      recover val Generators.usize(0, 15) end)(
       {(base, mask, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1720,13 +1694,13 @@ class \nodoc\ _TestRepoJSONConverterMissingField
 
   fun ref apply(h: TestHelper) ? =>
     let required = _required_fields()
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val
         Generators.ascii_printable(1, 20)
       end,
       recover val
         Generators.usize(0, 68)
-      end, h)(
+      end)(
       {(base, skip_idx, h)(required) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1749,10 +1723,10 @@ class \nodoc\ _TestRepoJSONConverterAbsentOptionalFields
     "repo-json-converter/absent-optional-fields"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
+    h.for_all[String](
       recover val
         Generators.ascii_printable(1, 20)
-      end, h)(
+      end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1806,12 +1780,11 @@ class \nodoc\ _TestGistJSONConverterPreservesValues
     "gist-json-converter/preserves-values"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all2[String, Bool](
+    h.for_all2[String, Bool](
       recover val
         Generators.ascii_printable(1, 20)
       end,
-      recover val Generators.bool() end,
-      h)(
+      recover val Generators.bool() end)(
       {(base, desc_is_null, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1929,13 +1902,13 @@ class \nodoc\ _TestGistJSONConverterMissingField
 
   fun ref apply(h: TestHelper) ? =>
     let required = _required_fields()
-    PonyCheck.for_all2[String, USize](
+    h.for_all2[String, USize](
       recover val
         Generators.ascii_printable(1, 20)
       end,
       recover val
         Generators.usize(0, 15)
-      end, h)(
+      end)(
       {(base, skip_idx, h)(required) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -1958,10 +1931,10 @@ class \nodoc\ _TestGistJSONConverterAbsentOptionalFields
     "gist-json-converter/absent-optional-fields"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
+    h.for_all[String](
       recover val
         Generators.ascii_printable(1, 20)
-      end, h)(
+      end)(
       {(base, h) =>
         let auth = TCPConnectAuth(h.env.root)
         let creds = req.Credentials(auth)
@@ -2003,10 +1976,10 @@ class \nodoc\ _TestStringOrNoneReturnsString
     "string-or-none/returns-string"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
+    h.for_all[String](
       recover val
         Generators.ascii_printable(1, 20)
-      end, h)(
+      end)(
       {(base, h) =>
         let b: String val = base.clone()
         let obj = JSONObject.update("key", b)
@@ -2048,9 +2021,8 @@ class \nodoc\ _TestStringOrNoneRaisesOnInvalid
     "string-or-none/raises-on-invalid"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[I64](
-      recover val Generators.i64() end,
-      h)(
+    h.for_all[I64](
+      recover val Generators.i64() end)(
       {(value, h) =>
         let obj =
           JSONObject.update("key", value)
@@ -2120,9 +2092,8 @@ class \nodoc\ _TestJSONTypeStringI64Property
     "json-type-string/i64-property"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[I64](
-      recover val Generators.i64() end,
-      h)(
+    h.for_all[I64](
+      recover val Generators.i64() end)(
       {(value, h) =>
         let obj =
           JSONObject.update("k", value)

@@ -1,5 +1,4 @@
 use "collections"
-use "pony_check"
 use "pony_test"
 
 actor \nodoc\ QueryParamsTests is TestList
@@ -93,8 +92,8 @@ class \nodoc\ _TestQueryParamsStructureProperty is UnitTest
   fun name(): String => "request/query-params/structure-property"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[USize](
-      recover val Generators.usize(1, 10) end, h)(
+    h.for_all[USize](
+      recover val Generators.usize(1, 10) end)(
       {(n, h) =>
         let params = recover val
           let p = Array[(String, String)]
@@ -124,8 +123,8 @@ class \nodoc\ _TestQueryParamsEncodingProperty is UnitTest
   fun name(): String => "request/query-params/encoding-property"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_printable(1, 30) end, h)(
+    h.for_all[String](
+      recover val Generators.ascii_printable(1, 30) end)(
       {(value, h) =>
         let v: String val = value.clone()
         let params = recover val [("key", v)] end
@@ -147,8 +146,8 @@ class \nodoc\ _TestQueryParamsPassThroughProperty is UnitTest
   fun name(): String => "request/query-params/pass-through-property"
 
   fun ref apply(h: TestHelper) ? =>
-    PonyCheck.for_all[String](
-      recover val Generators.ascii_letters(1, 30) end, h)(
+    h.for_all[String](
+      recover val Generators.ascii_letters(1, 30) end)(
       {(value, h) =>
         let v: String val = value.clone()
         let params = recover val [("key", v)] end
