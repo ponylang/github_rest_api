@@ -97,7 +97,7 @@ class \nodoc\ _TestQueryParamsStructureProperty is UnitTest
       {(n, h) =>
         let params = recover val
           let p = Array[(String, String)]
-          for i in Range(0, n) do
+          for i in Range[USize].till(0, n) do
             p.push(("k" + i.string(), "v" + i.string()))
           end
           p
