@@ -13,18 +13,18 @@ actor Main
           [
             OptionSpec.string(
               "owner",
-              "Owner of the repository")
+              "Owner of the repository")?
             OptionSpec.string(
               "repo",
-              "Name of the repository")
-            OptionSpec.string("name", "Label name")
-            OptionSpec.string("color", "Label color")
+              "Name of the repository")?
+            OptionSpec.string("name", "Label name")?
+            OptionSpec.string("color", "Label color")?
             OptionSpec.string(
               "description",
-              "Label description")
+              "Label description")?
             OptionSpec.string(
               "token",
-              "GitHub personal access token")
+              "GitHub personal access token")?
           ]
         )? .> add_help()?
 

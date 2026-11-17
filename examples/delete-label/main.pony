@@ -13,16 +13,16 @@ actor Main
           [
             OptionSpec.string(
               "owner",
-              "Owner of the repository")
+              "Owner of the repository")?
             OptionSpec.string(
               "repo",
-              "Name of the repository")
+              "Name of the repository")?
             OptionSpec.string(
               "name",
-              "Name of the label to delete")
+              "Name of the label to delete")?
             OptionSpec.string(
               "token",
-              "GitHub personal access token")
+              "GitHub personal access token")?
           ]
         )? .> add_help()?
 

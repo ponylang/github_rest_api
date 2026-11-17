@@ -13,17 +13,17 @@ actor Main
           [
             OptionSpec.string(
               "owner",
-              "Owner of the repository")
+              "Owner of the repository")?
             OptionSpec.string(
               "repo",
-              "Name of the repository")
-            OptionSpec.i64("issue", "Issue number")
+              "Name of the repository")?
+            OptionSpec.i64("issue", "Issue number")?
             OptionSpec.string(
               "comment",
-              "Comment to add to the issue")
+              "Comment to add to the issue")?
             OptionSpec.string(
               "token",
-              "GitHub personal access token")
+              "GitHub personal access token")?
           ]
         )? .> add_help()?
 

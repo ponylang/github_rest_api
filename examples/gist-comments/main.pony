@@ -14,11 +14,11 @@ actor Main
           [
             OptionSpec.string(
               "gist-id",
-              "ID of the gist")
+              "ID of the gist")?
             OptionSpec.string(
               "token",
               "GitHub personal access token"
-              where default' = "")
+              where default' = "")?
           ]
         )? .> add_help()?
 

@@ -13,21 +13,21 @@ actor Main
           [
             OptionSpec.string(
               "filename",
-              "Name of the file to create")
+              "Name of the file to create")?
             OptionSpec.string(
               "content",
-              "Content of the file")
+              "Content of the file")?
             OptionSpec.string(
               "description",
               "Description of the gist"
-              where default' = "")
+              where default' = "")?
             OptionSpec.bool(
               "public",
               "Whether the gist should be public"
-              where default' = false)
+              where default' = false)?
             OptionSpec.string(
               "token",
-              "GitHub personal access token")
+              "GitHub personal access token")?
           ]
         )? .> add_help()?
 

@@ -14,17 +14,17 @@ actor Main
           [
             OptionSpec.string(
               "owner",
-              "Owner of the repository the issue is in")
+              "Owner of the repository the issue is in")?
             OptionSpec.string(
               "repo",
-              "Name of the repository the issue is in")
+              "Name of the repository the issue is in")?
             OptionSpec.i64(
               "issue",
-              "Issue number to retrieve")
+              "Issue number to retrieve")?
             OptionSpec.string(
               "token",
               "GitHub personal access token"
-              where default' = "")
+              where default' = "")?
           ]
         )? .> add_help()?
 
