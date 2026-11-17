@@ -14,11 +14,11 @@ actor Main
           [
             OptionSpec.string(
               "query",
-              "Query string")
+              "Query string")?
             OptionSpec.string(
               "token",
               "GitHub personal access token"
-              where default' = "")
+              where default' = "")?
           ]
         )? .> add_help()?
 

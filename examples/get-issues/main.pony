@@ -14,39 +14,39 @@ actor Main
           [
             OptionSpec.string(
               "owner",
-              "Owner of the repository")
+              "Owner of the repository")?
             OptionSpec.string(
               "repo",
-              "Name of the repository")
+              "Name of the repository")?
             OptionSpec.string(
               "token",
               "GitHub personal access token"
-              where default' = "")
+              where default' = "")?
             OptionSpec.string(
               "labels",
               "Comma-separated label names to filter by"
-              where default' = "")
+              where default' = "")?
             OptionSpec.string(
               "state",
               "Issue state: open, closed, or all"
-              where default' = "open")
+              where default' = "open")?
             OptionSpec.string(
               "sort",
               "Sort field: created, updated, or comments"
-              where default' = "created")
+              where default' = "created")?
             OptionSpec.string(
               "direction",
               "Sort direction: asc or desc"
-              where default' = "desc")
+              where default' = "desc")?
             OptionSpec.string(
               "since",
               "Only issues updated at or after " +
                 "this ISO 8601 timestamp"
-              where default' = "")
+              where default' = "")?
             OptionSpec.i64(
               "per-page",
               "Results per page (1-100, default 30)"
-              where default' = 0)
+              where default' = 0)?
           ]
         )? .> add_help()?
 

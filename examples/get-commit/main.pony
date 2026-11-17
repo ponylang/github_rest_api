@@ -13,17 +13,17 @@ actor Main
           [
             OptionSpec.string(
               "owner",
-              "Owner of the repository")
+              "Owner of the repository")?
             OptionSpec.string(
               "repo",
-              "Name of the repository")
+              "Name of the repository")?
             OptionSpec.string(
               "sha",
-              "Sha of the commit to retrieve")
+              "Sha of the commit to retrieve")?
             OptionSpec.string(
               "token",
               "GitHub personal access token"
-              where default' = "")
+              where default' = "")?
           ]
         )? .> add_help()?
 

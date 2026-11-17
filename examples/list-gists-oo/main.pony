@@ -14,7 +14,7 @@ actor Main
           [
             OptionSpec.string(
               "token",
-              "GitHub personal access token")
+              "GitHub personal access token")?
           ]
         )? .> add_help()?
 
